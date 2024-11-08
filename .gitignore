@@ -22,11 +22,6 @@ wheels/
 venv/
 .env
 
-# ANTLR
-*.interp
-*.tokens
-CPP14Lexer.py
-
 # IDE
 .idea/
 .vscode/
