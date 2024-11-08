@@ -1,5 +1,8 @@
 from antlr4 import *
-from CPP14Lexer import CPP14Lexer
+from cppLexer import cppLexer
+from cppParser import cppParser
+from cppParserListener import cppParserListener
+from cppParserVisitor_dev import cppParserVisitor
 import sys
 
 def main():
@@ -19,8 +22,10 @@ def main():
         """
         input_stream = InputStream(sample_code)
 
+    print("# Lexer #")
+
     # Create lexer
-    lexer = CPP14Lexer(input_stream)
+    lexer = cppLexer(input_stream)
     
     # Get all tokens
     tokens = lexer.getAllTokens()
@@ -30,6 +35,22 @@ def main():
         token_type = lexer.symbolicNames[token.type]
         token_text = token.text
         print(f"Token: {token_type:20} Text: {token_text}")
+
+    lexer.reset()
+    
+    token_stream = CommonTokenStream(lexer)
+    
+    print("\n\n# Parser #")
+    parser = cppParser(token_stream)
+
+    tree = parser.translationUnit()
+    if parser.getNumberOfSyntaxErrors() > 0:
+        print("syntax errors")
+
+    else:
+        visitor = cppParserVisitor(parser)
+        astTree = visitor.visit(tree)
+        print(astTree)
 
 if __name__ == '__main__':
     main()

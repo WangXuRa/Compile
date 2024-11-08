@@ -1,7 +1,7 @@
 
 from antlr4 import *
 
-class CPP14ParserBase(Parser):
+class cppParserBase(Parser):
     @staticmethod
     def parser():
         from .cppParser import cppParser

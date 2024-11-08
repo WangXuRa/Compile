@@ -26,7 +26,7 @@
 parser grammar cppParser;
 
 options {
-    superClass = CPP14ParserBase;
+    superClass = cppParserBase;
     tokenVocab = cppLexer;
 }
 

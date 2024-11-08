@@ -27,7 +27,12 @@ This project implements a lexer for C++ using ANTLR4. The lexer can tokenize C++
 
 4. Generate the lexer code:
    ```bash
-   java -jar antlr-4.13.1-complete.jar -Dlanguage=Python3 CPP14Lexer.g4
+   java -jar antlr-4.13.1-complete.jar -Dlanguage=Python3 cppLexer.g4
+   ```
+
+5. Generate the parser code:
+   ```
+   java -jar antlr-4.13.1-complete.jar -Dlanguage=Python3 cppParser.g4
    ```
 
 ## Project Structure
