@@ -25,9 +25,9 @@ venv/
 # ANTLR
 *.interp
 *.tokens
-cppLexer.py
-cppParser.py
-cppParserListener.py
+src/cppLexer.py
+src/cppParser.py
+src/cppParserListener.py
 
 # IDE
 .idea/
