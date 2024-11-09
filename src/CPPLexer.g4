@@ -1,0 +1,51 @@
+lexer grammar CPPLexer;
+
+PLUS        : '+' ;
+MINUS       : '-' ;
+MUL         : '*' ;
+DIV         : '/' ;
+ASSIGN      : '=' ;
+LT          : '<' ;
+GT          : '>' ;
+LE          : '<=' ;
+GE          : '>=' ;
+EQ          : '==' ;
+NE          : '!=' ;
+AND         : '&&' ;
+OR          : '||' ;
+NOT         : '!' ;
+SEMICOLON   : ';' ;
+COMMA       : ',' ;
+DOT         : '.' ;
+COLON       : ':' ;
+SCOPE       : '::' ;
+LPAREN      : '(' ;
+RPAREN      : ')' ;
+LBRACE      : '{' ;
+RBRACE      : '}' ;
+LBRACK      : '[' ;
+RBRACK      : ']' ;
+QUESTION    : '?' ;
+
+CLASS       : 'class' ;
+PUBLIC      : 'public' ;
+PRIVATE     : 'private' ;
+PROTECTED   : 'protected' ;
+INT         : 'int' ;
+DOUBLE      : 'double' ;
+CHAR        : 'char' ;
+VOID        : 'void' ;
+IF          : 'if' ;
+ELSE        : 'else' ;
+FOR         : 'for' ;
+WHILE       : 'while' ;
+RETURN      : 'return' ;
+
+ID          : [a-zA-Z_][a-zA-Z_0-9]* ;
+NUMBER      : [0-9]+ ('.' [0-9]+)? ;
+CHAR_LITERAL: '\'' . '\'' ;
+STRING_LITERAL : '"' .*? '"' ;
+
+WS          : [ \t\r\n]+ -> skip ;
+COMMENT     : '//' ~[\r\n]* -> skip ;
+MULTILINE_COMMENT : '/*' .*? '*/' -> skip ;

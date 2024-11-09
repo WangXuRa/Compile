@@ -1,8 +1,13 @@
 from antlr4 import *
-from cppLexer import cppLexer 
-from cppParser import cppParser 
-from cppParserListener import cppParserListener 
-from cppParserVisitor_dev import cppParserVisitor
+# from CPPLexer import CPPLexer 
+# from CPPParser import CPPParser 
+# from CPPParserListener import CPPParserListener 
+# from CPPParserVisitor_dev import CPPParserVisitor
+
+from CPPLexer import CPPLexer 
+from CPPParser import CPPParser 
+from CPPParserListener import CPPParserListener 
+from CPPParserVisitor import CPPParserVisitor
 import sys
 
 def read_input_from_file(filename):
@@ -34,7 +39,7 @@ def main():
     print("# Lexer #")
 
     # Create lexer
-    lexer = cppLexer(input_stream)
+    lexer = CPPLexer(input_stream)
     
     # Get all tokens
     tokens = lexer.getAllTokens()
@@ -50,14 +55,14 @@ def main():
     token_stream = CommonTokenStream(lexer)
     
     print("\n\n# Parser #")
-    parser = cppParser(token_stream)
+    parser = CPPParser(token_stream)
 
-    tree = parser.translationUnit()
+    tree = parser.program()
     if parser.getNumberOfSyntaxErrors() > 0:
         print("syntax errors")
 
     else:
-        visitor = cppParserVisitor(parser)
+        visitor = CPPParserVisitor(parser)
         astTree = visitor.visit(tree)
         print(astTree)
 
