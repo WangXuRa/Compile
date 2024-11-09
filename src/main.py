@@ -1,14 +1,23 @@
 from antlr4 import *
-from cppLexer import cppLexer
-from cppParser import cppParser
-from cppParserListener import cppParserListener
+from cppLexer import cppLexer 
+from cppParser import cppParser 
+from cppParserListener import cppParserListener 
 from cppParserVisitor_dev import cppParserVisitor
 import sys
+
+def read_input_from_file(filename):
+    # Get input from a file 
+    try:
+        with open(filename, 'r', encoding='utf-8') as file:
+            return InputStream(file.read())
+    except IOError:
+        print(f"无法读取文件: {filename}")
+        sys.exit(1) 
 
 def main():
     # Get input from a file or string
     if len(sys.argv) > 1:
-        input_stream = FileStream(sys.argv[1])
+        input_stream = read_input_from_file(sys.argv[1])
     else:
         # Example C++ code for testing
         sample_code = """
