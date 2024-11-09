@@ -128,10 +128,9 @@ ENUM:               'enum';
 INLINE:             'inline';
 EXPLICIT:           'explicit';
 NOEXCEPT:           'noexcept';
-VOLATILE: 'volatile';
+VOLATILE:           'volatile';
 
 MUTABLE    : 'mutable';
-OPERATOR   : 'operator';
 FRIEND     : 'friend';
 UNIQUE_PTR : 'unique_ptr';
 SHARED_PTR : 'shared_ptr';
