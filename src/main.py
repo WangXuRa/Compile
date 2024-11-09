@@ -59,7 +59,13 @@ def main():
     else:
         visitor = cppParserVisitor(parser)
         astTree = visitor.visit(tree)
-        print(astTree)
+
+        with open("ast_output.xml", "w", encoding="utf-8") as file:
+            file.write("<AST>\n")
+            file.write(str(astTree)) 
+            file.write("\n</AST>")
+        
+        print("AST has been saved to 'ast_output.xml'")
 
 if __name__ == '__main__':
     main()
