@@ -41,6 +41,7 @@ typeSpecifier
     | DOUBLE
     | CHAR
     | VOID
+    | BOOL
     ;
 
 parameterList
@@ -66,6 +67,11 @@ statement
 
 expressionStatement
     : expression? SEMICOLON
+    | declarationStatement
+    ;
+
+declarationStatement
+    : typeSpecifier ID (COMMA ID)* (ASSIGN expression)? SEMICOLON
     ;
 
 selectionStatement
@@ -84,11 +90,16 @@ jumpStatement
 expression
     : assignmentExpression
     | expression COMMA assignmentExpression
+    | arrayAccess
     ;
 
 assignmentExpression
     : logicalOrExpression
     | logicalOrExpression ASSIGN assignmentExpression
+    | logicalOrExpression INCREMENT
+    | logicalOrExpression DECREMENT
+    | logicalOrExpression PLUS_ASSIGN expression
+    | logicalOrExpression MINUS_ASSIGN expression
     ;
 
 logicalOrExpression
@@ -124,6 +135,8 @@ multiplicativeExpression
 unaryExpression
     : primaryExpression
     | (PLUS | MINUS | NOT) unaryExpression
+    | INCREMENT unaryExpression
+    | DECREMENT unaryExpression
     ;
 
 primaryExpression
@@ -132,12 +145,19 @@ primaryExpression
     | CHAR_LITERAL
     | STRING_LITERAL
     | LPAREN expression RPAREN
+    | arrayAccess
+    | BOOL_LITERAL
     ;
 
 declarator
     : ID
     | ID LBRACK expression? RBRACK
     ;
+
+arrayAccess
+: ID '[' expression ']'
+;
+
 
 // IO statements
 ioStatement

@@ -147,6 +147,11 @@ class cppParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by CPPParser#declarationStatement.
+    def visitDeclarationStatement(self, ctx:CPPParser.DeclarationStatementContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by CPPParser#selectionStatement.
     def visitSelectionStatement(self, ctx:CPPParser.SelectionStatementContext):
         return self.visitChildren(ctx)

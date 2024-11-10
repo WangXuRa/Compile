@@ -30,6 +30,10 @@ COUT        : 'cout';
 CIN         : 'cin';
 LEFT_SHIFT  : '<<';
 RIGHT_SHIFT : '>>';
+INCREMENT       : '++' ;
+DECREMENT       : '--' ;
+PLUS_ASSIGN     : '+=' ;
+MINUS_ASSIGN    : '-=' ;
 
 CLASS       : 'class' ;
 PUBLIC      : 'public' ;
@@ -38,6 +42,7 @@ PROTECTED   : 'protected' ;
 INT         : 'int' ;
 DOUBLE      : 'double' ;
 CHAR        : 'char' ;
+BOOL        : 'bool';
 VOID        : 'void' ;
 IF          : 'if' ;
 ELSE        : 'else' ;
@@ -49,6 +54,7 @@ ID          : [a-zA-Z_][a-zA-Z_0-9]* ;
 NUMBER      : [0-9]+ ('.' [0-9]+)? ;
 CHAR_LITERAL: '\'' . '\'' ;
 STRING_LITERAL : '"' .*? '"' ;
+BOOL_LITERAL: 'true'| 'false';
 
 WS          : [ \t\r\n]+ -> skip ;
 COMMENT     : '//' ~[\r\n]* -> skip ;
