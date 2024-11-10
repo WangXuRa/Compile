@@ -82,560 +82,155 @@ class cppParserVisitor(ParseTreeVisitor):
             return result
         return None
 
-    # Visit a parse tree produced by cppParser#compilationUnit.
-    def visitCompilationUnit(self, ctx:cppParser.CompilationUnitContext):
+    # Visit a parse tree produced by CPPParser#program.
+    def visitProgram(self, ctx:CPPParser.ProgramContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#preprocessorDeclaration.
-    def visitPreprocessorDeclaration(self, ctx:cppParser.PreprocessorDeclarationContext):
+    # Visit a parse tree produced by CPPParser#classDefinition.
+    def visitClassDefinition(self, ctx:CPPParser.ClassDefinitionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#translationUnit.
-    def visitTranslationUnit(self, ctx:cppParser.TranslationUnitContext):
+    # Visit a parse tree produced by CPPParser#classBody.
+    def visitClassBody(self, ctx:CPPParser.ClassBodyContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#declarationseq.
-    def visitDeclarationseq(self, ctx:cppParser.DeclarationseqContext):
+    # Visit a parse tree produced by CPPParser#accessSpecifier.
+    def visitAccessSpecifier(self, ctx:CPPParser.AccessSpecifierContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#declaration.
-    def visitDeclaration(self, ctx:cppParser.DeclarationContext):
+    # Visit a parse tree produced by CPPParser#memberDeclaration.
+    def visitMemberDeclaration(self, ctx:CPPParser.MemberDeclarationContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#blockDeclaration.
-    def visitBlockDeclaration(self, ctx:cppParser.BlockDeclarationContext):
+    # Visit a parse tree produced by CPPParser#functionDefinition.
+    def visitFunctionDefinition(self, ctx:CPPParser.FunctionDefinitionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#simpleDeclaration.
-    def visitSimpleDeclaration(self, ctx:cppParser.SimpleDeclarationContext):
+    # Visit a parse tree produced by CPPParser#declaration.
+    def visitDeclaration(self, ctx:CPPParser.DeclarationContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#declSpecifierSeq.
-    def visitDeclSpecifierSeq(self, ctx:cppParser.DeclSpecifierSeqContext):
+    # Visit a parse tree produced by CPPParser#typeSpecifier.
+    def visitTypeSpecifier(self, ctx:CPPParser.TypeSpecifierContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#declSpecifier.
-    def visitDeclSpecifier(self, ctx:cppParser.DeclSpecifierContext):
+    # Visit a parse tree produced by CPPParser#parameterList.
+    def visitParameterList(self, ctx:CPPParser.ParameterListContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#storageClassSpecifier.
-    def visitStorageClassSpecifier(self, ctx:cppParser.StorageClassSpecifierContext):
+    # Visit a parse tree produced by CPPParser#parameter.
+    def visitParameter(self, ctx:CPPParser.ParameterContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#typeSpecifier.
-    def visitTypeSpecifier(self, ctx:cppParser.TypeSpecifierContext):
+    # Visit a parse tree produced by CPPParser#compoundStatement.
+    def visitCompoundStatement(self, ctx:CPPParser.CompoundStatementContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#elaboratedTypeSpecifier.
-    def visitElaboratedTypeSpecifier(self, ctx:cppParser.ElaboratedTypeSpecifierContext):
+    # Visit a parse tree produced by CPPParser#statement.
+    def visitStatement(self, ctx:CPPParser.StatementContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#enumDefinition.
-    def visitEnumDefinition(self, ctx:cppParser.EnumDefinitionContext):
+    # Visit a parse tree produced by CPPParser#expressionStatement.
+    def visitExpressionStatement(self, ctx:CPPParser.ExpressionStatementContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#enumeratorList.
-    def visitEnumeratorList(self, ctx:cppParser.EnumeratorListContext):
+    # Visit a parse tree produced by CPPParser#selectionStatement.
+    def visitSelectionStatement(self, ctx:CPPParser.SelectionStatementContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#enumerator.
-    def visitEnumerator(self, ctx:cppParser.EnumeratorContext):
+    # Visit a parse tree produced by CPPParser#iterationStatement.
+    def visitIterationStatement(self, ctx:CPPParser.IterationStatementContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#simpleTypeSpecifier.
-    def visitSimpleTypeSpecifier(self, ctx:cppParser.SimpleTypeSpecifierContext):
+    # Visit a parse tree produced by CPPParser#jumpStatement.
+    def visitJumpStatement(self, ctx:CPPParser.JumpStatementContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#functionDefinition.
-    def visitFunctionDefinition(self, ctx:cppParser.FunctionDefinitionContext):
+    # Visit a parse tree produced by CPPParser#expression.
+    def visitExpression(self, ctx:CPPParser.ExpressionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#functionBody.
-    def visitFunctionBody(self, ctx:cppParser.FunctionBodyContext):
+    # Visit a parse tree produced by CPPParser#assignmentExpression.
+    def visitAssignmentExpression(self, ctx:CPPParser.AssignmentExpressionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#classDefinition.
-    def visitClassDefinition(self, ctx:cppParser.ClassDefinitionContext):
+    # Visit a parse tree produced by CPPParser#logicalOrExpression.
+    def visitLogicalOrExpression(self, ctx:CPPParser.LogicalOrExpressionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#classBase.
-    def visitClassBase(self, ctx:cppParser.ClassBaseContext):
+    # Visit a parse tree produced by CPPParser#logicalAndExpression.
+    def visitLogicalAndExpression(self, ctx:CPPParser.LogicalAndExpressionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#baseSpecifierList.
-    def visitBaseSpecifierList(self, ctx:cppParser.BaseSpecifierListContext):
+    # Visit a parse tree produced by CPPParser#equalityExpression.
+    def visitEqualityExpression(self, ctx:CPPParser.EqualityExpressionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#baseSpecifier.
-    def visitBaseSpecifier(self, ctx:cppParser.BaseSpecifierContext):
+    # Visit a parse tree produced by CPPParser#relationalExpression.
+    def visitRelationalExpression(self, ctx:CPPParser.RelationalExpressionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#accessSpecifier.
-    def visitAccessSpecifier(self, ctx:cppParser.AccessSpecifierContext):
+    # Visit a parse tree produced by CPPParser#additiveExpression.
+    def visitAdditiveExpression(self, ctx:CPPParser.AdditiveExpressionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#memberSpecification.
-    def visitMemberSpecification(self, ctx:cppParser.MemberSpecificationContext):
+    # Visit a parse tree produced by CPPParser#multiplicativeExpression.
+    def visitMultiplicativeExpression(self, ctx:CPPParser.MultiplicativeExpressionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#memberDeclaration.
-    def visitMemberDeclaration(self, ctx:cppParser.MemberDeclarationContext):
+    # Visit a parse tree produced by CPPParser#unaryExpression.
+    def visitUnaryExpression(self, ctx:CPPParser.UnaryExpressionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#statement.
-    def visitStatement(self, ctx:cppParser.StatementContext):
+    # Visit a parse tree produced by CPPParser#primaryExpression.
+    def visitPrimaryExpression(self, ctx:CPPParser.PrimaryExpressionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#declarationStatement.
-    def visitDeclarationStatement(self, ctx:cppParser.DeclarationStatementContext):
+    # Visit a parse tree produced by CPPParser#declarator.
+    def visitDeclarator(self, ctx:CPPParser.DeclaratorContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#labeledStatement.
-    def visitLabeledStatement(self, ctx:cppParser.LabeledStatementContext):
+    # Visit a parse tree produced by CPPParser#ioStatement.
+    def visitIoStatement(self, ctx:CPPParser.IoStatementContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#compoundStatement.
-    def visitCompoundStatement(self, ctx:cppParser.CompoundStatementContext):
+    # Visit a parse tree produced by CPPParser#outputStatement.
+    def visitOutputStatement(self, ctx:CPPParser.OutputStatementContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#statementSeq.
-    def visitStatementSeq(self, ctx:cppParser.StatementSeqContext):
+    # Visit a parse tree produced by CPPParser#inputStatement.
+    def visitInputStatement(self, ctx:CPPParser.InputStatementContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by cppParser#expressionStatement.
-    def visitExpressionStatement(self, ctx:cppParser.ExpressionStatementContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#selectionStatement.
-    def visitSelectionStatement(self, ctx:cppParser.SelectionStatementContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#condition.
-    def visitCondition(self, ctx:cppParser.ConditionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#iterationStatement.
-    def visitIterationStatement(self, ctx:cppParser.IterationStatementContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#forInitStatement.
-    def visitForInitStatement(self, ctx:cppParser.ForInitStatementContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#jumpStatement.
-    def visitJumpStatement(self, ctx:cppParser.JumpStatementContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#newExpression.
-    def visitNewExpression(self, ctx:cppParser.NewExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#deleteExpression.
-    def visitDeleteExpression(self, ctx:cppParser.DeleteExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#expression.
-    def visitExpression(self, ctx:cppParser.ExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#assignmentExpression.
-    def visitAssignmentExpression(self, ctx:cppParser.AssignmentExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#assignmentOperator.
-    def visitAssignmentOperator(self, ctx:cppParser.AssignmentOperatorContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#conditionalExpression.
-    def visitConditionalExpression(self, ctx:cppParser.ConditionalExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#logicalOrExpression.
-    def visitLogicalOrExpression(self, ctx:cppParser.LogicalOrExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#logicalAndExpression.
-    def visitLogicalAndExpression(self, ctx:cppParser.LogicalAndExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#inclusiveOrExpression.
-    def visitInclusiveOrExpression(self, ctx:cppParser.InclusiveOrExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#exclusiveOrExpression.
-    def visitExclusiveOrExpression(self, ctx:cppParser.ExclusiveOrExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#andExpression.
-    def visitAndExpression(self, ctx:cppParser.AndExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#equalityExpression.
-    def visitEqualityExpression(self, ctx:cppParser.EqualityExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#relationalExpression.
-    def visitRelationalExpression(self, ctx:cppParser.RelationalExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#additiveExpression.
-    def visitAdditiveExpression(self, ctx:cppParser.AdditiveExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#multiplicativeExpression.
-    def visitMultiplicativeExpression(self, ctx:cppParser.MultiplicativeExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#unaryExpression.
-    def visitUnaryExpression(self, ctx:cppParser.UnaryExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#unaryOperator.
-    def visitUnaryOperator(self, ctx:cppParser.UnaryOperatorContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#postfixExpression.
-    def visitPostfixExpression(self, ctx:cppParser.PostfixExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#primaryExpression.
-    def visitPrimaryExpression(self, ctx:cppParser.PrimaryExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#expressionList.
-    def visitExpressionList(self, ctx:cppParser.ExpressionListContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#literal.
-    def visitLiteral(self, ctx:cppParser.LiteralContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#lambdaExpression.
-    def visitLambdaExpression(self, ctx:cppParser.LambdaExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#lambdaCapture.
-    def visitLambdaCapture(self, ctx:cppParser.LambdaCaptureContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#captureDefault.
-    def visitCaptureDefault(self, ctx:cppParser.CaptureDefaultContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#captureList.
-    def visitCaptureList(self, ctx:cppParser.CaptureListContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#capture.
-    def visitCapture(self, ctx:cppParser.CaptureContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#simpleCapture.
-    def visitSimpleCapture(self, ctx:cppParser.SimpleCaptureContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#initCapture.
-    def visitInitCapture(self, ctx:cppParser.InitCaptureContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#lambdaBody.
-    def visitLambdaBody(self, ctx:cppParser.LambdaBodyContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#templateDeclaration.
-    def visitTemplateDeclaration(self, ctx:cppParser.TemplateDeclarationContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#templateParameterList.
-    def visitTemplateParameterList(self, ctx:cppParser.TemplateParameterListContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#templateParameter.
-    def visitTemplateParameter(self, ctx:cppParser.TemplateParameterContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#typeParameter.
-    def visitTypeParameter(self, ctx:cppParser.TypeParameterContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#namespaceDefinition.
-    def visitNamespaceDefinition(self, ctx:cppParser.NamespaceDefinitionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#usingDeclaration.
-    def visitUsingDeclaration(self, ctx:cppParser.UsingDeclarationContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#operatorOverloadingDeclaration.
-    def visitOperatorOverloadingDeclaration(self, ctx:cppParser.OperatorOverloadingDeclarationContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#overloadableOperator.
-    def visitOverloadableOperator(self, ctx:cppParser.OverloadableOperatorContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#friendDeclaration.
-    def visitFriendDeclaration(self, ctx:cppParser.FriendDeclarationContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#friendDeclaratorList.
-    def visitFriendDeclaratorList(self, ctx:cppParser.FriendDeclaratorListContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#smartPointerType.
-    def visitSmartPointerType(self, ctx:cppParser.SmartPointerTypeContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#smartPointerCreation.
-    def visitSmartPointerCreation(self, ctx:cppParser.SmartPointerCreationContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#forRangeDeclaration.
-    def visitForRangeDeclaration(self, ctx:cppParser.ForRangeDeclarationContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#forRangeInitializer.
-    def visitForRangeInitializer(self, ctx:cppParser.ForRangeInitializerContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#bracedInitList.
-    def visitBracedInitList(self, ctx:cppParser.BracedInitListContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#declarator.
-    def visitDeclarator(self, ctx:cppParser.DeclaratorContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#pointerDeclarator.
-    def visitPointerDeclarator(self, ctx:cppParser.PointerDeclaratorContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#noPointerDeclarator.
-    def visitNoPointerDeclarator(self, ctx:cppParser.NoPointerDeclaratorContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#declaratorId.
-    def visitDeclaratorId(self, ctx:cppParser.DeclaratorIdContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#parametersAndQualifiers.
-    def visitParametersAndQualifiers(self, ctx:cppParser.ParametersAndQualifiersContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#typeQualifierSeq.
-    def visitTypeQualifierSeq(self, ctx:cppParser.TypeQualifierSeqContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#parameterDeclarationClause.
-    def visitParameterDeclarationClause(self, ctx:cppParser.ParameterDeclarationClauseContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#parameterDeclarationList.
-    def visitParameterDeclarationList(self, ctx:cppParser.ParameterDeclarationListContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#parameterDeclaration.
-    def visitParameterDeclaration(self, ctx:cppParser.ParameterDeclarationContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#cvQualifierSeq.
-    def visitCvQualifierSeq(self, ctx:cppParser.CvQualifierSeqContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#cvQualifier.
-    def visitCvQualifier(self, ctx:cppParser.CvQualifierContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#abstractDeclarator.
-    def visitAbstractDeclarator(self, ctx:cppParser.AbstractDeclaratorContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#pointerAbstractDeclarator.
-    def visitPointerAbstractDeclarator(self, ctx:cppParser.PointerAbstractDeclaratorContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#constantExpression.
-    def visitConstantExpression(self, ctx:cppParser.ConstantExpressionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#initDeclaratorList.
-    def visitInitDeclaratorList(self, ctx:cppParser.InitDeclaratorListContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#initDeclarator.
-    def visitInitDeclarator(self, ctx:cppParser.InitDeclaratorContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#initializer.
-    def visitInitializer(self, ctx:cppParser.InitializerContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#initializerClause.
-    def visitInitializerClause(self, ctx:cppParser.InitializerClauseContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#initializerList.
-    def visitInitializerList(self, ctx:cppParser.InitializerListContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#type.
-    def visitType(self, ctx:cppParser.TypeContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#pointerOperators.
-    def visitPointerOperators(self, ctx:cppParser.PointerOperatorsContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#tryBlock.
-    def visitTryBlock(self, ctx:cppParser.TryBlockContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#handlerSeq.
-    def visitHandlerSeq(self, ctx:cppParser.HandlerSeqContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#handler.
-    def visitHandler(self, ctx:cppParser.HandlerContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#exceptionDeclaration.
-    def visitExceptionDeclaration(self, ctx:cppParser.ExceptionDeclarationContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#exceptionSpecification.
-    def visitExceptionSpecification(self, ctx:cppParser.ExceptionSpecificationContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#typeIdList.
-    def visitTypeIdList(self, ctx:cppParser.TypeIdListContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#ioStatement.
-    def visitIoStatement(self, ctx:cppParser.IoStatementContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#outputStatement.
-    def visitOutputStatement(self, ctx:cppParser.OutputStatementContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#inputStatement.
-    def visitInputStatement(self, ctx:cppParser.InputStatementContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by cppParser#getlineStatement.
-    def visitGetlineStatement(self, ctx:cppParser.GetlineStatementContext):
-        return self.visitChildren(ctx)
-
-
 
-del cppParser
+del CPPParser

@@ -1,10 +1,11 @@
-# Generated from CPPParser.g4 by ANTLR 4.13.2
+# Generated from CPPParser.g4 by ANTLR 4.13.1
 from antlr4 import *
 if "." in __name__:
     from .CPPParser import CPPParser
 else:
     from CPPParser import CPPParser
 
+# This class defines a complete generic visitor for a parse tree produced by cppParser.
 class Node:
     def __init__(self, node_type, value=None):
         self.node_type = node_type  # Type of node (e.g., "PROGRAM", "STATEMENT")
@@ -31,14 +32,13 @@ class Node:
                 ret += repr(self.value)[1:-1]
             ret += "</" + self.node_type + ">" + "\n"
             return ret
-
+        
 # This class defines a complete generic visitor for a parse tree produced by CPPParser.
 
 class CPPParserVisitor(ParseTreeVisitor):
     def __init__(self, lexer):
         self.lexer = lexer
-    
-
+        
     def visitTerminal(self, node):
         # Access the token associated with the terminal node
         token = node.getSymbol()
@@ -212,6 +212,21 @@ class CPPParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by CPPParser#declarator.
     def visitDeclarator(self, ctx:CPPParser.DeclaratorContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by CPPParser#ioStatement.
+    def visitIoStatement(self, ctx:CPPParser.IoStatementContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by CPPParser#outputStatement.
+    def visitOutputStatement(self, ctx:CPPParser.OutputStatementContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by CPPParser#inputStatement.
+    def visitInputStatement(self, ctx:CPPParser.InputStatementContext):
         return self.visitChildren(ctx)
 
 
