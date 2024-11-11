@@ -11,37 +11,19 @@
       <LBRACE>{</LBRACE>
       <declaration>
         <typeSpecifier>
-          <CHAR>char</CHAR>
+          <INT>int</INT>
         </typeSpecifier>
         <declarator>
-          <ID>s</ID>
-          <LBRACK>[</LBRACK>
-          <expression>
-            <assignmentExpression>
-              <logicalOrExpression>
-                <logicalAndExpression>
-                  <equalityExpression>
-                    <relationalExpression>
-                      <additiveExpression>
-                        <multiplicativeExpression>
-                          <unaryExpression>
-                            <primaryExpression>
-                              <NUMBER>1000</NUMBER>
-                            </primaryExpression>
-                          </unaryExpression>
-                        </multiplicativeExpression>
-                      </additiveExpression>
-                    </relationalExpression>
-                  </equalityExpression>
-                </logicalAndExpression>
-              </logicalOrExpression>
-            </assignmentExpression>
-          </expression>
-          <RBRACK>]</RBRACK>
+          <ID>num</ID>
         </declarator>
-        <COMMA>,</COMMA>
+        <SEMICOLON>;</SEMICOLON>
+      </declaration>
+      <declaration>
+        <typeSpecifier>
+          <INT>int</INT>
+        </typeSpecifier>
         <declarator>
-          <ID>t</ID>
+          <ID>a</ID>
           <LBRACK>[</LBRACK>
           <expression>
             <assignmentExpression>
@@ -53,7 +35,7 @@
                         <multiplicativeExpression>
                           <unaryExpression>
                             <primaryExpression>
-                              <NUMBER>1000</NUMBER>
+                              <NUMBER>100</NUMBER>
                             </primaryExpression>
                           </unaryExpression>
                         </multiplicativeExpression>
@@ -70,6 +52,36 @@
       </declaration>
       <statement>
         <ioStatement>
+          <outputStatement>
+            <COUT>cout</COUT>
+            <LEFT_SHIFT><<</LEFT_SHIFT>
+            <expression>
+              <assignmentExpression>
+                <logicalOrExpression>
+                  <logicalAndExpression>
+                    <equalityExpression>
+                      <relationalExpression>
+                        <additiveExpression>
+                          <multiplicativeExpression>
+                            <unaryExpression>
+                              <primaryExpression>
+                                <STRING_LITERAL>"Input the array length: "</STRING_LITERAL>
+                              </primaryExpression>
+                            </unaryExpression>
+                          </multiplicativeExpression>
+                        </additiveExpression>
+                      </relationalExpression>
+                    </equalityExpression>
+                  </logicalAndExpression>
+                </logicalOrExpression>
+              </assignmentExpression>
+            </expression>
+            <SEMICOLON>;</SEMICOLON>
+          </outputStatement>
+        </ioStatement>
+      </statement>
+      <statement>
+        <ioStatement>
           <inputStatement>
             <CIN>cin</CIN>
             <RIGHT_SHIFT>>></RIGHT_SHIFT>
@@ -83,29 +95,7 @@
                           <multiplicativeExpression>
                             <unaryExpression>
                               <primaryExpression>
-                                <ID>s</ID>
-                              </primaryExpression>
-                            </unaryExpression>
-                          </multiplicativeExpression>
-                        </additiveExpression>
-                      </relationalExpression>
-                    </equalityExpression>
-                  </logicalAndExpression>
-                </logicalOrExpression>
-              </assignmentExpression>
-            </expression>
-            <RIGHT_SHIFT>>></RIGHT_SHIFT>
-            <expression>
-              <assignmentExpression>
-                <logicalOrExpression>
-                  <logicalAndExpression>
-                    <equalityExpression>
-                      <relationalExpression>
-                        <additiveExpression>
-                          <multiplicativeExpression>
-                            <unaryExpression>
-                              <primaryExpression>
-                                <ID>t</ID>
+                                <ID>num</ID>
                               </primaryExpression>
                             </unaryExpression>
                           </multiplicativeExpression>
@@ -120,237 +110,12 @@
           </inputStatement>
         </ioStatement>
       </statement>
-      <declaration>
-        <typeSpecifier>
-          <INT>int</INT>
-        </typeSpecifier>
-        <declarator>
-          <ID>m</ID>
-        </declarator>
-        <ASSIGN>=</ASSIGN>
-        <assignmentExpression>
-          <logicalOrExpression>
-            <logicalAndExpression>
-              <equalityExpression>
-                <relationalExpression>
-                  <additiveExpression>
-                    <multiplicativeExpression>
-                      <unaryExpression>
-                        <primaryExpression>
-                          <ID>strlen</ID>
-                        </primaryExpression>
-                      </unaryExpression>
-                    </multiplicativeExpression>
-                  </additiveExpression>
-                </relationalExpression>
-              </equalityExpression>
-            </logicalAndExpression>
-          </logicalOrExpression>
-        </assignmentExpression>
-      </declaration>
       <statement>
-        <expressionStatement>
-          <expression>
-            <assignmentExpression>
-              <logicalOrExpression>
-                <logicalAndExpression>
-                  <equalityExpression>
-                    <relationalExpression>
-                      <additiveExpression>
-                        <multiplicativeExpression>
-                          <unaryExpression>
-                            <primaryExpression>
-                              <LPAREN>(</LPAREN>
-                              <expression>
-                                <assignmentExpression>
-                                  <logicalOrExpression>
-                                    <logicalAndExpression>
-                                      <equalityExpression>
-                                        <relationalExpression>
-                                          <additiveExpression>
-                                            <multiplicativeExpression>
-                                              <unaryExpression>
-                                                <primaryExpression>
-                                                  <ID>t</ID>
-                                                </primaryExpression>
-                                              </unaryExpression>
-                                            </multiplicativeExpression>
-                                          </additiveExpression>
-                                        </relationalExpression>
-                                      </equalityExpression>
-                                    </logicalAndExpression>
-                                  </logicalOrExpression>
-                                </assignmentExpression>
-                              </expression>
-                              <RPAREN>)</RPAREN>
-                            </primaryExpression>
-                          </unaryExpression>
-                        </multiplicativeExpression>
-                      </additiveExpression>
-                    </relationalExpression>
-                  </equalityExpression>
-                </logicalAndExpression>
-              </logicalOrExpression>
-            </assignmentExpression>
-          </expression>
-          <SEMICOLON>;</SEMICOLON>
-        </expressionStatement>
-      </statement>
-      <declaration>
-        <typeSpecifier>
-          <INT>int</INT>
-        </typeSpecifier>
-        <declarator>
-          <ID>n</ID>
-        </declarator>
-        <ASSIGN>=</ASSIGN>
-        <assignmentExpression>
-          <logicalOrExpression>
-            <logicalAndExpression>
-              <equalityExpression>
-                <relationalExpression>
-                  <additiveExpression>
-                    <multiplicativeExpression>
-                      <unaryExpression>
-                        <primaryExpression>
-                          <ID>strlen</ID>
-                        </primaryExpression>
-                      </unaryExpression>
-                    </multiplicativeExpression>
-                  </additiveExpression>
-                </relationalExpression>
-              </equalityExpression>
-            </logicalAndExpression>
-          </logicalOrExpression>
-        </assignmentExpression>
-      </declaration>
-      <statement>
-        <expressionStatement>
-          <expression>
-            <assignmentExpression>
-              <logicalOrExpression>
-                <logicalAndExpression>
-                  <equalityExpression>
-                    <relationalExpression>
-                      <additiveExpression>
-                        <multiplicativeExpression>
-                          <unaryExpression>
-                            <primaryExpression>
-                              <LPAREN>(</LPAREN>
-                              <expression>
-                                <assignmentExpression>
-                                  <logicalOrExpression>
-                                    <logicalAndExpression>
-                                      <equalityExpression>
-                                        <relationalExpression>
-                                          <additiveExpression>
-                                            <multiplicativeExpression>
-                                              <unaryExpression>
-                                                <primaryExpression>
-                                                  <ID>s</ID>
-                                                </primaryExpression>
-                                              </unaryExpression>
-                                            </multiplicativeExpression>
-                                          </additiveExpression>
-                                        </relationalExpression>
-                                      </equalityExpression>
-                                    </logicalAndExpression>
-                                  </logicalOrExpression>
-                                </assignmentExpression>
-                              </expression>
-                              <RPAREN>)</RPAREN>
-                            </primaryExpression>
-                          </unaryExpression>
-                        </multiplicativeExpression>
-                      </additiveExpression>
-                    </relationalExpression>
-                  </equalityExpression>
-                </logicalAndExpression>
-              </logicalOrExpression>
-            </assignmentExpression>
-          </expression>
-          <SEMICOLON>;</SEMICOLON>
-        </expressionStatement>
-      </statement>
-      <declaration>
-        <typeSpecifier>
-          <INT>int</INT>
-        </typeSpecifier>
-        <declarator>
-          <ID>next</ID>
-          <LBRACK>[</LBRACK>
-          <expression>
-            <assignmentExpression>
-              <logicalOrExpression>
-                <logicalAndExpression>
-                  <equalityExpression>
-                    <relationalExpression>
-                      <additiveExpression>
-                        <multiplicativeExpression>
-                          <unaryExpression>
-                            <primaryExpression>
-                              <NUMBER>1000</NUMBER>
-                            </primaryExpression>
-                          </unaryExpression>
-                        </multiplicativeExpression>
-                      </additiveExpression>
-                    </relationalExpression>
-                  </equalityExpression>
-                </logicalAndExpression>
-              </logicalOrExpression>
-            </assignmentExpression>
-          </expression>
-          <RBRACK>]</RBRACK>
-        </declarator>
-        <SEMICOLON>;</SEMICOLON>
-      </declaration>
-      <statement>
-        <expressionStatement>
-          <expression>
-            <assignmentExpression>
-              <logicalOrExpression>
-                <logicalAndExpression>
-                  <equalityExpression>
-                    <relationalExpression>
-                      <additiveExpression>
-                        <multiplicativeExpression>
-                          <unaryExpression>
-                            <primaryExpression>
-                              <arrayAccess>
-                                <ID>next</ID>
-                                <LBRACK>[</LBRACK>
-                                <expression>
-                                  <assignmentExpression>
-                                    <logicalOrExpression>
-                                      <logicalAndExpression>
-                                        <equalityExpression>
-                                          <relationalExpression>
-                                            <additiveExpression>
-                                              <multiplicativeExpression>
-                                                <unaryExpression>
-                                                  <primaryExpression>
-                                                    <NUMBER>0</NUMBER>
-                                                  </primaryExpression>
-                                                </unaryExpression>
-                                              </multiplicativeExpression>
-                                            </additiveExpression>
-                                          </relationalExpression>
-                                        </equalityExpression>
-                                      </logicalAndExpression>
-                                    </logicalOrExpression>
-                                  </assignmentExpression>
-                                </expression>
-                                <RBRACK>]</RBRACK>
-                              </arrayAccess>
-                            </primaryExpression>
-                          </unaryExpression>
-                        </multiplicativeExpression>
-                      </additiveExpression>
-                    </relationalExpression>
-                  </equalityExpression>
-                </logicalAndExpression>
-              </logicalOrExpression>
-              <ASSIGN>=</ASSIGN>
+        <ioStatement>
+          <outputStatement>
+            <COUT>cout</COUT>
+            <LEFT_SHIFT><<</LEFT_SHIFT>
+            <expression>
               <assignmentExpression>
                 <logicalOrExpression>
                   <logicalAndExpression>
@@ -359,12 +124,9 @@
                         <additiveExpression>
                           <multiplicativeExpression>
                             <unaryExpression>
-                              <MINUS>-</MINUS>
-                              <unaryExpression>
-                                <primaryExpression>
-                                  <NUMBER>1</NUMBER>
-                                </primaryExpression>
-                              </unaryExpression>
+                              <primaryExpression>
+                                <STRING_LITERAL>"Input integers: "</STRING_LITERAL>
+                              </primaryExpression>
                             </unaryExpression>
                           </multiplicativeExpression>
                         </additiveExpression>
@@ -373,46 +135,10 @@
                   </logicalAndExpression>
                 </logicalOrExpression>
               </assignmentExpression>
-            </assignmentExpression>
-          </expression>
-          <SEMICOLON>;</SEMICOLON>
-        </expressionStatement>
-      </statement>
-      <declaration>
-        <typeSpecifier>
-          <INT>int</INT>
-        </typeSpecifier>
-        <declarator>
-          <ID>j</ID>
-        </declarator>
-        <ASSIGN>=</ASSIGN>
-        <assignmentExpression>
-          <logicalOrExpression>
-            <logicalAndExpression>
-              <equalityExpression>
-                <relationalExpression>
-                  <additiveExpression>
-                    <multiplicativeExpression>
-                      <unaryExpression>
-                        <MINUS>-</MINUS>
-                        <unaryExpression>
-                          <primaryExpression>
-                            <NUMBER>1</NUMBER>
-                          </primaryExpression>
-                        </unaryExpression>
-                      </unaryExpression>
-                    </multiplicativeExpression>
-                  </additiveExpression>
-                </relationalExpression>
-              </equalityExpression>
-            </logicalAndExpression>
-          </logicalOrExpression>
-        </assignmentExpression>
-      </declaration>
-      <statement>
-        <expressionStatement>
-          <SEMICOLON>;</SEMICOLON>
-        </expressionStatement>
+            </expression>
+            <SEMICOLON>;</SEMICOLON>
+          </outputStatement>
+        </ioStatement>
       </statement>
       <statement>
         <iterationStatement>
@@ -435,7 +161,7 @@
                             <multiplicativeExpression>
                               <unaryExpression>
                                 <primaryExpression>
-                                  <NUMBER>1</NUMBER>
+                                  <NUMBER>0</NUMBER>
                                 </primaryExpression>
                               </unaryExpression>
                             </multiplicativeExpression>
@@ -472,7 +198,7 @@
                           <multiplicativeExpression>
                             <unaryExpression>
                               <primaryExpression>
-                                <ID>m</ID>
+                                <ID>num</ID>
                               </primaryExpression>
                             </unaryExpression>
                           </multiplicativeExpression>
@@ -512,42 +238,14 @@
             <compoundStatement>
               <LBRACE>{</LBRACE>
               <statement>
-                <iterationStatement>
-                  <WHILE>while</WHILE>
-                  <LPAREN>(</LPAREN>
-                  <expression>
-                    <assignmentExpression>
-                      <logicalOrExpression>
-                        <logicalAndExpression>
+                <ioStatement>
+                  <inputStatement>
+                    <CIN>cin</CIN>
+                    <RIGHT_SHIFT>>></RIGHT_SHIFT>
+                    <expression>
+                      <assignmentExpression>
+                        <logicalOrExpression>
                           <logicalAndExpression>
-                            <equalityExpression>
-                              <relationalExpression>
-                                <relationalExpression>
-                                  <additiveExpression>
-                                    <multiplicativeExpression>
-                                      <unaryExpression>
-                                        <primaryExpression>
-                                          <ID>j</ID>
-                                        </primaryExpression>
-                                      </unaryExpression>
-                                    </multiplicativeExpression>
-                                  </additiveExpression>
-                                </relationalExpression>
-                                <GE>>=</GE>
-                                <additiveExpression>
-                                  <multiplicativeExpression>
-                                    <unaryExpression>
-                                      <primaryExpression>
-                                        <NUMBER>0</NUMBER>
-                                      </primaryExpression>
-                                    </unaryExpression>
-                                  </multiplicativeExpression>
-                                </additiveExpression>
-                              </relationalExpression>
-                            </equalityExpression>
-                          </logicalAndExpression>
-                          <AND>&&</AND>
-                          <equalityExpression>
                             <equalityExpression>
                               <relationalExpression>
                                 <additiveExpression>
@@ -555,7 +253,7 @@
                                     <unaryExpression>
                                       <primaryExpression>
                                         <arrayAccess>
-                                          <ID>t</ID>
+                                          <ID>a</ID>
                                           <LBRACK>[</LBRACK>
                                           <expression>
                                             <assignmentExpression>
@@ -586,48 +284,208 @@
                                 </additiveExpression>
                               </relationalExpression>
                             </equalityExpression>
-                            <NE>!=</NE>
+                          </logicalAndExpression>
+                        </logicalOrExpression>
+                      </assignmentExpression>
+                    </expression>
+                    <SEMICOLON>;</SEMICOLON>
+                  </inputStatement>
+                </ioStatement>
+              </statement>
+              <RBRACE>}</RBRACE>
+            </compoundStatement>
+          </statement>
+        </iterationStatement>
+      </statement>
+      <statement>
+        <iterationStatement>
+          <FOR>for</FOR>
+          <LPAREN>(</LPAREN>
+          <expressionStatement>
+            <declarationStatement>
+              <typeSpecifier>
+                <INT>int</INT>
+              </typeSpecifier>
+              <ID>i</ID>
+              <ASSIGN>=</ASSIGN>
+              <expression>
+                <assignmentExpression>
+                  <logicalOrExpression>
+                    <logicalAndExpression>
+                      <equalityExpression>
+                        <relationalExpression>
+                          <additiveExpression>
+                            <additiveExpression>
+                              <multiplicativeExpression>
+                                <unaryExpression>
+                                  <primaryExpression>
+                                    <ID>num</ID>
+                                  </primaryExpression>
+                                </unaryExpression>
+                              </multiplicativeExpression>
+                            </additiveExpression>
+                            <MINUS>-</MINUS>
+                            <multiplicativeExpression>
+                              <unaryExpression>
+                                <primaryExpression>
+                                  <NUMBER>1</NUMBER>
+                                </primaryExpression>
+                              </unaryExpression>
+                            </multiplicativeExpression>
+                          </additiveExpression>
+                        </relationalExpression>
+                      </equalityExpression>
+                    </logicalAndExpression>
+                  </logicalOrExpression>
+                </assignmentExpression>
+              </expression>
+              <SEMICOLON>;</SEMICOLON>
+            </declarationStatement>
+          </expressionStatement>
+          <expressionStatement>
+            <expression>
+              <assignmentExpression>
+                <logicalOrExpression>
+                  <logicalAndExpression>
+                    <equalityExpression>
+                      <relationalExpression>
+                        <relationalExpression>
+                          <additiveExpression>
+                            <multiplicativeExpression>
+                              <unaryExpression>
+                                <primaryExpression>
+                                  <ID>i</ID>
+                                </primaryExpression>
+                              </unaryExpression>
+                            </multiplicativeExpression>
+                          </additiveExpression>
+                        </relationalExpression>
+                        <GT>></GT>
+                        <additiveExpression>
+                          <multiplicativeExpression>
+                            <unaryExpression>
+                              <primaryExpression>
+                                <NUMBER>0</NUMBER>
+                              </primaryExpression>
+                            </unaryExpression>
+                          </multiplicativeExpression>
+                        </additiveExpression>
+                      </relationalExpression>
+                    </equalityExpression>
+                  </logicalAndExpression>
+                </logicalOrExpression>
+              </assignmentExpression>
+            </expression>
+            <SEMICOLON>;</SEMICOLON>
+          </expressionStatement>
+          <expression>
+            <assignmentExpression>
+              <logicalOrExpression>
+                <logicalAndExpression>
+                  <equalityExpression>
+                    <relationalExpression>
+                      <additiveExpression>
+                        <multiplicativeExpression>
+                          <unaryExpression>
+                            <primaryExpression>
+                              <ID>i</ID>
+                            </primaryExpression>
+                          </unaryExpression>
+                        </multiplicativeExpression>
+                      </additiveExpression>
+                    </relationalExpression>
+                  </equalityExpression>
+                </logicalAndExpression>
+              </logicalOrExpression>
+              <DECREMENT>--</DECREMENT>
+            </assignmentExpression>
+          </expression>
+          <RPAREN>)</RPAREN>
+          <statement>
+            <compoundStatement>
+              <LBRACE>{</LBRACE>
+              <statement>
+                <iterationStatement>
+                  <FOR>for</FOR>
+                  <LPAREN>(</LPAREN>
+                  <expressionStatement>
+                    <declarationStatement>
+                      <typeSpecifier>
+                        <INT>int</INT>
+                      </typeSpecifier>
+                      <ID>j</ID>
+                      <ASSIGN>=</ASSIGN>
+                      <expression>
+                        <assignmentExpression>
+                          <logicalOrExpression>
+                            <logicalAndExpression>
+                              <equalityExpression>
+                                <relationalExpression>
+                                  <additiveExpression>
+                                    <multiplicativeExpression>
+                                      <unaryExpression>
+                                        <primaryExpression>
+                                          <NUMBER>0</NUMBER>
+                                        </primaryExpression>
+                                      </unaryExpression>
+                                    </multiplicativeExpression>
+                                  </additiveExpression>
+                                </relationalExpression>
+                              </equalityExpression>
+                            </logicalAndExpression>
+                          </logicalOrExpression>
+                        </assignmentExpression>
+                      </expression>
+                      <SEMICOLON>;</SEMICOLON>
+                    </declarationStatement>
+                  </expressionStatement>
+                  <expressionStatement>
+                    <expression>
+                      <assignmentExpression>
+                        <logicalOrExpression>
+                          <logicalAndExpression>
+                            <equalityExpression>
+                              <relationalExpression>
+                                <relationalExpression>
+                                  <additiveExpression>
+                                    <multiplicativeExpression>
+                                      <unaryExpression>
+                                        <primaryExpression>
+                                          <ID>j</ID>
+                                        </primaryExpression>
+                                      </unaryExpression>
+                                    </multiplicativeExpression>
+                                  </additiveExpression>
+                                </relationalExpression>
+                                <LT><</LT>
+                                <additiveExpression>
+                                  <multiplicativeExpression>
+                                    <unaryExpression>
+                                      <primaryExpression>
+                                        <ID>i</ID>
+                                      </primaryExpression>
+                                    </unaryExpression>
+                                  </multiplicativeExpression>
+                                </additiveExpression>
+                              </relationalExpression>
+                            </equalityExpression>
+                          </logicalAndExpression>
+                        </logicalOrExpression>
+                      </assignmentExpression>
+                    </expression>
+                    <SEMICOLON>;</SEMICOLON>
+                  </expressionStatement>
+                  <expression>
+                    <assignmentExpression>
+                      <logicalOrExpression>
+                        <logicalAndExpression>
+                          <equalityExpression>
                             <relationalExpression>
                               <additiveExpression>
                                 <multiplicativeExpression>
                                   <unaryExpression>
                                     <primaryExpression>
-                                      <arrayAccess>
-                                        <ID>t</ID>
-                                        <LBRACK>[</LBRACK>
-                                        <expression>
-                                          <assignmentExpression>
-                                            <logicalOrExpression>
-                                              <logicalAndExpression>
-                                                <equalityExpression>
-                                                  <relationalExpression>
-                                                    <additiveExpression>
-                                                      <additiveExpression>
-                                                        <multiplicativeExpression>
-                                                          <unaryExpression>
-                                                            <primaryExpression>
-                                                              <ID>j</ID>
-                                                            </primaryExpression>
-                                                          </unaryExpression>
-                                                        </multiplicativeExpression>
-                                                      </additiveExpression>
-                                                      <PLUS>+</PLUS>
-                                                      <multiplicativeExpression>
-                                                        <unaryExpression>
-                                                          <primaryExpression>
-                                                            <NUMBER>1</NUMBER>
-                                                          </primaryExpression>
-                                                        </unaryExpression>
-                                                      </multiplicativeExpression>
-                                                    </additiveExpression>
-                                                  </relationalExpression>
-                                                </equalityExpression>
-                                              </logicalAndExpression>
-                                            </logicalOrExpression>
-                                          </assignmentExpression>
-                                        </expression>
-                                        <RBRACK>]</RBRACK>
-                                      </arrayAccess>
+                                      <ID>j</ID>
                                     </primaryExpression>
                                   </unaryExpression>
                                 </multiplicativeExpression>
@@ -636,6 +494,7 @@
                           </equalityExpression>
                         </logicalAndExpression>
                       </logicalOrExpression>
+                      <INCREMENT>++</INCREMENT>
                     </assignmentExpression>
                   </expression>
                   <RPAREN>)</RPAREN>
@@ -643,38 +502,22 @@
                     <compoundStatement>
                       <LBRACE>{</LBRACE>
                       <statement>
-                        <expressionStatement>
+                        <selectionStatement>
+                          <IF>if</IF>
+                          <LPAREN>(</LPAREN>
                           <expression>
                             <assignmentExpression>
                               <logicalOrExpression>
                                 <logicalAndExpression>
                                   <equalityExpression>
                                     <relationalExpression>
-                                      <additiveExpression>
-                                        <multiplicativeExpression>
-                                          <unaryExpression>
-                                            <primaryExpression>
-                                              <ID>j</ID>
-                                            </primaryExpression>
-                                          </unaryExpression>
-                                        </multiplicativeExpression>
-                                      </additiveExpression>
-                                    </relationalExpression>
-                                  </equalityExpression>
-                                </logicalAndExpression>
-                              </logicalOrExpression>
-                              <ASSIGN>=</ASSIGN>
-                              <assignmentExpression>
-                                <logicalOrExpression>
-                                  <logicalAndExpression>
-                                    <equalityExpression>
                                       <relationalExpression>
                                         <additiveExpression>
                                           <multiplicativeExpression>
                                             <unaryExpression>
                                               <primaryExpression>
                                                 <arrayAccess>
-                                                  <ID>next</ID>
+                                                  <ID>a</ID>
                                                   <LBRACK>[</LBRACK>
                                                   <expression>
                                                     <assignmentExpression>
@@ -704,136 +547,47 @@
                                           </multiplicativeExpression>
                                         </additiveExpression>
                                       </relationalExpression>
-                                    </equalityExpression>
-                                  </logicalAndExpression>
-                                </logicalOrExpression>
-                              </assignmentExpression>
-                            </assignmentExpression>
-                          </expression>
-                          <SEMICOLON>;</SEMICOLON>
-                        </expressionStatement>
-                      </statement>
-                      <RBRACE>}</RBRACE>
-                    </compoundStatement>
-                  </statement>
-                </iterationStatement>
-              </statement>
-              <statement>
-                <selectionStatement>
-                  <IF>if</IF>
-                  <LPAREN>(</LPAREN>
-                  <expression>
-                    <assignmentExpression>
-                      <logicalOrExpression>
-                        <logicalAndExpression>
-                          <equalityExpression>
-                            <equalityExpression>
-                              <relationalExpression>
-                                <additiveExpression>
-                                  <multiplicativeExpression>
-                                    <unaryExpression>
-                                      <primaryExpression>
-                                        <arrayAccess>
-                                          <ID>t</ID>
-                                          <LBRACK>[</LBRACK>
-                                          <expression>
-                                            <assignmentExpression>
-                                              <logicalOrExpression>
-                                                <logicalAndExpression>
-                                                  <equalityExpression>
-                                                    <relationalExpression>
-                                                      <additiveExpression>
-                                                        <multiplicativeExpression>
-                                                          <unaryExpression>
-                                                            <primaryExpression>
-                                                              <ID>i</ID>
-                                                            </primaryExpression>
-                                                          </unaryExpression>
-                                                        </multiplicativeExpression>
-                                                      </additiveExpression>
-                                                    </relationalExpression>
-                                                  </equalityExpression>
-                                                </logicalAndExpression>
-                                              </logicalOrExpression>
-                                            </assignmentExpression>
-                                          </expression>
-                                          <RBRACK>]</RBRACK>
-                                        </arrayAccess>
-                                      </primaryExpression>
-                                    </unaryExpression>
-                                  </multiplicativeExpression>
-                                </additiveExpression>
-                              </relationalExpression>
-                            </equalityExpression>
-                            <EQ>==</EQ>
-                            <relationalExpression>
-                              <additiveExpression>
-                                <multiplicativeExpression>
-                                  <unaryExpression>
-                                    <primaryExpression>
-                                      <arrayAccess>
-                                        <ID>t</ID>
-                                        <LBRACK>[</LBRACK>
-                                        <expression>
-                                          <assignmentExpression>
-                                            <logicalOrExpression>
-                                              <logicalAndExpression>
-                                                <equalityExpression>
-                                                  <relationalExpression>
-                                                    <additiveExpression>
-                                                      <additiveExpression>
-                                                        <multiplicativeExpression>
-                                                          <unaryExpression>
-                                                            <primaryExpression>
-                                                              <ID>j</ID>
-                                                            </primaryExpression>
-                                                          </unaryExpression>
-                                                        </multiplicativeExpression>
-                                                      </additiveExpression>
-                                                      <PLUS>+</PLUS>
-                                                      <multiplicativeExpression>
-                                                        <unaryExpression>
-                                                          <primaryExpression>
-                                                            <NUMBER>1</NUMBER>
-                                                          </primaryExpression>
-                                                        </unaryExpression>
-                                                      </multiplicativeExpression>
-                                                    </additiveExpression>
-                                                  </relationalExpression>
-                                                </equalityExpression>
-                                              </logicalAndExpression>
-                                            </logicalOrExpression>
-                                          </assignmentExpression>
-                                        </expression>
-                                        <RBRACK>]</RBRACK>
-                                      </arrayAccess>
-                                    </primaryExpression>
-                                  </unaryExpression>
-                                </multiplicativeExpression>
-                              </additiveExpression>
-                            </relationalExpression>
-                          </equalityExpression>
-                        </logicalAndExpression>
-                      </logicalOrExpression>
-                    </assignmentExpression>
-                  </expression>
-                  <RPAREN>)</RPAREN>
-                  <statement>
-                    <compoundStatement>
-                      <LBRACE>{</LBRACE>
-                      <statement>
-                        <expressionStatement>
-                          <expression>
-                            <assignmentExpression>
-                              <logicalOrExpression>
-                                <logicalAndExpression>
-                                  <equalityExpression>
-                                    <relationalExpression>
+                                      <GT>></GT>
                                       <additiveExpression>
                                         <multiplicativeExpression>
                                           <unaryExpression>
                                             <primaryExpression>
-                                              <ID>j</ID>
+                                              <arrayAccess>
+                                                <ID>a</ID>
+                                                <LBRACK>[</LBRACK>
+                                                <expression>
+                                                  <assignmentExpression>
+                                                    <logicalOrExpression>
+                                                      <logicalAndExpression>
+                                                        <equalityExpression>
+                                                          <relationalExpression>
+                                                            <additiveExpression>
+                                                              <additiveExpression>
+                                                                <multiplicativeExpression>
+                                                                  <unaryExpression>
+                                                                    <primaryExpression>
+                                                                      <ID>j</ID>
+                                                                    </primaryExpression>
+                                                                  </unaryExpression>
+                                                                </multiplicativeExpression>
+                                                              </additiveExpression>
+                                                              <PLUS>+</PLUS>
+                                                              <multiplicativeExpression>
+                                                                <unaryExpression>
+                                                                  <primaryExpression>
+                                                                    <NUMBER>1</NUMBER>
+                                                                  </primaryExpression>
+                                                                </unaryExpression>
+                                                              </multiplicativeExpression>
+                                                            </additiveExpression>
+                                                          </relationalExpression>
+                                                        </equalityExpression>
+                                                      </logicalAndExpression>
+                                                    </logicalOrExpression>
+                                                  </assignmentExpression>
+                                                </expression>
+                                                <RBRACK>]</RBRACK>
+                                              </arrayAccess>
                                             </primaryExpression>
                                           </unaryExpression>
                                         </multiplicativeExpression>
@@ -842,87 +596,266 @@
                                   </equalityExpression>
                                 </logicalAndExpression>
                               </logicalOrExpression>
-                              <INCREMENT>++</INCREMENT>
                             </assignmentExpression>
                           </expression>
-                          <SEMICOLON>;</SEMICOLON>
-                        </expressionStatement>
+                          <RPAREN>)</RPAREN>
+                          <statement>
+                            <compoundStatement>
+                              <LBRACE>{</LBRACE>
+                              <declaration>
+                                <typeSpecifier>
+                                  <INT>int</INT>
+                                </typeSpecifier>
+                                <declarator>
+                                  <ID>tmp</ID>
+                                </declarator>
+                                <ASSIGN>=</ASSIGN>
+                                <assignmentExpression>
+                                  <logicalOrExpression>
+                                    <logicalAndExpression>
+                                      <equalityExpression>
+                                        <relationalExpression>
+                                          <additiveExpression>
+                                            <multiplicativeExpression>
+                                              <unaryExpression>
+                                                <primaryExpression>
+                                                  <arrayAccess>
+                                                    <ID>a</ID>
+                                                    <LBRACK>[</LBRACK>
+                                                    <expression>
+                                                      <assignmentExpression>
+                                                        <logicalOrExpression>
+                                                          <logicalAndExpression>
+                                                            <equalityExpression>
+                                                              <relationalExpression>
+                                                                <additiveExpression>
+                                                                  <multiplicativeExpression>
+                                                                    <unaryExpression>
+                                                                      <primaryExpression>
+                                                                        <ID>j</ID>
+                                                                      </primaryExpression>
+                                                                    </unaryExpression>
+                                                                  </multiplicativeExpression>
+                                                                </additiveExpression>
+                                                              </relationalExpression>
+                                                            </equalityExpression>
+                                                          </logicalAndExpression>
+                                                        </logicalOrExpression>
+                                                      </assignmentExpression>
+                                                    </expression>
+                                                    <RBRACK>]</RBRACK>
+                                                  </arrayAccess>
+                                                </primaryExpression>
+                                              </unaryExpression>
+                                            </multiplicativeExpression>
+                                          </additiveExpression>
+                                        </relationalExpression>
+                                      </equalityExpression>
+                                    </logicalAndExpression>
+                                  </logicalOrExpression>
+                                </assignmentExpression>
+                              </declaration>
+                              <statement>
+                                <expressionStatement>
+                                  <SEMICOLON>;</SEMICOLON>
+                                </expressionStatement>
+                              </statement>
+                              <statement>
+                                <expressionStatement>
+                                  <expression>
+                                    <assignmentExpression>
+                                      <logicalOrExpression>
+                                        <logicalAndExpression>
+                                          <equalityExpression>
+                                            <relationalExpression>
+                                              <additiveExpression>
+                                                <multiplicativeExpression>
+                                                  <unaryExpression>
+                                                    <primaryExpression>
+                                                      <arrayAccess>
+                                                        <ID>a</ID>
+                                                        <LBRACK>[</LBRACK>
+                                                        <expression>
+                                                          <assignmentExpression>
+                                                            <logicalOrExpression>
+                                                              <logicalAndExpression>
+                                                                <equalityExpression>
+                                                                  <relationalExpression>
+                                                                    <additiveExpression>
+                                                                      <multiplicativeExpression>
+                                                                        <unaryExpression>
+                                                                          <primaryExpression>
+                                                                            <ID>j</ID>
+                                                                          </primaryExpression>
+                                                                        </unaryExpression>
+                                                                      </multiplicativeExpression>
+                                                                    </additiveExpression>
+                                                                  </relationalExpression>
+                                                                </equalityExpression>
+                                                              </logicalAndExpression>
+                                                            </logicalOrExpression>
+                                                          </assignmentExpression>
+                                                        </expression>
+                                                        <RBRACK>]</RBRACK>
+                                                      </arrayAccess>
+                                                    </primaryExpression>
+                                                  </unaryExpression>
+                                                </multiplicativeExpression>
+                                              </additiveExpression>
+                                            </relationalExpression>
+                                          </equalityExpression>
+                                        </logicalAndExpression>
+                                      </logicalOrExpression>
+                                      <ASSIGN>=</ASSIGN>
+                                      <assignmentExpression>
+                                        <logicalOrExpression>
+                                          <logicalAndExpression>
+                                            <equalityExpression>
+                                              <relationalExpression>
+                                                <additiveExpression>
+                                                  <multiplicativeExpression>
+                                                    <unaryExpression>
+                                                      <primaryExpression>
+                                                        <arrayAccess>
+                                                          <ID>a</ID>
+                                                          <LBRACK>[</LBRACK>
+                                                          <expression>
+                                                            <assignmentExpression>
+                                                              <logicalOrExpression>
+                                                                <logicalAndExpression>
+                                                                  <equalityExpression>
+                                                                    <relationalExpression>
+                                                                      <additiveExpression>
+                                                                        <additiveExpression>
+                                                                          <multiplicativeExpression>
+                                                                            <unaryExpression>
+                                                                              <primaryExpression>
+                                                                                <ID>j</ID>
+                                                                              </primaryExpression>
+                                                                            </unaryExpression>
+                                                                          </multiplicativeExpression>
+                                                                        </additiveExpression>
+                                                                        <PLUS>+</PLUS>
+                                                                        <multiplicativeExpression>
+                                                                          <unaryExpression>
+                                                                            <primaryExpression>
+                                                                              <NUMBER>1</NUMBER>
+                                                                            </primaryExpression>
+                                                                          </unaryExpression>
+                                                                        </multiplicativeExpression>
+                                                                      </additiveExpression>
+                                                                    </relationalExpression>
+                                                                  </equalityExpression>
+                                                                </logicalAndExpression>
+                                                              </logicalOrExpression>
+                                                            </assignmentExpression>
+                                                          </expression>
+                                                          <RBRACK>]</RBRACK>
+                                                        </arrayAccess>
+                                                      </primaryExpression>
+                                                    </unaryExpression>
+                                                  </multiplicativeExpression>
+                                                </additiveExpression>
+                                              </relationalExpression>
+                                            </equalityExpression>
+                                          </logicalAndExpression>
+                                        </logicalOrExpression>
+                                      </assignmentExpression>
+                                    </assignmentExpression>
+                                  </expression>
+                                  <SEMICOLON>;</SEMICOLON>
+                                </expressionStatement>
+                              </statement>
+                              <statement>
+                                <expressionStatement>
+                                  <expression>
+                                    <assignmentExpression>
+                                      <logicalOrExpression>
+                                        <logicalAndExpression>
+                                          <equalityExpression>
+                                            <relationalExpression>
+                                              <additiveExpression>
+                                                <multiplicativeExpression>
+                                                  <unaryExpression>
+                                                    <primaryExpression>
+                                                      <arrayAccess>
+                                                        <ID>a</ID>
+                                                        <LBRACK>[</LBRACK>
+                                                        <expression>
+                                                          <assignmentExpression>
+                                                            <logicalOrExpression>
+                                                              <logicalAndExpression>
+                                                                <equalityExpression>
+                                                                  <relationalExpression>
+                                                                    <additiveExpression>
+                                                                      <additiveExpression>
+                                                                        <multiplicativeExpression>
+                                                                          <unaryExpression>
+                                                                            <primaryExpression>
+                                                                              <ID>j</ID>
+                                                                            </primaryExpression>
+                                                                          </unaryExpression>
+                                                                        </multiplicativeExpression>
+                                                                      </additiveExpression>
+                                                                      <PLUS>+</PLUS>
+                                                                      <multiplicativeExpression>
+                                                                        <unaryExpression>
+                                                                          <primaryExpression>
+                                                                            <NUMBER>1</NUMBER>
+                                                                          </primaryExpression>
+                                                                        </unaryExpression>
+                                                                      </multiplicativeExpression>
+                                                                    </additiveExpression>
+                                                                  </relationalExpression>
+                                                                </equalityExpression>
+                                                              </logicalAndExpression>
+                                                            </logicalOrExpression>
+                                                          </assignmentExpression>
+                                                        </expression>
+                                                        <RBRACK>]</RBRACK>
+                                                      </arrayAccess>
+                                                    </primaryExpression>
+                                                  </unaryExpression>
+                                                </multiplicativeExpression>
+                                              </additiveExpression>
+                                            </relationalExpression>
+                                          </equalityExpression>
+                                        </logicalAndExpression>
+                                      </logicalOrExpression>
+                                      <ASSIGN>=</ASSIGN>
+                                      <assignmentExpression>
+                                        <logicalOrExpression>
+                                          <logicalAndExpression>
+                                            <equalityExpression>
+                                              <relationalExpression>
+                                                <additiveExpression>
+                                                  <multiplicativeExpression>
+                                                    <unaryExpression>
+                                                      <primaryExpression>
+                                                        <ID>tmp</ID>
+                                                      </primaryExpression>
+                                                    </unaryExpression>
+                                                  </multiplicativeExpression>
+                                                </additiveExpression>
+                                              </relationalExpression>
+                                            </equalityExpression>
+                                          </logicalAndExpression>
+                                        </logicalOrExpression>
+                                      </assignmentExpression>
+                                    </assignmentExpression>
+                                  </expression>
+                                  <SEMICOLON>;</SEMICOLON>
+                                </expressionStatement>
+                              </statement>
+                              <RBRACE>}</RBRACE>
+                            </compoundStatement>
+                          </statement>
+                        </selectionStatement>
                       </statement>
                       <RBRACE>}</RBRACE>
                     </compoundStatement>
                   </statement>
-                </selectionStatement>
-              </statement>
-              <statement>
-                <expressionStatement>
-                  <expression>
-                    <assignmentExpression>
-                      <logicalOrExpression>
-                        <logicalAndExpression>
-                          <equalityExpression>
-                            <relationalExpression>
-                              <additiveExpression>
-                                <multiplicativeExpression>
-                                  <unaryExpression>
-                                    <primaryExpression>
-                                      <arrayAccess>
-                                        <ID>next</ID>
-                                        <LBRACK>[</LBRACK>
-                                        <expression>
-                                          <assignmentExpression>
-                                            <logicalOrExpression>
-                                              <logicalAndExpression>
-                                                <equalityExpression>
-                                                  <relationalExpression>
-                                                    <additiveExpression>
-                                                      <multiplicativeExpression>
-                                                        <unaryExpression>
-                                                          <primaryExpression>
-                                                            <ID>i</ID>
-                                                          </primaryExpression>
-                                                        </unaryExpression>
-                                                      </multiplicativeExpression>
-                                                    </additiveExpression>
-                                                  </relationalExpression>
-                                                </equalityExpression>
-                                              </logicalAndExpression>
-                                            </logicalOrExpression>
-                                          </assignmentExpression>
-                                        </expression>
-                                        <RBRACK>]</RBRACK>
-                                      </arrayAccess>
-                                    </primaryExpression>
-                                  </unaryExpression>
-                                </multiplicativeExpression>
-                              </additiveExpression>
-                            </relationalExpression>
-                          </equalityExpression>
-                        </logicalAndExpression>
-                      </logicalOrExpression>
-                      <ASSIGN>=</ASSIGN>
-                      <assignmentExpression>
-                        <logicalOrExpression>
-                          <logicalAndExpression>
-                            <equalityExpression>
-                              <relationalExpression>
-                                <additiveExpression>
-                                  <multiplicativeExpression>
-                                    <unaryExpression>
-                                      <primaryExpression>
-                                        <ID>j</ID>
-                                      </primaryExpression>
-                                    </unaryExpression>
-                                  </multiplicativeExpression>
-                                </additiveExpression>
-                              </relationalExpression>
-                            </equalityExpression>
-                          </logicalAndExpression>
-                        </logicalOrExpression>
-                      </assignmentExpression>
-                    </assignmentExpression>
-                  </expression>
-                  <SEMICOLON>;</SEMICOLON>
-                </expressionStatement>
+                </iterationStatement>
               </statement>
               <RBRACE>}</RBRACE>
             </compoundStatement>
@@ -930,14 +863,46 @@
         </iterationStatement>
       </statement>
       <statement>
-        <expressionStatement>
-          <declarationStatement>
-            <typeSpecifier>
-              <INT>int</INT>
-            </typeSpecifier>
-            <ID>i</ID>
-            <ASSIGN>=</ASSIGN>
+        <ioStatement>
+          <outputStatement>
+            <COUT>cout</COUT>
+            <LEFT_SHIFT><<</LEFT_SHIFT>
             <expression>
+              <assignmentExpression>
+                <logicalOrExpression>
+                  <logicalAndExpression>
+                    <equalityExpression>
+                      <relationalExpression>
+                        <additiveExpression>
+                          <multiplicativeExpression>
+                            <unaryExpression>
+                              <primaryExpression>
+                                <STRING_LITERAL>"Result: "</STRING_LITERAL>
+                              </primaryExpression>
+                            </unaryExpression>
+                          </multiplicativeExpression>
+                        </additiveExpression>
+                      </relationalExpression>
+                    </equalityExpression>
+                  </logicalAndExpression>
+                </logicalOrExpression>
+              </assignmentExpression>
+            </expression>
+            <SEMICOLON>;</SEMICOLON>
+          </outputStatement>
+        </ioStatement>
+      </statement>
+      <statement>
+        <iterationStatement>
+          <FOR>for</FOR>
+          <LPAREN>(</LPAREN>
+          <expressionStatement>
+            <declarationStatement>
+              <typeSpecifier>
+                <INT>int</INT>
+              </typeSpecifier>
+              <ID>i</ID>
+              <ASSIGN>=</ASSIGN>
               <expression>
                 <assignmentExpression>
                   <logicalOrExpression>
@@ -959,17 +924,33 @@
                   </logicalOrExpression>
                 </assignmentExpression>
               </expression>
-              <COMMA>,</COMMA>
+              <SEMICOLON>;</SEMICOLON>
+            </declarationStatement>
+          </expressionStatement>
+          <expressionStatement>
+            <expression>
               <assignmentExpression>
                 <logicalOrExpression>
                   <logicalAndExpression>
                     <equalityExpression>
                       <relationalExpression>
+                        <relationalExpression>
+                          <additiveExpression>
+                            <multiplicativeExpression>
+                              <unaryExpression>
+                                <primaryExpression>
+                                  <ID>i</ID>
+                                </primaryExpression>
+                              </unaryExpression>
+                            </multiplicativeExpression>
+                          </additiveExpression>
+                        </relationalExpression>
+                        <LT><</LT>
                         <additiveExpression>
                           <multiplicativeExpression>
                             <unaryExpression>
                               <primaryExpression>
-                                <ID>k</ID>
+                                <ID>num</ID>
                               </primaryExpression>
                             </unaryExpression>
                           </multiplicativeExpression>
@@ -978,92 +959,21 @@
                     </equalityExpression>
                   </logicalAndExpression>
                 </logicalOrExpression>
-                <ASSIGN>=</ASSIGN>
-                <assignmentExpression>
-                  <logicalOrExpression>
-                    <logicalAndExpression>
-                      <equalityExpression>
-                        <relationalExpression>
-                          <additiveExpression>
-                            <multiplicativeExpression>
-                              <unaryExpression>
-                                <primaryExpression>
-                                  <NUMBER>0</NUMBER>
-                                </primaryExpression>
-                              </unaryExpression>
-                            </multiplicativeExpression>
-                          </additiveExpression>
-                        </relationalExpression>
-                      </equalityExpression>
-                    </logicalAndExpression>
-                  </logicalOrExpression>
-                </assignmentExpression>
               </assignmentExpression>
             </expression>
             <SEMICOLON>;</SEMICOLON>
-          </declarationStatement>
-        </expressionStatement>
-      </statement>
-      <declaration>
-        <typeSpecifier>
-          <BOOL>bool</BOOL>
-        </typeSpecifier>
-        <declarator>
-          <ID>found</ID>
-        </declarator>
-        <ASSIGN>=</ASSIGN>
-        <assignmentExpression>
-          <logicalOrExpression>
-            <logicalAndExpression>
-              <equalityExpression>
-                <relationalExpression>
-                  <additiveExpression>
-                    <multiplicativeExpression>
-                      <unaryExpression>
-                        <primaryExpression>
-                          <ID>false</ID>
-                        </primaryExpression>
-                      </unaryExpression>
-                    </multiplicativeExpression>
-                  </additiveExpression>
-                </relationalExpression>
-              </equalityExpression>
-            </logicalAndExpression>
-          </logicalOrExpression>
-        </assignmentExpression>
-      </declaration>
-      <statement>
-        <expressionStatement>
-          <SEMICOLON>;</SEMICOLON>
-        </expressionStatement>
-      </statement>
-      <statement>
-        <iterationStatement>
-          <WHILE>while</WHILE>
-          <LPAREN>(</LPAREN>
+          </expressionStatement>
           <expression>
             <assignmentExpression>
               <logicalOrExpression>
                 <logicalAndExpression>
                   <equalityExpression>
                     <relationalExpression>
-                      <relationalExpression>
-                        <additiveExpression>
-                          <multiplicativeExpression>
-                            <unaryExpression>
-                              <primaryExpression>
-                                <ID>i</ID>
-                              </primaryExpression>
-                            </unaryExpression>
-                          </multiplicativeExpression>
-                        </additiveExpression>
-                      </relationalExpression>
-                      <LT><</LT>
                       <additiveExpression>
                         <multiplicativeExpression>
                           <unaryExpression>
                             <primaryExpression>
-                              <ID>n</ID>
+                              <ID>i</ID>
                             </primaryExpression>
                           </unaryExpression>
                         </multiplicativeExpression>
@@ -1072,6 +982,7 @@
                   </equalityExpression>
                 </logicalAndExpression>
               </logicalOrExpression>
+              <INCREMENT>++</INCREMENT>
             </assignmentExpression>
           </expression>
           <RPAREN>)</RPAREN>
@@ -1079,14 +990,14 @@
             <compoundStatement>
               <LBRACE>{</LBRACE>
               <statement>
-                <selectionStatement>
-                  <IF>if</IF>
-                  <LPAREN>(</LPAREN>
-                  <expression>
-                    <assignmentExpression>
-                      <logicalOrExpression>
-                        <logicalAndExpression>
-                          <equalityExpression>
+                <ioStatement>
+                  <outputStatement>
+                    <COUT>cout</COUT>
+                    <LEFT_SHIFT><<</LEFT_SHIFT>
+                    <expression>
+                      <assignmentExpression>
+                        <logicalOrExpression>
+                          <logicalAndExpression>
                             <equalityExpression>
                               <relationalExpression>
                                 <additiveExpression>
@@ -1094,7 +1005,7 @@
                                     <unaryExpression>
                                       <primaryExpression>
                                         <arrayAccess>
-                                          <ID>s</ID>
+                                          <ID>a</ID>
                                           <LBRACK>[</LBRACK>
                                           <expression>
                                             <assignmentExpression>
@@ -1125,577 +1036,10 @@
                                 </additiveExpression>
                               </relationalExpression>
                             </equalityExpression>
-                            <EQ>==</EQ>
-                            <relationalExpression>
-                              <additiveExpression>
-                                <multiplicativeExpression>
-                                  <unaryExpression>
-                                    <primaryExpression>
-                                      <arrayAccess>
-                                        <ID>t</ID>
-                                        <LBRACK>[</LBRACK>
-                                        <expression>
-                                          <assignmentExpression>
-                                            <logicalOrExpression>
-                                              <logicalAndExpression>
-                                                <equalityExpression>
-                                                  <relationalExpression>
-                                                    <additiveExpression>
-                                                      <multiplicativeExpression>
-                                                        <unaryExpression>
-                                                          <primaryExpression>
-                                                            <ID>k</ID>
-                                                          </primaryExpression>
-                                                        </unaryExpression>
-                                                      </multiplicativeExpression>
-                                                    </additiveExpression>
-                                                  </relationalExpression>
-                                                </equalityExpression>
-                                              </logicalAndExpression>
-                                            </logicalOrExpression>
-                                          </assignmentExpression>
-                                        </expression>
-                                        <RBRACK>]</RBRACK>
-                                      </arrayAccess>
-                                    </primaryExpression>
-                                  </unaryExpression>
-                                </multiplicativeExpression>
-                              </additiveExpression>
-                            </relationalExpression>
-                          </equalityExpression>
-                        </logicalAndExpression>
-                      </logicalOrExpression>
-                    </assignmentExpression>
-                  </expression>
-                  <RPAREN>)</RPAREN>
-                  <statement>
-                    <compoundStatement>
-                      <LBRACE>{</LBRACE>
-                      <statement>
-                        <expressionStatement>
-                          <expression>
-                            <assignmentExpression>
-                              <logicalOrExpression>
-                                <logicalAndExpression>
-                                  <equalityExpression>
-                                    <relationalExpression>
-                                      <additiveExpression>
-                                        <multiplicativeExpression>
-                                          <unaryExpression>
-                                            <primaryExpression>
-                                              <ID>i</ID>
-                                            </primaryExpression>
-                                          </unaryExpression>
-                                        </multiplicativeExpression>
-                                      </additiveExpression>
-                                    </relationalExpression>
-                                  </equalityExpression>
-                                </logicalAndExpression>
-                              </logicalOrExpression>
-                              <INCREMENT>++</INCREMENT>
-                            </assignmentExpression>
-                          </expression>
-                          <SEMICOLON>;</SEMICOLON>
-                        </expressionStatement>
-                      </statement>
-                      <statement>
-                        <expressionStatement>
-                          <expression>
-                            <assignmentExpression>
-                              <logicalOrExpression>
-                                <logicalAndExpression>
-                                  <equalityExpression>
-                                    <relationalExpression>
-                                      <additiveExpression>
-                                        <multiplicativeExpression>
-                                          <unaryExpression>
-                                            <primaryExpression>
-                                              <ID>k</ID>
-                                            </primaryExpression>
-                                          </unaryExpression>
-                                        </multiplicativeExpression>
-                                      </additiveExpression>
-                                    </relationalExpression>
-                                  </equalityExpression>
-                                </logicalAndExpression>
-                              </logicalOrExpression>
-                              <INCREMENT>++</INCREMENT>
-                            </assignmentExpression>
-                          </expression>
-                          <SEMICOLON>;</SEMICOLON>
-                        </expressionStatement>
-                      </statement>
-                      <RBRACE>}</RBRACE>
-                    </compoundStatement>
-                  </statement>
-                  <ELSE>else</ELSE>
-                  <statement>
-                    <compoundStatement>
-                      <LBRACE>{</LBRACE>
-                      <statement>
-                        <selectionStatement>
-                          <IF>if</IF>
-                          <LPAREN>(</LPAREN>
-                          <expression>
-                            <assignmentExpression>
-                              <logicalOrExpression>
-                                <logicalAndExpression>
-                                  <equalityExpression>
-                                    <relationalExpression>
-                                      <relationalExpression>
-                                        <additiveExpression>
-                                          <multiplicativeExpression>
-                                            <unaryExpression>
-                                              <primaryExpression>
-                                                <ID>k</ID>
-                                              </primaryExpression>
-                                            </unaryExpression>
-                                          </multiplicativeExpression>
-                                        </additiveExpression>
-                                      </relationalExpression>
-                                      <GT>></GT>
-                                      <additiveExpression>
-                                        <multiplicativeExpression>
-                                          <unaryExpression>
-                                            <primaryExpression>
-                                              <NUMBER>0</NUMBER>
-                                            </primaryExpression>
-                                          </unaryExpression>
-                                        </multiplicativeExpression>
-                                      </additiveExpression>
-                                    </relationalExpression>
-                                  </equalityExpression>
-                                </logicalAndExpression>
-                              </logicalOrExpression>
-                            </assignmentExpression>
-                          </expression>
-                          <RPAREN>)</RPAREN>
-                          <statement>
-                            <compoundStatement>
-                              <LBRACE>{</LBRACE>
-                              <statement>
-                                <expressionStatement>
-                                  <expression>
-                                    <assignmentExpression>
-                                      <logicalOrExpression>
-                                        <logicalAndExpression>
-                                          <equalityExpression>
-                                            <relationalExpression>
-                                              <additiveExpression>
-                                                <multiplicativeExpression>
-                                                  <unaryExpression>
-                                                    <primaryExpression>
-                                                      <ID>k</ID>
-                                                    </primaryExpression>
-                                                  </unaryExpression>
-                                                </multiplicativeExpression>
-                                              </additiveExpression>
-                                            </relationalExpression>
-                                          </equalityExpression>
-                                        </logicalAndExpression>
-                                      </logicalOrExpression>
-                                      <ASSIGN>=</ASSIGN>
-                                      <assignmentExpression>
-                                        <logicalOrExpression>
-                                          <logicalAndExpression>
-                                            <equalityExpression>
-                                              <relationalExpression>
-                                                <additiveExpression>
-                                                  <additiveExpression>
-                                                    <multiplicativeExpression>
-                                                      <unaryExpression>
-                                                        <primaryExpression>
-                                                          <arrayAccess>
-                                                            <ID>next</ID>
-                                                            <LBRACK>[</LBRACK>
-                                                            <expression>
-                                                              <assignmentExpression>
-                                                                <logicalOrExpression>
-                                                                  <logicalAndExpression>
-                                                                    <equalityExpression>
-                                                                      <relationalExpression>
-                                                                        <additiveExpression>
-                                                                          <additiveExpression>
-                                                                            <multiplicativeExpression>
-                                                                              <unaryExpression>
-                                                                                <primaryExpression>
-                                                                                  <ID>k</ID>
-                                                                                </primaryExpression>
-                                                                              </unaryExpression>
-                                                                            </multiplicativeExpression>
-                                                                          </additiveExpression>
-                                                                          <MINUS>-</MINUS>
-                                                                          <multiplicativeExpression>
-                                                                            <unaryExpression>
-                                                                              <primaryExpression>
-                                                                                <NUMBER>1</NUMBER>
-                                                                              </primaryExpression>
-                                                                            </unaryExpression>
-                                                                          </multiplicativeExpression>
-                                                                        </additiveExpression>
-                                                                      </relationalExpression>
-                                                                    </equalityExpression>
-                                                                  </logicalAndExpression>
-                                                                </logicalOrExpression>
-                                                              </assignmentExpression>
-                                                            </expression>
-                                                            <RBRACK>]</RBRACK>
-                                                          </arrayAccess>
-                                                        </primaryExpression>
-                                                      </unaryExpression>
-                                                    </multiplicativeExpression>
-                                                  </additiveExpression>
-                                                  <PLUS>+</PLUS>
-                                                  <multiplicativeExpression>
-                                                    <unaryExpression>
-                                                      <primaryExpression>
-                                                        <NUMBER>1</NUMBER>
-                                                      </primaryExpression>
-                                                    </unaryExpression>
-                                                  </multiplicativeExpression>
-                                                </additiveExpression>
-                                              </relationalExpression>
-                                            </equalityExpression>
-                                          </logicalAndExpression>
-                                        </logicalOrExpression>
-                                      </assignmentExpression>
-                                    </assignmentExpression>
-                                  </expression>
-                                  <SEMICOLON>;</SEMICOLON>
-                                </expressionStatement>
-                              </statement>
-                              <RBRACE>}</RBRACE>
-                            </compoundStatement>
-                          </statement>
-                          <ELSE>else</ELSE>
-                          <statement>
-                            <compoundStatement>
-                              <LBRACE>{</LBRACE>
-                              <statement>
-                                <expressionStatement>
-                                  <expression>
-                                    <assignmentExpression>
-                                      <logicalOrExpression>
-                                        <logicalAndExpression>
-                                          <equalityExpression>
-                                            <relationalExpression>
-                                              <additiveExpression>
-                                                <multiplicativeExpression>
-                                                  <unaryExpression>
-                                                    <primaryExpression>
-                                                      <ID>i</ID>
-                                                    </primaryExpression>
-                                                  </unaryExpression>
-                                                </multiplicativeExpression>
-                                              </additiveExpression>
-                                            </relationalExpression>
-                                          </equalityExpression>
-                                        </logicalAndExpression>
-                                      </logicalOrExpression>
-                                      <INCREMENT>++</INCREMENT>
-                                    </assignmentExpression>
-                                  </expression>
-                                  <SEMICOLON>;</SEMICOLON>
-                                </expressionStatement>
-                              </statement>
-                              <RBRACE>}</RBRACE>
-                            </compoundStatement>
-                          </statement>
-                        </selectionStatement>
-                      </statement>
-                      <RBRACE>}</RBRACE>
-                    </compoundStatement>
-                  </statement>
-                </selectionStatement>
-              </statement>
-              <statement>
-                <selectionStatement>
-                  <IF>if</IF>
-                  <LPAREN>(</LPAREN>
-                  <expression>
-                    <assignmentExpression>
-                      <logicalOrExpression>
-                        <logicalAndExpression>
-                          <equalityExpression>
-                            <equalityExpression>
-                              <relationalExpression>
-                                <additiveExpression>
-                                  <multiplicativeExpression>
-                                    <unaryExpression>
-                                      <primaryExpression>
-                                        <ID>k</ID>
-                                      </primaryExpression>
-                                    </unaryExpression>
-                                  </multiplicativeExpression>
-                                </additiveExpression>
-                              </relationalExpression>
-                            </equalityExpression>
-                            <EQ>==</EQ>
-                            <relationalExpression>
-                              <additiveExpression>
-                                <multiplicativeExpression>
-                                  <unaryExpression>
-                                    <primaryExpression>
-                                      <ID>m</ID>
-                                    </primaryExpression>
-                                  </unaryExpression>
-                                </multiplicativeExpression>
-                              </additiveExpression>
-                            </relationalExpression>
-                          </equalityExpression>
-                        </logicalAndExpression>
-                      </logicalOrExpression>
-                    </assignmentExpression>
-                  </expression>
-                  <RPAREN>)</RPAREN>
-                  <statement>
-                    <compoundStatement>
-                      <LBRACE>{</LBRACE>
-                      <statement>
-                        <ioStatement>
-                          <outputStatement>
-                            <COUT>cout</COUT>
-                            <LEFT_SHIFT><<</LEFT_SHIFT>
-                            <expression>
-                              <assignmentExpression>
-                                <logicalOrExpression>
-                                  <logicalAndExpression>
-                                    <equalityExpression>
-                                      <relationalExpression>
-                                        <additiveExpression>
-                                          <additiveExpression>
-                                            <multiplicativeExpression>
-                                              <unaryExpression>
-                                                <primaryExpression>
-                                                  <ID>i</ID>
-                                                </primaryExpression>
-                                              </unaryExpression>
-                                            </multiplicativeExpression>
-                                          </additiveExpression>
-                                          <MINUS>-</MINUS>
-                                          <multiplicativeExpression>
-                                            <unaryExpression>
-                                              <primaryExpression>
-                                                <ID>m</ID>
-                                              </primaryExpression>
-                                            </unaryExpression>
-                                          </multiplicativeExpression>
-                                        </additiveExpression>
-                                      </relationalExpression>
-                                    </equalityExpression>
-                                  </logicalAndExpression>
-                                </logicalOrExpression>
-                              </assignmentExpression>
-                            </expression>
-                            <LEFT_SHIFT><<</LEFT_SHIFT>
-                            <expression>
-                              <assignmentExpression>
-                                <logicalOrExpression>
-                                  <logicalAndExpression>
-                                    <equalityExpression>
-                                      <relationalExpression>
-                                        <additiveExpression>
-                                          <multiplicativeExpression>
-                                            <unaryExpression>
-                                              <primaryExpression>
-                                                <STRING_LITERAL>" "</STRING_LITERAL>
-                                              </primaryExpression>
-                                            </unaryExpression>
-                                          </multiplicativeExpression>
-                                        </additiveExpression>
-                                      </relationalExpression>
-                                    </equalityExpression>
-                                  </logicalAndExpression>
-                                </logicalOrExpression>
-                              </assignmentExpression>
-                            </expression>
-                            <SEMICOLON>;</SEMICOLON>
-                          </outputStatement>
-                        </ioStatement>
-                      </statement>
-                      <statement>
-                        <expressionStatement>
-                          <expression>
-                            <assignmentExpression>
-                              <logicalOrExpression>
-                                <logicalAndExpression>
-                                  <equalityExpression>
-                                    <relationalExpression>
-                                      <additiveExpression>
-                                        <multiplicativeExpression>
-                                          <unaryExpression>
-                                            <primaryExpression>
-                                              <ID>k</ID>
-                                            </primaryExpression>
-                                          </unaryExpression>
-                                        </multiplicativeExpression>
-                                      </additiveExpression>
-                                    </relationalExpression>
-                                  </equalityExpression>
-                                </logicalAndExpression>
-                              </logicalOrExpression>
-                              <ASSIGN>=</ASSIGN>
-                              <assignmentExpression>
-                                <logicalOrExpression>
-                                  <logicalAndExpression>
-                                    <equalityExpression>
-                                      <relationalExpression>
-                                        <additiveExpression>
-                                          <additiveExpression>
-                                            <multiplicativeExpression>
-                                              <unaryExpression>
-                                                <primaryExpression>
-                                                  <arrayAccess>
-                                                    <ID>next</ID>
-                                                    <LBRACK>[</LBRACK>
-                                                    <expression>
-                                                      <assignmentExpression>
-                                                        <logicalOrExpression>
-                                                          <logicalAndExpression>
-                                                            <equalityExpression>
-                                                              <relationalExpression>
-                                                                <additiveExpression>
-                                                                  <additiveExpression>
-                                                                    <multiplicativeExpression>
-                                                                      <unaryExpression>
-                                                                        <primaryExpression>
-                                                                          <ID>k</ID>
-                                                                        </primaryExpression>
-                                                                      </unaryExpression>
-                                                                    </multiplicativeExpression>
-                                                                  </additiveExpression>
-                                                                  <MINUS>-</MINUS>
-                                                                  <multiplicativeExpression>
-                                                                    <unaryExpression>
-                                                                      <primaryExpression>
-                                                                        <NUMBER>1</NUMBER>
-                                                                      </primaryExpression>
-                                                                    </unaryExpression>
-                                                                  </multiplicativeExpression>
-                                                                </additiveExpression>
-                                                              </relationalExpression>
-                                                            </equalityExpression>
-                                                          </logicalAndExpression>
-                                                        </logicalOrExpression>
-                                                      </assignmentExpression>
-                                                    </expression>
-                                                    <RBRACK>]</RBRACK>
-                                                  </arrayAccess>
-                                                </primaryExpression>
-                                              </unaryExpression>
-                                            </multiplicativeExpression>
-                                          </additiveExpression>
-                                          <PLUS>+</PLUS>
-                                          <multiplicativeExpression>
-                                            <unaryExpression>
-                                              <primaryExpression>
-                                                <NUMBER>1</NUMBER>
-                                              </primaryExpression>
-                                            </unaryExpression>
-                                          </multiplicativeExpression>
-                                        </additiveExpression>
-                                      </relationalExpression>
-                                    </equalityExpression>
-                                  </logicalAndExpression>
-                                </logicalOrExpression>
-                              </assignmentExpression>
-                            </assignmentExpression>
-                          </expression>
-                          <SEMICOLON>;</SEMICOLON>
-                        </expressionStatement>
-                      </statement>
-                      <statement>
-                        <expressionStatement>
-                          <expression>
-                            <assignmentExpression>
-                              <logicalOrExpression>
-                                <logicalAndExpression>
-                                  <equalityExpression>
-                                    <relationalExpression>
-                                      <additiveExpression>
-                                        <multiplicativeExpression>
-                                          <unaryExpression>
-                                            <primaryExpression>
-                                              <ID>found</ID>
-                                            </primaryExpression>
-                                          </unaryExpression>
-                                        </multiplicativeExpression>
-                                      </additiveExpression>
-                                    </relationalExpression>
-                                  </equalityExpression>
-                                </logicalAndExpression>
-                              </logicalOrExpression>
-                              <ASSIGN>=</ASSIGN>
-                              <assignmentExpression>
-                                <logicalOrExpression>
-                                  <logicalAndExpression>
-                                    <equalityExpression>
-                                      <relationalExpression>
-                                        <additiveExpression>
-                                          <multiplicativeExpression>
-                                            <unaryExpression>
-                                              <primaryExpression>
-                                                <ID>true</ID>
-                                              </primaryExpression>
-                                            </unaryExpression>
-                                          </multiplicativeExpression>
-                                        </additiveExpression>
-                                      </relationalExpression>
-                                    </equalityExpression>
-                                  </logicalAndExpression>
-                                </logicalOrExpression>
-                              </assignmentExpression>
-                            </assignmentExpression>
-                          </expression>
-                          <SEMICOLON>;</SEMICOLON>
-                        </expressionStatement>
-                      </statement>
-                      <RBRACE>}</RBRACE>
-                    </compoundStatement>
-                  </statement>
-                </selectionStatement>
-              </statement>
-              <RBRACE>}</RBRACE>
-            </compoundStatement>
-          </statement>
-        </iterationStatement>
-      </statement>
-      <statement>
-        <selectionStatement>
-          <IF>if</IF>
-          <LPAREN>(</LPAREN>
-          <expression>
-            <assignmentExpression>
-              <logicalOrExpression>
-                <logicalAndExpression>
-                  <equalityExpression>
-                    <relationalExpression>
-                      <additiveExpression>
-                        <multiplicativeExpression>
-                          <unaryExpression>
-                            <NOT>!</NOT>
-                            <unaryExpression>
-                              <primaryExpression>
-                                <ID>found</ID>
-                              </primaryExpression>
-                            </unaryExpression>
-                          </unaryExpression>
-                        </multiplicativeExpression>
-                      </additiveExpression>
-                    </relationalExpression>
-                  </equalityExpression>
-                </logicalAndExpression>
-              </logicalOrExpression>
-            </assignmentExpression>
-          </expression>
-          <RPAREN>)</RPAREN>
-          <statement>
-            <compoundStatement>
-              <LBRACE>{</LBRACE>
-              <statement>
-                <ioStatement>
-                  <outputStatement>
-                    <COUT>cout</COUT>
+                          </logicalAndExpression>
+                        </logicalOrExpression>
+                      </assignmentExpression>
+                    </expression>
                     <LEFT_SHIFT><<</LEFT_SHIFT>
                     <expression>
                       <assignmentExpression>
@@ -1707,7 +1051,7 @@
                                   <multiplicativeExpression>
                                     <unaryExpression>
                                       <primaryExpression>
-                                        <STRING_LITERAL>"False"</STRING_LITERAL>
+                                        <STRING_LITERAL>" "</STRING_LITERAL>
                                       </primaryExpression>
                                     </unaryExpression>
                                   </multiplicativeExpression>
@@ -1725,7 +1069,37 @@
               <RBRACE>}</RBRACE>
             </compoundStatement>
           </statement>
-        </selectionStatement>
+        </iterationStatement>
+      </statement>
+      <statement>
+        <ioStatement>
+          <outputStatement>
+            <COUT>cout</COUT>
+            <LEFT_SHIFT><<</LEFT_SHIFT>
+            <expression>
+              <assignmentExpression>
+                <logicalOrExpression>
+                  <logicalAndExpression>
+                    <equalityExpression>
+                      <relationalExpression>
+                        <additiveExpression>
+                          <multiplicativeExpression>
+                            <unaryExpression>
+                              <primaryExpression>
+                                <ID>endl</ID>
+                              </primaryExpression>
+                            </unaryExpression>
+                          </multiplicativeExpression>
+                        </additiveExpression>
+                      </relationalExpression>
+                    </equalityExpression>
+                  </logicalAndExpression>
+                </logicalOrExpression>
+              </assignmentExpression>
+            </expression>
+            <SEMICOLON>;</SEMICOLON>
+          </outputStatement>
+        </ioStatement>
       </statement>
       <statement>
         <jumpStatement>
