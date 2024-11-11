@@ -5,6 +5,8 @@ if "." in __name__:
 else:
     from CPPParser import CPPParser
 
+# This class defines a complete generic visitor for a parse tree produced by CPPParser.
+
 class Node:
     def __init__(self, node_type, value=None):
         self.node_type = node_type  # Type of node (e.g., "PROGRAM", "STATEMENT")
@@ -115,6 +117,16 @@ class CPPParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by CPPParser#decl_.
+    def visitDecl_(self, ctx:CPPParser.Decl_Context):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by CPPParser#decl_assign.
+    def visitDecl_assign(self, ctx:CPPParser.Decl_assignContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by CPPParser#typeSpecifier.
     def visitTypeSpecifier(self, ctx:CPPParser.TypeSpecifierContext):
         return self.visitChildren(ctx)
@@ -132,6 +144,11 @@ class CPPParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by CPPParser#compoundStatement.
     def visitCompoundStatement(self, ctx:CPPParser.CompoundStatementContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by CPPParser#includeStatement.
+    def visitIncludeStatement(self, ctx:CPPParser.IncludeStatementContext):
         return self.visitChildren(ctx)
 
 
@@ -190,6 +207,11 @@ class CPPParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by CPPParser#shiftExpression.
+    def visitShiftExpression(self, ctx:CPPParser.ShiftExpressionContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by CPPParser#additiveExpression.
     def visitAdditiveExpression(self, ctx:CPPParser.AdditiveExpressionContext):
         return self.visitChildren(ctx)
@@ -205,13 +227,38 @@ class CPPParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by CPPParser#postfixExpression.
+    def visitPostfixExpression(self, ctx:CPPParser.PostfixExpressionContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by CPPParser#primaryExpression.
     def visitPrimaryExpression(self, ctx:CPPParser.PrimaryExpressionContext):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by CPPParser#functionCall.
+    def visitFunctionCall(self, ctx:CPPParser.FunctionCallContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by CPPParser#number.
+    def visitNumber(self, ctx:CPPParser.NumberContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by CPPParser#declarator.
     def visitDeclarator(self, ctx:CPPParser.DeclaratorContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by CPPParser#shiftOperator.
+    def visitShiftOperator(self, ctx:CPPParser.ShiftOperatorContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by CPPParser#includeID.
+    def visitIncludeID(self, ctx:CPPParser.IncludeIDContext):
         return self.visitChildren(ctx)
 
 

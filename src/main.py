@@ -25,15 +25,32 @@ def main():
         input_stream = read_input_from_file(sys.argv[1])
     else:
         # Example C++ code for testing
+        # sample_code = """
+        # int main() {
+        #     int x = 42;
+        #     if (x > 0) {
+        #         return x;
+        #     }
+        #     return 0;
+        # }
+        # """
         sample_code = """
+        #include <iosteam>
+        #include <stdio.h>
         int main() {
+            std::cout << "43";
             int x = 42;
+            x++;
+            ++x;
+            int y = --x;
+            bool z = false;
             if (x > 0) {
                 return x;
             }
             return 0;
         }
         """
+        
         input_stream = InputStream(sample_code)
 
     print("# Lexer #")

@@ -7,7 +7,7 @@ options {
 }
 
 // Parser rules
-program : (classDefinition | functionDefinition | declaration | expressionStatement)* ;
+program : (includeStatement)* (classDefinition | functionDefinition | declaration | statement)* ;
 
 classDefinition
     : CLASS ID LBRACE classBody RBRACE SEMICOLON
@@ -32,8 +32,16 @@ functionDefinition
     ;
 
 declaration
-    : typeSpecifier declarator (COMMA declarator)* SEMICOLON
-    | typeSpecifier declarator ASSIGN assignmentExpression
+    : decl_ SEMICOLON
+    | decl_assign SEMICOLON
+    ;
+
+decl_
+    : typeSpecifier declarator (COMMA declarator)*
+    ;
+
+decl_assign
+    : typeSpecifier declarator ASSIGN assignmentExpression (COMMA declarator ASSIGN assignmentExpression)*
     ;
 
 typeSpecifier
@@ -41,6 +49,7 @@ typeSpecifier
     | DOUBLE
     | CHAR
     | VOID
+    | BOOL
     ;
 
 parameterList
@@ -53,6 +62,10 @@ parameter
 
 compoundStatement
     : LBRACE (declaration | statement)* RBRACE
+    ;
+
+includeStatement
+    : INCLUDE LT includeID GT
     ;
 
 statement
@@ -73,7 +86,7 @@ selectionStatement
 
 iterationStatement
     : WHILE LPAREN expression RPAREN statement
-    | FOR LPAREN expressionStatement expressionStatement expression? RPAREN statement
+    | FOR LPAREN (decl_assign | assignmentExpression) SEMICOLON expressionStatement expression? RPAREN statement
     ;
 
 jumpStatement
@@ -106,8 +119,12 @@ equalityExpression
     ;
 
 relationalExpression
-    : additiveExpression
-    | relationalExpression (LT | GT | LE | GE) additiveExpression
+    : shiftExpression
+    | shiftExpression (LT | GT | LE | GE) shiftExpression
+    ;
+
+shiftExpression
+    : additiveExpression (shiftOperator additiveExpression)*
     ;
 
 additiveExpression
@@ -121,19 +138,43 @@ multiplicativeExpression
     ;
 
 unaryExpression
+    : postfixExpression
+    | (INCREMENT | DECREMENT | NOT) unaryExpression
+    ;
+
+postfixExpression
     : primaryExpression
-    | (PLUS | MINUS | NOT) unaryExpression
+    | postfixExpression (INCREMENT | DECREMENT)
     ;
 
 primaryExpression
-    : ID
-    | NUMBER
+    : (ID SCOPE)? ID (LBRACK expression RBRACK)*
+    | number
+    | functionCall
     | CHAR_LITERAL
     | STRING_LITERAL
+    | BOOL_LITERAL
     | LPAREN expression RPAREN
+    ;
+
+functionCall
+    : ID LPAREN expression RPAREN
+    ;
+
+number
+    : (MINUS | PLUS)? NUMBER
     ;
 
 declarator
     : ID
-    | ID LBRACK expression? RBRACK
+    | ID LBRACK NUMBER RBRACK
+    ;
+
+shiftOperator
+    : GT GT
+    | LT LT
+    ;
+
+includeID
+    : ID (DOT ID)?
     ;

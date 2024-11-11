@@ -42,12 +42,12 @@ The project structure is as follows:
 
 4. Generate the lexer code:
    ```bash
-   java -jar antlr-4.13.1-complete.jar -Dlanguage=Python3 cppLexer.g4
+   java -jar antlr-4.13.1-complete.jar -Dlanguage=Python3 CPPLexer.g4
    ```
 
 5. Generate the parser code:
    ```bash
-   java -jar antlr-4.13.1-complete.jar -Dlanguage=Python3 cppParser.g4
+   java -jar antlr-4.13.1-complete.jar -Dlanguage=Python3 CPPParser.g4
    ```
 ## Usage
 
