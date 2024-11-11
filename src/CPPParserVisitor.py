@@ -81,7 +81,7 @@ class CPPParserVisitor(ParseTreeVisitor):
             # print(result)
             return result
         return None
-
+        
     # Visit a parse tree produced by CPPParser#program.
     def visitProgram(self, ctx:CPPParser.ProgramContext):
         return self.visitChildren(ctx)
@@ -159,6 +159,11 @@ class CPPParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by CPPParser#expressionStatement.
     def visitExpressionStatement(self, ctx:CPPParser.ExpressionStatementContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by CPPParser#declarationStatement.
+    def visitDeclarationStatement(self, ctx:CPPParser.DeclarationStatementContext):
         return self.visitChildren(ctx)
 
 
