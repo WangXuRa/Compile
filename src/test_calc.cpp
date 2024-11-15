@@ -1,156 +1,157 @@
 #include <iostream>
+#include <cctype>
 #include <string>
 
+// 自定义栈结构
 class Stack {
 private:
-    std::string elements[100];  // 假设栈最多能存储 100 个元素
-    int topIndex = -1;
+    int data[1000];
+    int top;
 
 public:
-    void push(std::string &val) {
-        if (topIndex < 99) {  // 确保不越界
-            elements[++topIndex] = val;
-        } else {
-            std::cerr << "Stack overflow!" << std::endl;
+    // 构造函数
+    Stack() {
+        top = -1;
+    }
+    
+    void push(int value) {
+        if (top < 1000 - 1) {
+            top = top + 1;
+            data[top] = value;
         }
     }
-
-    void pop() {
+    
+    int pop() {
         if (!empty()) {
-            --topIndex;
+            int value = data[top];
+            top = top - 1;
+            return value;
         }
+        return 0;
     }
-
-    std::string top() {
+    
+    int peek() {
         if (!empty()) {
-            return elements[topIndex];
-        } else {
-            return "";
+            return data[top];
         }
+        return 0;
     }
-
+    
     bool empty() {
-        return topIndex == -1;
+        return top == -1;
     }
-
+    
     int size() {
-        return topIndex + 1;
+        return top + 1;
     }
 };
 
-// 自定义判断字符是否为空格
-bool isSpace(char c) {
-    return c == ' ' || c == '\t' || c == '\n' || c == '\r';
-}
-
-// 自定义判断字符是否是数字
-bool isDigit(char c) {
-    return c >= '0' && c <= '9';
-}
-
-// 判断运算符优先级
-int precedence(char op) {
-    if (op == '+' || op == '-') return 1;
-    if (op == '*' || op == '/') return 2;
-    return 0;
-}
-
-// 中缀表达式转换为逆波兰表达式（后缀表达式）
-Stack toRPN(std::string &s) {
-    Stack rpn;
-    Stack ops;
-    int n = s.size();
-
-    for (int i = 0; i < n; ++i) {
-        if (isSpace(s[i])) continue;
-
-        if (isDigit(s[i]) || (s[i] == '-' && (i == 0 || s[i - 1] == '('))) {
-            std::string num;
-            num = num + s[i++];
-            while (i < n && isDigit(s[i])) {
-                num = num + s[i++];
+class Calculator {
+public:
+    int calculate(std::string s) {
+        Stack nums;    // 数字栈
+        Stack ops;     // 运算符栈
+        int len = s.length();
+        
+        for (int i = 0; i < len; i++) {
+            if (s[i] == ' ') continue;
+            
+            // 处理数字
+            if (isdigit(s[i])) {
+                int num = 0;
+                while (i < len && isdigit(s[i])) {
+                    num = num * 10 + (s[i] - '0');
+                    i++;
+                }
+                i--;
+                nums.push(num);
             }
-            i--;
-            rpn.push(num);
-        } else if (s[i] == '(') {
-            std::string temp;
-            temp.push_back(s[i]);
-            ops.push(temp);
-        } else if (s[i] == ')') {
-            while (!ops.empty() && ops.top() != "(") {
-                std::string top = ops.top(); 
-                rpn.push(top);  
-                ops.pop();
+            // 处理负数
+            else if (s[i] == '-' && (i == 0 || s[i-1] == '(' || s[i-1] == '+' || 
+                     s[i-1] == '-' || s[i-1] == '*' || s[i-1] == '/')) {
+                int num = 0;
+                i++;
+                while (i < len && isdigit(s[i])) {
+                    num = num * 10 + (s[i] - '0');
+                    i++;
+                }
+                i--;
+                nums.push(-num);
             }
-            ops.pop();
-        } else {
-            while (!ops.empty()) {
-                std::string top = ops.top();  // 获取栈顶的字符串
-                if (precedence(top[0]) >= precedence(s[i])) {  // 比较栈顶字符的优先级
-                    rpn.push(top);  // 如果优先级大或等于，则将栈顶元素推入rpn
-                    ops.pop();      // 从操作符栈中弹出栈顶元素
-                } else {
-                    break;  // 如果当前操作符优先级较低，跳出循环
+            // 处理左括号
+            else if (s[i] == '(') {
+                ops.push(s[i]);
+            }
+            // 处理右括号
+            else if (s[i] == ')') {
+                while (!ops.empty() && ops.peek() != '(') {
+                    calculateTop(nums, ops);
+                }
+                if (!ops.empty()) {
+                    ops.pop(); // 弹出左括号
                 }
             }
-            std::string temp;
-            temp.push_back(s[i]);
-            ops.push(temp);
-        }
-    }
-
-    while (!ops.empty()) {
-        std::string temp = ops.top(); 
-        rpn.push(temp);  
-        ops.pop();
-    }
-    return rpn;
-}
-
-// 计算逆波兰表达式的值
-int evalRPN(Stack &rpn) {
-    Stack values;
-    while (!rpn.empty()) {
-        std::string token = rpn.top();
-        rpn.pop();
-
-        if (isDigit(token[0]) || (token.size() > 1 && token[0] == '-')) {
-            values.push(token);
-        } else {
-            int b = std::stoi(values.top()); values.pop();
-            int a = std::stoi(values.top()); values.pop();
-            if (token == "+") {
-                std::string result = std::to_string(a + b); // 使用 std::to_string 计算并创建字符串
-                values.push(result);  // 将 result 推入栈中
-            } else if (token == "-") {
-                std::string result = std::to_string(a - b); // 同样处理减法
-                values.push(result);
-            } else if (token == "*") {
-                std::string result = std::to_string(a * b); // 同样处理乘法
-                values.push(result);
-            } else if (token == "/") {
-                std::string result = std::to_string(a / b); // 同样处理除法
-                values.push(result);
+            // 处理运算符
+            else if (isOperator(s[i])) {
+                while (!ops.empty() && ops.peek() != '(' && 
+                       precedence(ops.peek()) >= precedence(s[i])) {
+                    calculateTop(nums, ops);
+                }
+                ops.push(s[i]);
             }
         }
+        
+        while (!ops.empty()) {
+            calculateTop(nums, ops);
+        }
+        
+        if (nums.empty()) {
+            return 0;
+        }
+        return nums.peek();
     }
-    return std::stoi(values.top());
-}
 
-// 计算表达式的最终值
-int calculate(std::string &s) {
-    Stack rpn = toRPN(s);
-    Stack reversedRPN;
-    while (!rpn.empty()) {
-        std::string temp = rpn.top(); 
-        reversedRPN.push(temp);        
-        rpn.pop();
+private:
+    bool isOperator(char c) {
+        return c == '+' || c == '-' || c == '*' || c == '/';
     }
-    return evalRPN(reversedRPN);
-}
+    
+    int precedence(char op) {
+        if (op == '*' || op == '/') {
+            return 2;
+        }
+        if (op == '+' || op == '-') {
+            return 1;
+        }
+        return 0;
+    }
+    
+    void calculateTop(Stack& nums, Stack& ops) {
+        if (nums.size() < 2) {
+            return;
+        }
+        int b = nums.pop();
+        int a = nums.pop();
+        char op = ops.pop();
+        
+        int result = 0;
+        if (op == '+') {
+            result = a + b;
+        } else if (op == '-') {
+            result = a - b;
+        } else if (op == '*') {
+            result = a * b;
+        } else if (op == '/') {
+            result = a / b;
+        }
+        nums.push(result);
+    }
+};
 
 int main() {
-    std::string s = "1+(-5-22)*4/(2+1)";
-    std::cout << calculate(s) << std::endl;  // 输出: -35
+    Calculator calc;
+    std::string expr = "1+(-5-22)*4/(2+1)";
+    int result = calc.calculate(expr);
+    std::cout << "Result: " << result << std::endl;
     return 0;
 }
