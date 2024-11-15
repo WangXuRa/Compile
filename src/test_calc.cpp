@@ -5,6 +5,7 @@
 // 自定义栈结构
 class Stack {
 private:
+
     int data[1000];
     int top;
 
