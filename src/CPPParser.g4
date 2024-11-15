@@ -14,7 +14,7 @@ classDefinition
     ;
 
 classBody
-    : (accessSpecifier? (declaration | functionDefinition | memberDeclaration))* 
+    : (accessSpecifier? (constructor | declaration | functionDefinition | memberDeclaration))* 
     ;
 
 accessSpecifier
@@ -22,6 +22,8 @@ accessSpecifier
     | PRIVATE COLON
     | PROTECTED COLON
     ;
+
+constructor: ID LPAREN parameterList? RPAREN (COLON functionCall+)? compoundStatement;
 
 memberDeclaration
     : typeSpecifier declarator SEMICOLON
