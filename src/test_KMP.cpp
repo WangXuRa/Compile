@@ -1,7 +1,9 @@
+#include <iostream>
+
 int main() {
     // 输入字符串 s 和模板串 t
     char s[1000], t[1000];
-    cin >> s >> t;
+    std::cin >> s >> t;
 
     int m = strlen(t); // 模板串 t 的长度
     int n = strlen(s); // 字符串 s 的长度
@@ -43,7 +45,7 @@ int main() {
 
         // 如果找到了一个匹配
         if (k == m) {
-            cout << i - m << " ";  // 输出匹配的起始位置(从0开始索引)
+            std::cout << i - m << " ";  // 输出匹配的起始位置(从0开始索引)
             k = next[k - 1] + 1; // 继续寻找下一个匹配
             found = true;
         }
@@ -51,7 +53,7 @@ int main() {
 
     // 如果没有找到匹配的子串
     if (!found) {
-        cout << "False";
+        std::cout << "False";
     }
 
     return 0;

@@ -2,7 +2,6 @@ lexer grammar CPPLexer;
 
 PLUS        : '+' ;
 MINUS       : '-' ;
-MUL         : '*' ;
 DIV         : '/' ;
 ASSIGN      : '=' ;
 LT          : '<' ;
@@ -11,6 +10,10 @@ LE          : '<=' ;
 GE          : '>=' ;
 EQ          : '==' ;
 NE          : '!=' ;
+
+AMPERSAND   : '&';
+ASTERISK    : '*';
+
 AND         : '&&' ;
 OR          : '||' ;
 NOT         : '!' ;
@@ -45,10 +48,10 @@ FOR         : 'for' ;
 WHILE       : 'while' ;
 RETURN      : 'return' ;
 BOOL        : 'bool';
-
+CONTINUE    : 'continue';
 ID          : [a-zA-Z_][a-zA-Z_0-9]* ;
 NUMBER      : [0-9]+ ('.' [0-9]+)? ;
-CHAR_LITERAL: '\'' . '\'' ;
+CHAR_LITERAL: '\'' ( . ) '\'';
 STRING_LITERAL : '"' .*? '"' ;
 BOOL_LITERAL: 'true'| 'false';
 

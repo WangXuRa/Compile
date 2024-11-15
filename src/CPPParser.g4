@@ -50,6 +50,7 @@ typeSpecifier
     | CHAR
     | VOID
     | BOOL
+    | (ID SCOPE)? ID
     ;
 
 parameterList
@@ -57,7 +58,7 @@ parameterList
     ;
 
 parameter
-    : typeSpecifier ID
+    : typeSpecifier (AMPERSAND | ASTERISK)* ID
     ;
 
 compoundStatement
@@ -91,6 +92,7 @@ iterationStatement
 
 jumpStatement
     : RETURN expression? SEMICOLON
+    | CONTINUE SEMICOLON
     ;
 
 expression
@@ -134,12 +136,13 @@ additiveExpression
 
 multiplicativeExpression
     : unaryExpression
-    | multiplicativeExpression (MUL | DIV) unaryExpression
+    | multiplicativeExpression (ASTERISK | DIV) unaryExpression
     ;
 
 unaryExpression
     : postfixExpression
     | (INCREMENT | DECREMENT | NOT) unaryExpression
+    | (AMPERSAND | ASTERISK) unaryExpression
     ;
 
 postfixExpression
@@ -157,8 +160,13 @@ primaryExpression
     | LPAREN expression RPAREN
     ;
 
+function
+    : ID
+    | ID DOT function
+    ;
+
 functionCall
-    : ID LPAREN expression RPAREN
+    : function LPAREN expression? RPAREN
     ;
 
 number
