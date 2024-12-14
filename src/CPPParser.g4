@@ -64,7 +64,7 @@ parameter
     ;
 
 compoundStatement
-    : LBRACE (declaration | statement)* RBRACE
+    : LBRACE referenceOp* RBRACE
     ;
 
 includeStatement
@@ -144,7 +144,7 @@ multiplicativeExpression
 unaryExpression
     : postfixExpression
     | (INCREMENT | DECREMENT | NOT) unaryExpression
-    | (AMPERSAND | ASTERISK) unaryExpression
+    | referenceOp unaryExpression
     ;
 
 postfixExpression
@@ -187,4 +187,9 @@ shiftOperator
 
 includeID
     : ID (DOT ID)?
+    ;
+
+referenceOp
+    : ASTERISK
+    | AMPERSAND
     ;
