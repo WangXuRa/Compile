@@ -33,6 +33,24 @@ class DeclarationConverter:
     """
     def __init__(self):
         self.expressionConverter = ExpressionConverter()
+    
+    def convert_declaration(self, declaration_node:Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]) -> list[str]:
+        if declaration_node.node_type != "declaration":
+            raise TypeError("declaration node must be of type declaration!")
+        
+        if declaration_node.children[0].node_type == 'decl_':
+            return self.convert_decl_(declaration_node.children[0], current_vars, custom_classes, current_functions)
+        if declaration_node.children[0].node_type == 'decl_assign':
+            return self.convert_decl_assign(declaration_node.children[0], current_vars, custom_classes, current_functions)
+        raise TypeError("invalid declaration node!")
+
+    def convert_memberDeclaration(self, declaration_node:Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]) -> list[str]:
+        if declaration_node.node_type != "memberDeclaration":
+            raise TypeError("memberDeclaration node must be of type memberDeclaration!")
+        type_specifier_node = declaration_node.children[0]
+        declarator_node = declaration_node.children[1]
+        return [self.convert_single_decl(type_specifier_node, declarator_node, current_vars, custom_classes, current_functions)]
+
 
     def convert_type(self, scope: str|None, type: str) -> str:
         if scope is not None:
@@ -153,23 +171,7 @@ class DeclarationConverter:
             py_statements.append(declaration_expr)
             py_statements.append(assignment_expr)
         return py_statements
-
-    def convert_declaration(self, declaration_node:Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]) -> list[str]:
-        if declaration_node.node_type != "declaration":
-            raise TypeError("declaration node must be of type declaration!")
-        
-        if declaration_node.children[0].node_type == 'decl_':
-            return self.convert_decl_(declaration_node.children[0], current_vars, custom_classes, current_functions)
-        if declaration_node.children[0].node_type == 'decl_assign':
-            return self.convert_decl_assign(declaration_node.children[0], current_vars, custom_classes, current_functions)
-        raise TypeError("invalid declaration node!")
-
-    def convert_memberDeclaration(self, declaration_node:Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]) -> list[str]:
-        if declaration_node.node_type != "memberDeclaration":
-            raise TypeError("memberDeclaration node must be of type memberDeclaration!")
-        type_specifier_node = declaration_node.children[0]
-        declarator_node = declaration_node.children[1]
-        return [self.convert_single_decl(type_specifier_node, declarator_node, current_vars, custom_classes, current_functions)]
+    
 
 # testing/demonstration code
 if __name__ == "__main__":
