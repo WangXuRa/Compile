@@ -174,11 +174,12 @@ class ExpressionConverter:
         
         var_type = None
         py_statement = ""
+        num_vars = 0
         for i in range(2, len(shift_node.children), 2):
             # check that the shiftOperator is the correct operator
-            if not self.s_input_op(shift_node.children[i-1]):
+            if not self.is_input_op(shift_node.children[i-1]):
                 raise SyntaxError("cannot use << with std::cin!")
-            var_name = self.convert_expression_oneline(shift_node.children[i])
+            var_name = self.convert_expression_oneline(shift_node.children[i], current_vars, custom_classes, current_functions)
             if not (var_name in current_vars.keys()):
                 raise SyntaxError(f"variable {var_name} used in input statement referenced before declaration!")
             curr_type = current_vars[var_name]
@@ -188,9 +189,15 @@ class ExpressionConverter:
                 raise SyntaxError("all variables used in a single std::cin statement must be of the same type")
             var_type = curr_type
             py_statement += var_name + ", "
-        
+            num_vars += 1
+
         py_statement = py_statement[:-2] # get rid of the last `, `
-        py_statement += f" = map({var_type}, input().split())"
+        if num_vars > 1:
+            py_statement += f" = list(map({var_type}, input().split()))"
+        elif num_vars == 1:
+            py_statement += f" = {var_type}(input())"
+        else:
+            raise SyntaxError("invalid use of std::cin, no variable to assign to!")            
         return py_statement
 
 
@@ -238,6 +245,7 @@ class ExpressionConverter:
         #--- three special cases that don't fit into the common case ..Expression OPERATOR ..Expression ---#
         # additiveExpression (shiftOperator additiveExpression)*
         if expression_node.node_type == "shiftExpression":
+            first_child = expression_node.children[0]
             # get the left side first to see if it is print or input statement
             left = self.convert_expression_oneline(first_child, current_vars, custom_classes, current_functions)
 
@@ -254,7 +262,7 @@ class ExpressionConverter:
                 return py_statement
             
             elif left == 'input':
-                return self.rocess_input(expression_node)
+                return self.process_input(expression_node, current_vars, custom_classes, current_functions)
             
             # not input or print, so just regular bitshift
             else:
@@ -347,6 +355,10 @@ if __name__ == "__main__":
     x = a++ - 10;
     std::string c;
     c = b[--x] + "hello";
+    std::cin >> x;
+    std::cout << x;
+    std::cin >> x >> a;
+    std::cout << a << x;
     """
         
     input_stream = InputStream(sample_code)
