@@ -40,7 +40,7 @@ CPP_TO_PYTHON_FUNCTIONS = {
 STD_VARS = {
     'cout' : 'print',
     'cin' : 'input',
-    'endl' : '\\n'
+    'endl' : '"\\n"'
 }
 
 BASIC_TYPES = ['int', 'float', 'str', 'bool']
@@ -358,7 +358,7 @@ if __name__ == "__main__":
     std::cin >> x;
     std::cout << x;
     std::cin >> x >> a;
-    std::cout << a << x;
+    std::cout << a << " " << x << std::endl;
     """
         
     input_stream = InputStream(sample_code)
