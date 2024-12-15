@@ -4,12 +4,6 @@ sys.path.append(sys.path[0] + '/..')
 from translation.node import Node
 from translation.expression_converter import convert_expression
 
-from antlr4 import InputStream, CommonTokenStream
-from CPPLexer import CPPLexer 
-from CPPParser import CPPParser 
-from CPPParserListener import CPPParserListener 
-from CPPParserVisitor import CPPParserVisitor
-
 CPP_TO_PYTHON_TYPES = {
     'int': 'int',
     'double': 'float',
@@ -44,7 +38,7 @@ def convert_type(scope: str|None, type: str) -> str:
     
     raise SyntaxError(f"type {type} is not supported!")
 
-def convert_single_decl(typeSpecifier: Node, declarator: Node, custom_types:list[str]) -> str:
+def convert_single_decl(typeSpecifier: Node, declarator: Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]) -> str:
     """
     completes declaration conversion, list types are initialized according to DEFAULT_LIST_VALUE
     returns a string containing the python translation of the declaration (without any indentation!)
@@ -63,7 +57,7 @@ def convert_single_decl(typeSpecifier: Node, declarator: Node, custom_types:list
         # is a custom type
         if type_node.node_type == "ID":
             # this is a valid custom type, no need to convert
-            if type_node.value in custom_types:
+            if type_node.value in custom_classes:
                 py_type = type_node.value
             else:
                 raise SyntaxError(f"invalid syntax, variable type {type_node.value} has not been declared or is not supported!")
@@ -117,9 +111,11 @@ def convert_single_decl(typeSpecifier: Node, declarator: Node, custom_types:list
     else:
         final_expr += py_type + " = None"
     
+    current_vars[var_name] = py_type
+    
     return final_expr
 
-def convert_decl_(decl_node:Node, custom_types:list[str]) -> list[str]:
+def convert_decl_(decl_node:Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]) -> list[str]:
     if decl_node.node_type != "decl_":
         return TypeError("decl_ node must be of type decl_!")
     
@@ -129,15 +125,14 @@ def convert_decl_(decl_node:Node, custom_types:list[str]) -> list[str]:
     # so every second child node must be a declarator
     for i in range(1, len(decl_node.children), 2):
         declarator_node = decl_node.children[i]
-        py_declarations.append(convert_single_decl(type_specifier_node, declarator_node, custom_types))
+        py_declarations.append(convert_single_decl(type_specifier_node, declarator_node, current_vars, custom_classes, current_functions))
     
     return py_declarations
 
-def convert_decl_assign(decl_assign_node:Node, custom_types:list[str]) -> list[str]:
+def convert_decl_assign(decl_assign_node:Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]) -> list[str]:
     if decl_assign_node.node_type != "decl_assign":
         raise TypeError("decl_assign node must be of type decl_assign!")
-    py_declarations = []
-    py_assginments = []
+    py_statements = []
     type_specifier_node = decl_assign_node.children[0]
 
     # decl_assign node is of the form typeSpecifier declarator ASSIGN assignmentExpression (COMMA declarator ASSIGN assignmentExpression)*
@@ -145,27 +140,50 @@ def convert_decl_assign(decl_assign_node:Node, custom_types:list[str]) -> list[s
     for i in range(1, len(decl_assign_node.children), 3):
         declarator_node = decl_assign_node.children[i]
         expression_node = decl_assign_node.children[i+2]
-        py_declarations.append(convert_single_decl(type_specifier_node, declarator_node, custom_types))
+        declaration_expr = convert_single_decl(type_specifier_node, declarator_node, current_vars, custom_classes, current_functions)
         var_name = declarator_node.children[0].value
-        assignment_expr = var_name + " = " + convert_expression(expression_node)
-        py_assginments.append(assignment_expr)
+        assignment_expr = var_name + " = " + convert_expression(expression_node, current_vars, custom_classes, current_functions)
+        py_statements.append(declaration_expr)
+        py_statements.append(assignment_expr)
+    return py_statements
 
+def convert_declaration(declaration_node:Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]) -> list[str]:
+    if declaration_node.node_type != "declaration":
+        raise TypeError("declaration node must be of type declaration!")
+    
+    if declaration_node.children[0].node_type == 'decl_':
+        return convert_decl_(declaration_node.children[0], current_vars, custom_classes, current_functions)
+    if declaration_node.children[0].node_type == 'decl_assign':
+        return convert_decl_assign(declaration_node.children[0], current_vars, custom_classes, current_functions)
+    raise TypeError("invalid declaration node!")
 
 if __name__ == "__main__":
-    def traverse_tree(node:Node):
-        if node.node_type == "decl_":
-            print("found a decl_ node, here are the translated results: ")
-            for line in convert_decl_(node, []):
+    from antlr4 import InputStream, CommonTokenStream
+    from CPPLexer import CPPLexer 
+    from CPPParser import CPPParser 
+    from CPPParserListener import CPPParserListener
+    from CPPParserVisitor import CPPParserVisitor
+
+
+    def traverse_tree(node:Node, current_vars, custom_classes, current_functions):
+        if node.node_type == "declaration":
+            print("found a declaration node, here are the translated results: ")
+            for line in convert_declaration(node, current_vars, custom_classes, current_functions):
                 print(line)
         else:
             for child in node.children:
-                traverse_tree(child)
+                traverse_tree(child, current_vars, custom_classes, current_functions)
 
     sample_code = """
     int x;
     bool y, z;
     char a[10];
     std::string b[10];
+    int b = 3;
+    int c = b * 10 + 2;
+    char d = a[5];
+    char e = a[b++];
+    char f = a[--b + 3] + 5;
     """
         
     input_stream = InputStream(sample_code)
@@ -206,4 +224,10 @@ if __name__ == "__main__":
         
         print("AST has been saved to 'ast_output.xml'")
 
-        traverse_tree(astTree)
+        current_vars = {}
+        custom_classes = []
+        current_functions = []
+        traverse_tree(astTree, current_vars, custom_classes, current_functions)
+        print("current variables: \n", current_vars)
+        print("custom classes: \n", custom_classes)
+        print("current functions: \n", current_functions)

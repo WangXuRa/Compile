@@ -45,7 +45,7 @@ def convert_variable_(variable_node:Node, current_vars:dict[str, str], custom_cl
     """
     returns return the converted python variable
     """
-    if not variable_node.node_type != "variable_":
+    if variable_node.node_type != "variable_":
         raise TypeError("variable_ node must by of a type variable_!")
 
     # ID
@@ -66,7 +66,7 @@ def convert_variable(variable_node:Node, current_vars:dict[str, str], custom_cla
     """
     converts a variable node, which could, under the current parser rules, be `std::cin` and `std::cout`, which are translated into input and print
     """
-    if not variable_node.node_type != "variable":
+    if variable_node.node_type != "variable":
         raise TypeError("variable node must by of a type variable!")
 
     py_var = ""
@@ -94,7 +94,7 @@ def convert_variable(variable_node:Node, current_vars:dict[str, str], custom_cla
         raise SyntaxError("invalid variable node!")
 
 def convert_function_(function_node:Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]) -> str:
-    if not function_node.node_type.endswith("function_"):
+    if function_node.node_type != ("function_"):
         raise TypeError("function_ node must by of a type function_!")
 
     # ID
@@ -114,7 +114,7 @@ def convert_function_(function_node:Node, current_vars:dict[str, str], custom_cl
     
 
 def convert_function(function_node:Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]) -> str:
-    if not function_node.node_type.endswith("function"):
+    if function_node.node_type != ("function"):
         raise TypeError("function node must by of a type function!")
     
     py_func = ""
@@ -194,7 +194,7 @@ def convert_expression(expression_node:Node, current_vars:dict[str, str], custom
         # functionCall
         if first_child.node_type == 'functionCall':
             # function LPAREN expression? RPAREN
-            func = convert_function(first_child.children[0],  current_vars, custom_classes, current_functions)
+            func = convert_function(first_child.children[0], current_vars, custom_classes, current_functions)
             if first_child.children[2].node_type == 'expression':
                 return func + '(' + convert_expression(first_child.children[0]) + ')'
             else:
@@ -206,7 +206,7 @@ def convert_expression(expression_node:Node, current_vars:dict[str, str], custom
 
     # if it only has one child, just process that
     if len(expression_node.children) == 1:
-        return convert_expression(expression_node.children[0])
+        return convert_expression(expression_node.children[0], current_vars, custom_classes, current_functions)
     
     #--- three special cases that don't fit into the common case ..Expression OPERATOR ..Expression ---#
     # additiveExpression (shiftOperator additiveExpression)*
@@ -246,29 +246,31 @@ def convert_expression(expression_node:Node, current_vars:dict[str, str], custom
         if expression_node.children[0].node_type == 'referenceOp':
             raise SyntaxError("pointer-related operations not supported in expressions!")
         
-        right = convert_expression(expression_node.children[1])
+        right = convert_expression(expression_node.children[1], current_vars, custom_classes, current_functions)
         if expression_node.children[0].node_type == 'NOT':
             return ' not ' + right
         
-        py_statement = '(' + right + ' := ' + right
+        py_statement = '(' + right + ':=' + right
         # ++/-- unaryExpression
         if expression_node.children[0].node_type == 'INCREMENT':
-            py_statement += ' + 1)'
+            py_statement += '+1)'
             return py_statement
         elif expression_node.children[0].node_type == 'DECREMENT':
-            py_statement += ' - 1)'
+            py_statement += '-1)'
             return py_statement
         else:
             raise SyntaxError("invalid unaryExpression node!")
         
     if expression_node.node_type == "postfixExpression":
-        py_statement = '( (' + right + ' := ' + right
+        left = convert_expression(expression_node.children[0], current_vars, custom_classes, current_functions)
+
+        py_statement = '((' + left + ':=' + left
         # unaryExpression ++/--
-        if expression_node.children[0].node_type == 'INCREMENT':
-            py_statement += ' + 1) - 1)'
+        if expression_node.children[1].node_type == 'INCREMENT':
+            py_statement += '+1)-1)'
             return py_statement
-        elif expression_node.children[0].node_type == 'DECREMENT':
-            py_statement += ' - 1) + 1)'
+        elif expression_node.children[1].node_type == 'DECREMENT':
+            py_statement += '-1)+1)'
             return py_statement
         else:
             raise SyntaxError("invalid unaryExpression node!")
