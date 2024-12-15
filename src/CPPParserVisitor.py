@@ -9,13 +9,10 @@ else:
 
 from translation.node import Node
 
-# This class defines a complete generic visitor for a parse tree produced by CPPParser.
-
 class CPPParserVisitor(ParseTreeVisitor):
     def __init__(self, lexer):
         self.lexer = lexer
-    
-
+        
     def visitTerminal(self, node):
         # Access the token associated with the terminal node
         token = node.getSymbol()
@@ -31,7 +28,7 @@ class CPPParserVisitor(ParseTreeVisitor):
         node = Node(token_name, str(token.text))
         # print(node)
         return node
-    
+        
     def visitChildren(self, node):
         if isinstance(node, ParserRuleContext):
             # print("visited children")
@@ -56,7 +53,7 @@ class CPPParserVisitor(ParseTreeVisitor):
             # print(result)
             return result
         return None
-
+    
     # Visit a parse tree produced by CPPParser#program.
     def visitProgram(self, ctx:CPPParser.ProgramContext):
         return self.visitChildren(ctx)
@@ -74,6 +71,11 @@ class CPPParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by CPPParser#accessSpecifier.
     def visitAccessSpecifier(self, ctx:CPPParser.AccessSpecifierContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by CPPParser#constructor.
+    def visitConstructor(self, ctx:CPPParser.ConstructorContext):
         return self.visitChildren(ctx)
 
 
@@ -212,6 +214,26 @@ class CPPParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by CPPParser#variable.
+    def visitVariable(self, ctx:CPPParser.VariableContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by CPPParser#variable_.
+    def visitVariable_(self, ctx:CPPParser.Variable_Context):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by CPPParser#function.
+    def visitFunction(self, ctx:CPPParser.FunctionContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by CPPParser#function_.
+    def visitFunction_(self, ctx:CPPParser.Function_Context):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by CPPParser#functionCall.
     def visitFunctionCall(self, ctx:CPPParser.FunctionCallContext):
         return self.visitChildren(ctx)
@@ -234,6 +256,11 @@ class CPPParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by CPPParser#includeID.
     def visitIncludeID(self, ctx:CPPParser.IncludeIDContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by CPPParser#referenceOp.
+    def visitReferenceOp(self, ctx:CPPParser.ReferenceOpContext):
         return self.visitChildren(ctx)
 
 

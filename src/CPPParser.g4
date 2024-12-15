@@ -64,7 +64,7 @@ parameter
     ;
 
 compoundStatement
-    : LBRACE referenceOp* RBRACE
+    : LBRACE (declaration | statement)* RBRACE
     ;
 
 includeStatement
@@ -153,7 +153,7 @@ postfixExpression
     ;
 
 primaryExpression
-    : (ID SCOPE)? ID (LBRACK expression RBRACK)*
+    : variable
     | number
     | functionCall
     | CHAR_LITERAL
@@ -162,9 +162,22 @@ primaryExpression
     | LPAREN expression RPAREN
     ;
 
+variable
+    : (ID SCOPE)? variable_
+    ;
+
+variable_
+    : ID (LBRACK expression RBRACK)?
+    | ID DOT variable_
+    ;
+
 function
+    : (ID SCOPE)? function_
+    ;
+
+function_
     : ID
-    | ID DOT function
+    | ID DOT function_
     ;
 
 functionCall

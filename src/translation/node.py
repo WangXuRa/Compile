@@ -1,6 +1,6 @@
 class Node:
     def __init__(self, node_type, value=None):
-        self.node_type = node_type  # Type of node (e.g., "PROGRAM", "STATEMENT")
+        self.node_type:str = node_type  # Type of node (e.g., "PROGRAM", "STATEMENT")
         self.value = value          # Value for terminal nodes (e.g., identifier, number)
         self.children : list[Node] = []          # List of child nodes
         self.parent = None

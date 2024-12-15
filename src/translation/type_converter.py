@@ -2,7 +2,7 @@ import sys
 sys.path.append(sys.path[0] + '/..')
 
 from translation.node import Node
-from translation.expression_converter import convert_assignment_expression
+from translation.expression_converter import convert_expression
 
 from antlr4 import InputStream, CommonTokenStream
 from CPPLexer import CPPLexer 
@@ -50,9 +50,9 @@ def convert_single_decl(typeSpecifier: Node, declarator: Node, custom_types:list
     returns a string containing the python translation of the declaration (without any indentation!)
     """
     if typeSpecifier.node_type != "typeSpecifier":
-        return TypeError("type specifier node must be of type typeSpecifier!")
+        raise TypeError("type specifier node must be of type typeSpecifier!")
     if declarator.node_type != "declarator":
-        return TypeError("declarator node must of type declaractor!")
+        raise TypeError("declarator node must of type declaractor!")
 
     scope = None
     cpp_type = None
@@ -66,7 +66,7 @@ def convert_single_decl(typeSpecifier: Node, declarator: Node, custom_types:list
             if type_node.value in custom_types:
                 py_type = type_node.value
             else:
-                return SyntaxError(f"invalid syntax, variable type {type_node.value} has not been declared or is not supported!")
+                raise SyntaxError(f"invalid syntax, variable type {type_node.value} has not been declared or is not supported!")
         else:
             cpp_type = type_node.value
     # is of the form ID SCOPE ID
@@ -76,7 +76,7 @@ def convert_single_decl(typeSpecifier: Node, declarator: Node, custom_types:list
         scope = scope_node.value
         cpp_type = type_node.value
     else:
-        return SyntaxError("invalid typeSpecifier node!")
+        raise SyntaxError("invalid typeSpecifier node!")
 
     if py_type is None:
         # this may throw errors during conversion
@@ -135,7 +135,7 @@ def convert_decl_(decl_node:Node, custom_types:list[str]) -> list[str]:
 
 def convert_decl_assign(decl_assign_node:Node, custom_types:list[str]) -> list[str]:
     if decl_assign_node.node_type != "decl_assign":
-        return TypeError("decl_assign node must be of type decl_assign!")
+        raise TypeError("decl_assign node must be of type decl_assign!")
     py_declarations = []
     py_assginments = []
     type_specifier_node = decl_assign_node.children[0]
@@ -147,7 +147,7 @@ def convert_decl_assign(decl_assign_node:Node, custom_types:list[str]) -> list[s
         expression_node = decl_assign_node.children[i+2]
         py_declarations.append(convert_single_decl(type_specifier_node, declarator_node, custom_types))
         var_name = declarator_node.children[0].value
-        assignment_expr = var_name + " = " + convert_assignment_expression(expression_node)
+        assignment_expr = var_name + " = " + convert_expression(expression_node)
         py_assginments.append(assignment_expr)
 
 
