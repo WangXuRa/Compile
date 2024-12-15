@@ -2,7 +2,7 @@ import sys
 sys.path.append(sys.path[0] + '/..')
 
 from translation.node import Node
-from translation.expression_converter import convert_expression
+from translation.expression_converter import convert_expression_oneline
 
 CPP_TO_PYTHON_TYPES = {
     'int': 'int',
@@ -142,7 +142,7 @@ def convert_decl_assign(decl_assign_node:Node, current_vars:dict[str, str], cust
         expression_node = decl_assign_node.children[i+2]
         declaration_expr = convert_single_decl(type_specifier_node, declarator_node, current_vars, custom_classes, current_functions)
         var_name = declarator_node.children[0].value
-        assignment_expr = var_name + " = " + convert_expression(expression_node, current_vars, custom_classes, current_functions)
+        assignment_expr = var_name + " = " + convert_expression_oneline(expression_node, current_vars, custom_classes, current_functions)
         py_statements.append(declaration_expr)
         py_statements.append(assignment_expr)
     return py_statements
@@ -156,6 +156,13 @@ def convert_declaration(declaration_node:Node, current_vars:dict[str, str], cust
     if declaration_node.children[0].node_type == 'decl_assign':
         return convert_decl_assign(declaration_node.children[0], current_vars, custom_classes, current_functions)
     raise TypeError("invalid declaration node!")
+
+def convert_memberDeclaration(declaration_node:Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]) -> list[str]:
+    if declaration_node.node_type != "memberDeclaration":
+        raise TypeError("memberDeclaration node must be of type memberDeclaration!")
+    type_specifier_node = declaration_node.children[0]
+    declarator_node = declaration_node.children[1]
+    return [convert_single_decl(type_specifier_node, declarator_node, current_vars, custom_classes, current_functions)]
 
 if __name__ == "__main__":
     from antlr4 import InputStream, CommonTokenStream
@@ -184,6 +191,7 @@ if __name__ == "__main__":
     char d = a[5];
     char e = a[b++];
     char f = a[--b + 3] + 5;
+    int g = c = 2;
     """
         
     input_stream = InputStream(sample_code)

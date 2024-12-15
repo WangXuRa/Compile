@@ -400,6 +400,71 @@
     </decl_assign>
     <SEMICOLON>;</SEMICOLON>
   </declaration>
+  <declaration>
+    <decl_assign>
+      <typeSpecifier>
+        <INT>int</INT>
+      </typeSpecifier>
+      <declarator>
+        <ID>g</ID>
+      </declarator>
+      <ASSIGN>=</ASSIGN>
+      <assignmentExpression>
+        <logicalOrExpression>
+          <logicalAndExpression>
+            <equalityExpression>
+              <relationalExpression>
+                <shiftExpression>
+                  <additiveExpression>
+                    <multiplicativeExpression>
+                      <unaryExpression>
+                        <postfixExpression>
+                          <primaryExpression>
+                            <variable>
+                              <variable_>
+                                <ID>c</ID>
+                              </variable_>
+                            </variable>
+                          </primaryExpression>
+                        </postfixExpression>
+                      </unaryExpression>
+                    </multiplicativeExpression>
+                  </additiveExpression>
+                </shiftExpression>
+              </relationalExpression>
+            </equalityExpression>
+          </logicalAndExpression>
+        </logicalOrExpression>
+        <ASSIGN>=</ASSIGN>
+        <assignmentExpression>
+          <logicalOrExpression>
+            <logicalAndExpression>
+              <equalityExpression>
+                <relationalExpression>
+                  <shiftExpression>
+                    <additiveExpression>
+                      <multiplicativeExpression>
+                        <unaryExpression>
+                          <postfixExpression>
+                            <primaryExpression>
+                              <number>
+                                <NUMBER>2</NUMBER>
+                              </number>
+                            </primaryExpression>
+                          </postfixExpression>
+                        </unaryExpression>
+                      </multiplicativeExpression>
+                    </additiveExpression>
+                  </shiftExpression>
+                </relationalExpression>
+              </equalityExpression>
+            </logicalAndExpression>
+          </logicalOrExpression>
+        </assignmentExpression>
+      </assignmentExpression>
+    </decl_assign>
+    <SEMICOLON>;</SEMICOLON>
+  </declaration>
 </program>
 
 </AST>

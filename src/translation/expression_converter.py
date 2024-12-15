@@ -54,7 +54,7 @@ def convert_variable_(variable_node:Node, current_vars:dict[str, str], custom_cl
     # ID LBRACK expression RBRACK
     elif len(variable_node.children) == 4:
         return variable_node.children[0].value + '[' \
-            + convert_expression(variable_node.children[2], current_vars, custom_classes, current_functions) + ']'
+            + convert_expression_oneline(variable_node.children[2], current_vars, custom_classes, current_functions) + ']'
     # ID DOT variable_
     elif len(variable_node.children) == 3:
         right = convert_variable_(variable_node.children[2], current_vars, custom_classes, current_functions)
@@ -155,7 +155,7 @@ def process_input(shift_node:Node, current_vars:dict[str, str], custom_classes:l
         # check that the shiftOperator is the correct operator
         if not is_input_op(shift_node.children[i-1]):
             raise SyntaxError("cannot use << with std::cin!")
-        var_name = convert_expression(shift_node.children[i])
+        var_name = convert_expression_oneline(shift_node.children[i])
         if not (var_name in current_vars.keys()):
             raise SyntaxError(f"variable {var_name} used in input statement referenced before declaration!")
         curr_type = current_vars[var_name]
@@ -171,7 +171,7 @@ def process_input(shift_node:Node, current_vars:dict[str, str], custom_classes:l
     return py_statement
 
 
-def convert_expression(expression_node:Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]) -> str:
+def convert_expression_oneline(expression_node:Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]) -> str:
     if not (expression_node.node_type.endswith("Expression") or expression_node.node_type == 'expression'):
         raise TypeError("expression node for processing must by of a type that ends in Expression!")
     
@@ -196,23 +196,23 @@ def convert_expression(expression_node:Node, current_vars:dict[str, str], custom
             # function LPAREN expression? RPAREN
             func = convert_function(first_child.children[0], current_vars, custom_classes, current_functions)
             if first_child.children[2].node_type == 'expression':
-                return func + '(' + convert_expression(first_child.children[0]) + ')'
+                return func + '(' + convert_expression_oneline(first_child.children[0]) + ')'
             else:
                 return func + '()'
             
         # LPAREN expression RPAREN
         if first_child.node_type == 'LPAREN':
-            return '(' + convert_expression(expression_node.children[1]) + ')'
+            return '(' + convert_expression_oneline(expression_node.children[1]) + ')'
 
     # if it only has one child, just process that
     if len(expression_node.children) == 1:
-        return convert_expression(expression_node.children[0], current_vars, custom_classes, current_functions)
+        return convert_expression_oneline(expression_node.children[0], current_vars, custom_classes, current_functions)
     
     #--- three special cases that don't fit into the common case ..Expression OPERATOR ..Expression ---#
     # additiveExpression (shiftOperator additiveExpression)*
     if expression_node.node_type == "shiftExpression":
         # get the left side first to see if it is print or input statement
-        left = convert_expression(first_child, current_vars, custom_classes, current_functions)
+        left = convert_expression_oneline(first_child, current_vars, custom_classes, current_functions)
 
         if left == 'print':
             py_statement = "print("
@@ -221,7 +221,7 @@ def convert_expression(expression_node:Node, current_vars:dict[str, str], custom
                 if is_input_op(expression_node.children[i-1]):
                     raise SyntaxError("cannot use >> with std::cout!")
 
-                print_elem = convert_expression(expression_node.children[i], current_vars, custom_classes, current_functions)
+                print_elem = convert_expression_oneline(expression_node.children[i], current_vars, custom_classes, current_functions)
                 py_statement += print_elem + ", "
             py_statement += "sep='', end='')" # change seperator and endto empty string to mimic behavior of std::cout
             return py_statement
@@ -239,14 +239,14 @@ def convert_expression(expression_node:Node, current_vars:dict[str, str], custom
                 else:
                     py_statement += " << "
 
-                py_statement += convert_expression(expression_node.children[i], current_vars, custom_classes, current_functions)
+                py_statement += convert_expression_oneline(expression_node.children[i], current_vars, custom_classes, current_functions)
             return py_statement
             
     if expression_node.node_type == "unaryExpression":
         if expression_node.children[0].node_type == 'referenceOp':
             raise SyntaxError("pointer-related operations not supported in expressions!")
         
-        right = convert_expression(expression_node.children[1], current_vars, custom_classes, current_functions)
+        right = convert_expression_oneline(expression_node.children[1], current_vars, custom_classes, current_functions)
         if expression_node.children[0].node_type == 'NOT':
             return ' not ' + right
         
@@ -262,7 +262,7 @@ def convert_expression(expression_node:Node, current_vars:dict[str, str], custom
             raise SyntaxError("invalid unaryExpression node!")
         
     if expression_node.node_type == "postfixExpression":
-        left = convert_expression(expression_node.children[0], current_vars, custom_classes, current_functions)
+        left = convert_expression_oneline(expression_node.children[0], current_vars, custom_classes, current_functions)
 
         py_statement = '((' + left + ':=' + left
         # unaryExpression ++/--
@@ -277,11 +277,18 @@ def convert_expression(expression_node:Node, current_vars:dict[str, str], custom
         
     # common case
     if len(expression_node.children) == 3:
-        left = convert_expression(expression_node.children[0], current_vars, custom_classes, current_functions)
-        right = convert_expression(expression_node.children[2], current_vars, custom_classes, current_functions)
+        left = convert_expression_oneline(expression_node.children[0], current_vars, custom_classes, current_functions)
+        right = convert_expression_oneline(expression_node.children[2], current_vars, custom_classes, current_functions)
         cpp_op = expression_node.children[1].value
         if cpp_op in CPP_TO_PYTHON_EXPRESSIONS.keys():
             py_op = CPP_TO_PYTHON_EXPRESSIONS[cpp_op]
             return left + " " + py_op + " " + right
         else:
             raise SyntaxError(f"c++ operator {cpp_op} not supported by this translator!")
+
+
+def convert_expression(expression_node:Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]) -> str:
+    if expression_node.node_type != 'expression':
+        raise TypeError("expression node for processing must by of type expression!")
+    
+    return [convert_expression_oneline(expression_node, current_vars, custom_classes, current_functions)]
