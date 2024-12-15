@@ -1,7 +1,7 @@
 import sys
 sys.path.append(sys.path[0] + '/..')
 
-from translation.node import Node
+from translation.Node import Node
 from translation.ExpressionConverter import ExpressionConverter
 
 CPP_TO_PYTHON_TYPES = {

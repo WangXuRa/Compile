@@ -9,7 +9,7 @@ Features:
 
 import sys
 sys.path.append(sys.path[0] + '/..')
-from translation.node import Node
+from translation.Node import Node
 
 CPP_TO_PYTHON_EXPRESSIONS = {
     '&&': 'and',
