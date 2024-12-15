@@ -7,12 +7,12 @@ else:
 
 # This class defines a complete generic visitor for a parse tree produced by CPPParser.
 
-from translation.node import Node
+from translation.Node import Node
 
 class CPPParserVisitor(ParseTreeVisitor):
     def __init__(self, lexer):
         self.lexer = lexer
-        
+
     def visitTerminal(self, node):
         # Access the token associated with the terminal node
         token = node.getSymbol()
