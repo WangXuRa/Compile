@@ -1,3 +1,12 @@
+"""
+Features:
+* supports in-place incrementation (++/--), ++x and x++ behaves as would in a cpp program
+* supports cin operations separated by a space only
+    * ex. translation of `std::cin >> a >> b` would still be able to read "10 20" as a=10 and b=20
+    * although all variables used in a single std::cin needs to be of the same basic type
+"""
+
+
 import sys
 sys.path.append(sys.path[0] + '/..')
 from translation.node import Node
