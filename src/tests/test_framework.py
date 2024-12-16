@@ -1,6 +1,6 @@
 import unittest
 from pathlib import Path
-from src.cpp_to_python_transpiler import CppToPythonTranspiler, TranspilerError
+from translation.cpp_to_python_transpiler import CppToPythonTranspiler, TranspilerError
 
 class TestCppToPythonTranspiler(unittest.TestCase):
     def setUp(self):
