@@ -2,11 +2,13 @@
 
 int main() {
     // 输入字符串 s 和模板串 t
-    char s[1000], t[1000];
+    // char s[1000], t[1000];
+    char s[1000];
+    char t[1000];
     std::cin >> s >> t;
 
-    int m = strlen(t); // 模板串 t 的长度
-    int n = strlen(s); // 字符串 s 的长度
+    int m = std::strlen(t); // 模板串 t 的长度
+    int n = std::strlen(s); // 字符串 s 的长度
 
     // 计算 KMP 的部分匹配表 (next 数组)
     int next[1000];  // next 数组的最大长度为模板串的长度

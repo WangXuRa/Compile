@@ -26,10 +26,14 @@ class StatementConverter:
             "compoundStatement": self.convert_compoundStatement,
             "selectionStatement": self.convert_selectionStatement,
             "iterationStatement": self.convert_iterationStatement,
-            "jumpStatement": self.convert_jumpStatement
+            "jumpStatement": self.convert_jumpStatement,
+            "forStatement": self.convert_iterationStatement  # Map forStatement to iterationStatement
         }
         
         if node.node_type not in converters:
+            # Skip certain token types that don't need conversion
+            if node.node_type in ["RPAREN", "LPAREN", "SEMICOLON"]:
+                return [""]
             raise TypeError(f"Unsupported statement type: {node.node_type}")
         
         return converters[node.node_type](node, current_vars, custom_classes, current_functions)
@@ -114,123 +118,136 @@ class StatementConverter:
             result.extend(["    " + line for line in body])
             
         elif node.children[0].node_type == "FOR":
-            loop_vars = current_vars.copy()
+            # Get the components of the for loop
+            init = node.children[2]  # initialization
+            cond = node.children[4]  # condition
+            incr = node.children[5]  # increment
+            body = node.children[7]  # body
             
-            # Extract the three parts of the for loop
-            init_part = node.children[2]
-            condition_part = node.children[4].children[0] if node.children[4].children else None
-            increment_part = node.children[5] if len(node.children) > 5 else None
-            body_part = node.children[7] if len(node.children) > 7 else None
-
-            def find_relational_expression(node):
-                """Traverse down the AST to find the relational expression"""
-                if not node:
-                    return None
-                if node.node_type == "relationalExpression":
-                    return node
-                if hasattr(node, 'children'):
-                    for child in node.children:
-                        result = find_relational_expression(child)
-                        if result:
-                            return result
-                return None
-
-            def find_postfix_increment(node):
-                """Traverse down the AST to find postfix increment"""
-                if not node:
-                    return None
-                if (node.node_type == "postfixExpression" and 
-                    len(node.children) == 2 and 
-                    node.children[1].node_type == "INCREMENT"):
-                    return node
-                if hasattr(node, 'children'):
-                    for child in node.children:
-                        result = find_postfix_increment(child)
-                        if result:
-                            return result
-                return None
-
-            def get_variable_name(node):
-                """Helper function to extract variable name from any node type"""
-                if node.node_type == "variable_":
-                    return node.children[0].value
-                if node.node_type == "ID":
-                    return node.value
-                if hasattr(node, 'children') and node.children:
-                    return get_variable_name(node.children[0])
-                return None
-
-            if init_part and init_part.node_type == "decl_assign":
-                try:
-                    # Get initialization variable and value
-                    var_name = init_part.children[1].children[0].value
-                    # Add the variable to current_vars with its type
-                    var_type = init_part.children[0].children[0].value
-                    current_vars[var_name] = var_type
-                    loop_vars[var_name] = var_type
-                    
-                    start_val = self.expressionConverter.convert_expression_oneline(
-                        init_part.children[3], loop_vars, custom_classes, current_functions)
-                    
-                    # Find the relational expression in the condition part
-                    rel_expr = find_relational_expression(condition_part)
-                    if rel_expr:
-                        left = rel_expr.children[0]
-                        operator = rel_expr.children[1].value
-                        right = rel_expr.children[2]
-                        
-                        left_var_name = get_variable_name(left)
-                        
-                        if (left_var_name == var_name and operator in ["<", "<="]):
-                            end_val = self.expressionConverter.convert_expression_oneline(
-                                right, loop_vars, custom_classes, current_functions)
-                            
-                            if increment_part:
-                                postfix_expr = find_postfix_increment(increment_part)
-                                if postfix_expr:
-                                    inc_var = get_variable_name(postfix_expr.children[0])
-                                    
-                                    if inc_var == var_name:
-                                        if operator == "<":
-                                            result.append(f"for {var_name} in range({start_val}, {end_val}):")
-                                        else:  # operator is <=
-                                            result.append(f"for {var_name} in range({start_val}, {end_val} + 1):")
-                                        
-                                        if body_part:
-                                            body = self.convert_statement(
-                                                body_part, loop_vars, custom_classes, current_functions)
-                                            result.extend(["    " + line for line in body])
-                                        return result
+            # Extract loop variable and range parameters
+            var_name = None
+            start = None
+            end = None
+            step = "1"
             
-                except (AttributeError, IndexError):
-                    pass  # Fall back to while loop conversion
-            
-            # Fall back to while loop conversion
-            result = []
-            
-            if init_part:
-                if init_part.node_type == "decl_assign":
-                    result.extend(self.declarationConverter.convert_decl_assign(
-                        init_part, loop_vars, custom_classes, current_functions))
+            # Get initialization variable and start value
+            if init:
+                if init.node_type == "assignmentExpression":
+                    # Handle i = left case
+                    var_name = init.children[0].children[0].children[0].children[0].value
+                    start = self.expressionConverter.convert_expression_oneline(
+                        init.children[2], current_vars, custom_classes, current_functions)
+                    current_vars[var_name] = "int"
+                elif init.node_type == "decl_assign":
+                    # Handle int i = 0 case
+                    var_name = init.children[1].children[0].value  # get the ID directly
+                    start = self.expressionConverter.convert_expression_oneline(
+                        init.children[3], current_vars, custom_classes, current_functions)
+                    current_vars[var_name] = "int"
                 else:
-                    init_code = self.expressionConverter.convert_expression_oneline(
-                        init_part, loop_vars, custom_classes, current_functions)
-                    result.append(init_code)
+                    raise TypeError(f"Unsupported initialization type: {init.node_type}")
             
-            condition = "True"
-            if condition_part:
-                condition = self.expressionConverter.convert_expression_oneline(
-                    condition_part, loop_vars, custom_classes, current_functions)
+            # Get condition for end value
+            if cond and hasattr(cond, 'children') and len(cond.children) > 0:
+                # Navigate through the nested structure to get to relationalExpression
+                cond_expr = cond
+                if cond_expr.node_type == "expressionStatement":
+                    cond_expr = cond_expr.children[0]  # expression
+                if hasattr(cond_expr, 'node_type') and cond_expr.node_type == "expression":
+                    cond_expr = cond_expr.children[0]  # assignmentExpression
+                if hasattr(cond_expr, 'node_type') and cond_expr.node_type == "assignmentExpression":
+                    cond_expr = cond_expr.children[0]  # logicalOrExpression
+                if hasattr(cond_expr, 'node_type') and cond_expr.node_type == "logicalOrExpression":
+                    cond_expr = cond_expr.children[0]  # logicalAndExpression
+                if hasattr(cond_expr, 'node_type') and cond_expr.node_type == "logicalAndExpression":
+                    cond_expr = cond_expr.children[0]  # equalityExpression
+                if hasattr(cond_expr, 'node_type') and cond_expr.node_type == "equalityExpression":
+                    cond_expr = cond_expr.children[0]  # relationalExpression
+                
+                if hasattr(cond_expr, 'node_type') and cond_expr.node_type == "relationalExpression":
+                    # Get the variable being compared
+                    left = self.expressionConverter.convert_expression_oneline(
+                        cond_expr.children[0], current_vars, custom_classes, current_functions)
+                    
+                    # Find the operator (LE, LT, GE, GT)
+                    for child in cond_expr.children:
+                        if child.node_type in ["LE", "LT", "GE", "GT"]:
+                            op = child.value
+                            break
+                    
+                    # Get the right value from the shiftExpression after the operator
+                    for i, child in enumerate(cond_expr.children):
+                        if child.node_type in ["LE", "LT", "GE", "GT"]:
+                            right = self.expressionConverter.convert_expression_oneline(
+                                cond_expr.children[i + 1], current_vars, custom_classes, current_functions)
+                            break
+                    
+                    # Adjust end value based on operator
+                    if op == "<":
+                        end = right
+                    elif op == "<=":
+                        end = f"{right} + 1"  # Include the end value for <=
+                    elif op == ">":
+                        end = f"{right} - 1"  # Include the end value for >
+                        step = "-1"
+                    elif op == ">=":
+                        end = right  # Include the end value for >=
+                        step = "-1"
             
-            result.append(f"while {condition}:")
+            # Get step from increment
+            if incr and hasattr(incr, 'children'):
+                if incr.node_type == "expression":
+                    incr_expr = incr.children[0]
+                else:
+                    incr_expr = incr
+                
+                if hasattr(incr_expr, 'node_type'):
+                    if incr_expr.node_type == "unaryExpression":
+                        if len(incr_expr.children) >= 2:
+                            if incr_expr.children[0].node_type == "INCREMENT":
+                                step = "1"
+                            elif incr_expr.children[0].node_type == "DECREMENT":
+                                step = "-1"
+                    elif incr_expr.node_type == "assignmentExpression":
+                        if len(incr_expr.children) >= 3:
+                            if "+=" in incr_expr.value:
+                                step = incr_expr.children[2].value
+                            elif "-=" in incr_expr.value:
+                                step = f"-{incr_expr.children[2].value}"
             
-            if body_part:
-                body = self.convert_statement(body_part, loop_vars, custom_classes, current_functions)
-                if increment_part:
-                    inc = self.expressionConverter.convert_expression_oneline(
-                        increment_part, loop_vars, custom_classes, current_functions)
-                    body.append(inc)
-                result.extend(["    " + line for line in body])
+            # Ensure we have valid values
+            if var_name is None:
+                var_name = "i"
+                current_vars[var_name] = "int"
+            if start is None:
+                start = "0"
+            if end is None:
+                end = "size"
+            
+            # Create the for loop
+            if step == "1":
+                result.append(f"for {var_name} in range({start}, {end}):")
+            else:
+                result.append(f"for {var_name} in range({start}, {end}, {step}):")
+            
+            # Convert body
+            body_lines = []
+            if body:
+                if body.node_type == "compoundStatement" and body.children:
+                    for stmt in body.children:
+                        stmt_lines = self.convert_statement(stmt, current_vars, custom_classes, current_functions)
+                        if stmt_lines:
+                            body_lines.extend(stmt_lines)
+                else:
+                    stmt_lines = self.convert_statement(body, current_vars, custom_classes, current_functions)
+                    if stmt_lines:
+                        body_lines.extend(stmt_lines)
+            
+            # Add indentation to body
+            if body_lines:
+                result.extend("    " + line for line in body_lines if line.strip())
+            else:
+                result.append("    pass")
         
         return result
 
@@ -303,25 +320,6 @@ class StatementConverter:
         if output_exprs:
             return [f"print({', '.join(output_exprs)}, end='')"]
         return ["print()"]
-
-    def convert_for_statement(self, node: Node, current_vars: dict[str, str], custom_classes: list[str], current_functions: list[str]) -> list[str]:
-        """Convert C++ for loops, handling array iterations"""
-        # Extract loop components
-        init = self.expressionConverter.convert_expression_oneline(node.children[2], current_vars, custom_classes, current_functions)
-        cond = self.expressionConverter.convert_expression_oneline(node.children[4], current_vars, custom_classes, current_functions)
-        incr = self.expressionConverter.convert_expression_oneline(node.children[6], current_vars, custom_classes, current_functions)
-        
-        # Convert to Python range-based for loop
-        if 'i < ' in cond:  # Common array iteration pattern
-            limit = cond.split(' < ')[1]
-            return [f"for {init.split(' = ')[0]} in range({limit}):"]
-        
-        # Generic for loop conversion
-        return [
-            f"# Initialize: {init}",
-            f"while {cond}:",
-            f"    # Update: {incr}"
-        ]
 
 # Testing code
 if __name__ == "__main__":

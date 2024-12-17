@@ -29,16 +29,13 @@ class CPPToPythonVisitor(CPPParserVisitor):
     def visitChildren(self, ctx):
         """Override visitChildren to create Node objects"""
         rule_name = CPPParser.ruleNames[ctx.getRuleContext().getRuleIndex()]
-        print(f"DEBUG: Creating node for rule: {rule_name}")
         node = Node(rule_name)
         
         if ctx.children:
             for child in ctx.children:
-                print(f"DEBUG: Processing child of type: {type(child).__name__}")
                 # For terminal nodes (tokens)
                 if isinstance(child, TerminalNode):
                     token_type = self.lexer.symbolicNames[child.symbol.type]
-                    print(f"DEBUG: Terminal node - type: {token_type}, text: {child.getText()}")
                     child_node = Node(token_type, child.getText())
                     node.add_child(child_node)
                 else:
@@ -51,22 +48,18 @@ class CPPToPythonVisitor(CPPParserVisitor):
     def visitTerminal(self, node):
         """Handle terminal nodes"""
         token_type = self.lexer.symbolicNames[node.symbol.type]
-        print(f"DEBUG: Visiting terminal node - type: {token_type}, text: {node.getText()}")
         return Node(token_type, node.getText())
 
     def visitProgram(self, ctx):
         """Visit the root program node"""
-        print("DEBUG: Visiting program")
         node = Node("program")
         if ctx.children:
             for child in ctx.children:
-                print(f"DEBUG: Processing child type: {type(child).__name__}")
                 result = self.visit(child)
                 if result:
                     node.add_child(result)
                     
                     if result.node_type == "declaration":
-                        print("DEBUG: Found declaration")
                         if self.declaration_converter:
                             declarations = self.declaration_converter.convert_declaration(
                                 result,
@@ -76,15 +69,12 @@ class CPPToPythonVisitor(CPPParserVisitor):
                             )
                             if declarations:
                                 self.output_lines.extend(declarations)
-                                print(f"DEBUG: Added declarations: {declarations}")
                     
                     elif result.node_type == "classDefinition":
-                        print("DEBUG: Found class definition")
                         self.in_class = True
                         if self.class_converter:
                             # Get class name from the node
                             self.current_class = result.children[1].value
-                            print(f"DEBUG: Processing class {self.current_class}")
                             
                             # Process class body to add member variables to symbol table
                             class_body = result.children[3]  # classBody node
@@ -99,7 +89,6 @@ class CPPToPythonVisitor(CPPParserVisitor):
                                         # Add both forms to symbol table
                                         self.symbol_table[var_name] = var_type  # Regular form
                                         self.symbol_table[f"self.{var_name}"] = var_type  # Class member form
-                                        print(f"DEBUG: Added class member {var_name} to symbol table")
                             
                             # Convert class definition
                             class_lines = self.class_converter.convert_class(
@@ -110,20 +99,17 @@ class CPPToPythonVisitor(CPPParserVisitor):
                             )
                             if class_lines:
                                 self.output_lines.extend(class_lines)
-                                print(f"DEBUG: Added class definition: {class_lines}")
                             
                             self.in_class = False
                             self.current_class = None
                     
                     elif result.node_type == "statement":
-                        print("DEBUG: Found statement")
                         # Let visitStatement handle the statement conversion
                         # The conversion is already done in visitStatement, 
                         # so we don't need to do anything here
                         pass
                     
                     elif result.node_type == "expression":
-                        print("DEBUG: Found expression")
                         if self.expression_converter:
                             expressions = self.expression_converter.convert_expression(
                                 result,
@@ -133,10 +119,8 @@ class CPPToPythonVisitor(CPPParserVisitor):
                             )
                             if expressions:
                                 self.output_lines.extend(expressions)
-                                print(f"DEBUG: Added expressions: {expressions}")
                     
                     elif result.node_type == "functionDefinition":
-                        print("DEBUG: Found function definition")
                         if self.function_converter:
                             function_lines = self.function_converter.convert_function(
                                 result,
@@ -146,15 +130,11 @@ class CPPToPythonVisitor(CPPParserVisitor):
                             )
                             if function_lines:
                                 self.output_lines.extend(function_lines)
-                                print(f"DEBUG: Added function definition: {function_lines}")
         
-        print(f"DEBUG: Final symbol table: {self.symbol_table}")
-        print(f"DEBUG: Final output_lines: {self.output_lines}")
         return node
 
     def visitDeclaration(self, ctx):
         """Visit a declaration node"""
-        print("DEBUG: Visiting declaration")
         node = Node("declaration")
         # Process declaration children
         for child in ctx.children:
@@ -165,7 +145,6 @@ class CPPToPythonVisitor(CPPParserVisitor):
 
     def visitExpression(self, ctx):
         """Visit an expression node"""
-        print("DEBUG: Visiting expression")
         node = Node("expression")
         # Process expression children
         for child in ctx.children:
@@ -176,7 +155,6 @@ class CPPToPythonVisitor(CPPParserVisitor):
 
     def visit(self, tree):
         """Override visit to ensure proper node creation"""
-        print(f"DEBUG: Visiting node type: {type(tree).__name__}")
         result = super().visit(tree)
         if isinstance(result, str):
             # Create a node for terminal values

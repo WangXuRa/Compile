@@ -416,6 +416,11 @@ class ExpressionConverter:
             
         # common case
         if len(expression_node.children) == 3:
+            # Only use convert_binary_expression for actual binary expressions
+            if expression_node.node_type == "binaryExpression":
+                return self.convert_binary_expression(expression_node, current_vars, custom_classes, current_functions)
+            
+            # Handle other three-child expressions as before
             left = self.convert_expression_oneline(expression_node.children[0], current_vars, custom_classes, current_functions)
             right = self.convert_expression_oneline(expression_node.children[2], current_vars, custom_classes, current_functions)
             cpp_op = expression_node.children[1].value
@@ -424,9 +429,35 @@ class ExpressionConverter:
                 # Special handling for comma operator in function arguments
                 if py_op == ',':
                     return left + ", " + right
+                elif py_op == "/":
+                    if self.is_integer_expression(left, current_vars) and self.is_integer_expression(right, current_vars):
+                        return f"{left} // {right}"
+                    else:
+                        return f"{left} / {right}"
                 return left + " " + py_op + " " + right
             else:
                 raise SyntaxError(f"c++ operator {cpp_op} not supported by this translator!, node type: {expression_node.node_type}")
+            
+    def is_integer_expression(self, expr: str, current_vars: dict[str, str]) -> bool:
+        """Check if an expression will result in an integer"""
+        # Check if it's a literal integer
+        try:
+            int(expr)
+            return True
+        except ValueError:
+            pass
+        
+        # Check if it's a variable of integer type
+        if expr in current_vars and self.is_integer_type(current_vars[expr]):
+            return True
+        
+        # Check if it's an expression in parentheses
+        if expr.startswith('(') and expr.endswith(')'):
+            # For now, assume expressions involving integers result in integers
+            # This is a simplification but works for most arithmetic operations
+            return True
+        
+        return False
 
     def convert_variable_access(self, variable_node: Node, current_vars: dict[str, str], custom_classes: list[str], current_functions: list[str]) -> str:
         """Handle variable access, including array access"""
@@ -463,6 +494,34 @@ class ExpressionConverter:
         target = self.convert_variable_access(target_node, current_vars, custom_classes, current_functions)
         value = self.convert_expression_oneline(value_node, current_vars, custom_classes, current_functions)
         return f"{target} = {value}"
+
+    def convert_binary_expression(self, expr_node: Node, current_vars: dict, custom_classes: list, current_functions: list) -> str:
+        """Convert a binary expression to Python"""
+        if expr_node.node_type != "binaryExpression":
+            raise TypeError("Expected binaryExpression node!")
+        
+        left = self.convert_expression_oneline(expr_node.children[0], current_vars, custom_classes, current_functions)
+        operator = expr_node.value
+        right = self.convert_expression_oneline(expr_node.children[1], current_vars, custom_classes, current_functions)
+        
+        # Handle special cases for comparison operators
+        if operator == "<" or operator == "<=" or operator == ">" or operator == ">=" or operator == "==" or operator == "!=":
+            return f"{left} {operator} {right}"
+        
+        # Handle arithmetic operators
+        if operator in ["+", "-", "*", "/", "%"]:
+            # Convert integer division
+            if operator == "/" and self.is_integer_type(current_vars.get(left)) and self.is_integer_type(current_vars.get(right)):
+                return f"{left} // {right}"
+            return f"{left} {operator} {right}"
+        
+        return f"{left} {operator} {right}"
+
+    def is_integer_type(self, type_str: str) -> bool:
+        """Check if a type is an integer type"""
+        if not type_str:
+            return False
+        return type_str in ["int", "long", "short", "unsigned", "size_t"]
 
 # testing/demonstration code
 if __name__ == "__main__":
