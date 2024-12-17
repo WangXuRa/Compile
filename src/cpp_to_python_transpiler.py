@@ -1,5 +1,5 @@
 from antlr4 import *
-from typing import Optional, Dict, Set
+from typing import Optional, Dict, Set, List
 from antlr4.error.ErrorListener import ErrorListener
 from CPPLexer import CPPLexer
 from CPPParser import CPPParser
@@ -34,7 +34,6 @@ class CppToPythonTranspiler:
 
     def transpile(self, input_code: str) -> str:
         """Transpile C++ code to Python code"""
-        print("DEBUG: Starting transpilation")
         try:
             # Create lexer and parser
             input_stream = InputStream(input_code)
@@ -58,7 +57,11 @@ class CppToPythonTranspiler:
             # Generate output with imports
             output_lines = []
             
-            # Add imports first
+            # Add typing import for List
+            output_lines.append("from typing import List")
+            output_lines.append("")  # Empty line after import
+            
+            # Add other imports
             imports = self.include_converter.get_all_imports()
             if imports:
                 output_lines.extend(imports)

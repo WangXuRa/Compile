@@ -2,7 +2,7 @@
 
 class MergeSort {
 private:
-    void merge(int arr[], int left, int mid, int right, int temp[]) {
+    void merge(int* arr, int left, int mid, int right, int* temp) {
         int i = left;
         int j = mid + 1;
         int k = left;
@@ -28,7 +28,7 @@ private:
         }
     }
 
-    void mergeSort(int arr[], int left, int right, int temp[]) {
+    void mergeSort(int* arr, int left, int right, int* temp) {
         if (left >= right) return;
 
         int mid = left + (right - left) / 2;
@@ -38,7 +38,7 @@ private:
     }
 
 public:
-    void sort(int arr[], int size) {
+    void sort(int* arr, int size) {
         int temp[100];
         mergeSort(arr, 0, size - 1, temp);
     }

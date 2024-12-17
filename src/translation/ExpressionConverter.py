@@ -464,6 +464,34 @@ class ExpressionConverter:
         value = self.convert_expression_oneline(value_node, current_vars, custom_classes, current_functions)
         return f"{target} = {value}"
 
+    def convert_binary_expression(self, expr_node: Node, current_vars: dict, custom_classes: list, current_functions: list) -> str:
+        """Convert a binary expression to Python"""
+        if expr_node.node_type != "binaryExpression":
+            raise TypeError("Expected binaryExpression node!")
+        
+        left = self.convert_expression_oneline(expr_node.children[0], current_vars, custom_classes, current_functions)
+        operator = expr_node.value
+        right = self.convert_expression_oneline(expr_node.children[1], current_vars, custom_classes, current_functions)
+        
+        # Handle special cases for comparison operators
+        if operator == "<" or operator == "<=" or operator == ">" or operator == ">=" or operator == "==" or operator == "!=":
+            return f"{left} {operator} {right}"
+        
+        # Handle arithmetic operators
+        if operator in ["+", "-", "*", "/", "%"]:
+            # Convert integer division
+            if operator == "/" and self.is_integer_type(current_vars.get(left)) and self.is_integer_type(current_vars.get(right)):
+                return f"{left} // {right}"
+            return f"{left} {operator} {right}"
+        
+        return f"{left} {operator} {right}"
+
+    def is_integer_type(self, type_str: str) -> bool:
+        """Check if a type is an integer type"""
+        if not type_str:
+            return False
+        return type_str in ["int", "long", "short", "unsigned", "size_t"]
+
 # testing/demonstration code
 if __name__ == "__main__":
     from antlr4 import InputStream, CommonTokenStream

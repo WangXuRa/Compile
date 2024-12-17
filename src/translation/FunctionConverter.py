@@ -5,6 +5,7 @@ from translation.Node import Node
 from translation.ExpressionConverter import ExpressionConverter
 from translation.DeclarationConverter import DeclarationConverter
 from translation.StatementConverter import StatementConverter
+from typing import List
 
 class FunctionConverter:
     """
@@ -94,24 +95,29 @@ class FunctionConverter:
         
         return result
 
-    def convert_function_signature(self, node: Node, current_vars: dict[str, str]) -> str:
+    def convert_function_signature(self, function_node: Node, current_vars: dict[str, str]) -> str:
         """Convert function signature including parameters"""
-        func_name = node.children[1].value
+        # Get function name
+        func_name = function_node.children[1].value
         
-        # Handle parameters
+        # Get return type
+        return_type = self.convert_type(function_node.children[0].children[0].value)
+        
+        # Process parameters
         params = []
-        if len(node.children) > 3:  # Has parameters
-            param_list = node.children[3]
-            for param in param_list.children:
-                if param.node_type == "parameter":
-                    param_name = param.children[-1].value
-                    params.append(param_name)
+        if len(function_node.children) > 2:  # Has parameters
+            param_list = function_node.children[2]  # Parameter list node
+            if param_list.node_type == "parameterList":
+                for param in param_list.children:
+                    if param.node_type != "COMMA":  # Skip commas
+                        params.append(self.convert_parameter(param, current_vars))
         
-        # For class methods, add 'self' as first parameter
-        if '.' in func_name:  # Class method
-            params.insert(0, 'self')
-        
-        return f"def {func_name}({', '.join(params)}):"
+        # Build function signature
+        param_str = ", ".join(params)
+        if return_type == "None":
+            return f"def {func_name}({param_str}) -> None:"
+        else:
+            return f"def {func_name}({param_str}) -> {return_type}:"
 
     def convert_function_body(self, node: Node, current_vars: dict[str, str], 
                             custom_classes: list[str], current_functions: list[str]) -> list[str]:
@@ -129,3 +135,43 @@ class FunctionConverter:
             result = ["pass"]
             
         return result
+
+    def convert_parameter(self, param_node: Node, current_vars: dict[str, str]) -> tuple[str, str]:
+        """Convert a function parameter to Python format"""
+        if not param_node or len(param_node.children) < 2:
+            raise SyntaxError("Invalid parameter node")
+        
+        type_node = param_node.children[0]  # Type specifier
+        declarator_node = param_node.children[1]  # Declarator
+        
+        # Get base type
+        cpp_type = type_node.children[0].value
+        py_type = self.convert_type(cpp_type)
+        
+        # Get parameter name
+        param_name = declarator_node.children[0].value
+        
+        # Check if it's an array parameter
+        is_array = False
+        if len(declarator_node.children) > 1 and declarator_node.children[1].node_type == "LBRACK":
+            is_array = True
+            py_type = f"List[{py_type}]"
+        
+        # Add to current variables
+        current_vars[param_name] = py_type
+        
+        # Return parameter declaration
+        return f"{param_name}: {py_type}"
+
+    def convert_type(self, cpp_type: str) -> str:
+        """Convert C++ type to Python type"""
+        type_map = {
+            'int': 'int',
+            'bool': 'bool',
+            'char': 'str',
+            'float': 'float',
+            'double': 'float',
+            'string': 'str',
+            'void': 'None'
+        }
+        return type_map.get(cpp_type.lower(), cpp_type)
