@@ -1,41 +1,35 @@
 from typing import List
 
-class MergeSort:
-    def merge(self, arr: int, left: int, mid: int, right: int, temp: int) -> None:
+class QuickSort:
+    def sort(self, arr: int, low: int, high: int) -> None:
+        if low < high:
+            pi = None
+            pi = self.partition(arr, low, high)
+            self.sort(arr, low, pi - 1)
+            self.sort(arr, pi + 1, high)
+    def partition(self, arr: int, low: int, high: int) -> int:
+        pivot = None
+        pivot = arr[high]
         i = None
-        i = left
-        j = None
-        j = mid + 1
-        k = None
-        k = left
-        while i <= mid and j <= right:
-            if arr[i] <= arr[j]:
-                temp[((k:=k+1)-1)] = arr[((i:=i+1)-1)]
-            else:
-                temp[((k:=k+1)-1)] = arr[((j:=j+1)-1)]
-        while i <= mid:
-            temp[((k:=k+1)-1)] = arr[((i:=i+1)-1)]
-        while j <= right:
-            temp[((k:=k+1)-1)] = arr[((j:=j+1)-1)]
-        for i in range(left, right + 1):
-            arr[i] = temp[i]
-    def mergeSort(self, arr: int, left: int, right: int, temp: int) -> None:
-        if left >= right:
-            return 
-        mid = None
-        mid = left + (right - left) / 2
-        self.mergeSort(arr, left, mid, temp)
-        self.mergeSort(arr, mid + 1, right, temp)
-        self.merge(arr, left, mid, right, temp)
-    def sort(self, arr: int, size: int) -> None:
-        temp = [0] * 100
-        self.mergeSort(arr, 0, size - 1, temp)
+        i = low - 1
+        for j in range(low, high):
+            if arr[j] < pivot:
+                (i:=i+1)
+                temp = None
+                temp = arr[i]
+                arr[i] = arr[j]
+                arr[j] = temp
+        temp = None
+        temp = arr[i + 1]
+        arr[i + 1] = arr[high]
+        arr[high] = temp
+        return i + 1
     def __init__(self):
         pass
 def main():
     arr = [0] * 8
     size = None
-    size = 7
+    size = 8
     arr[0] = 38
     arr[1] = 27
     arr[2] = 43
@@ -43,12 +37,13 @@ def main():
     arr[4] = 9
     arr[5] = 82
     arr[6] = 10
+    arr[7] = 19
     print("Original array: ", sep='', end='')
     for i in range(0, size):
         print(arr[i], " ", sep='', end='')
     print("\n", sep='', end='')
-    sorter = MergeSort()
-    sorter.sort(arr, size)
+    sorter = QuickSort()
+    sorter.sort(arr, 0, size - 1)
     print("Sorted array: ", sep='', end='')
     for i in range(0, size):
         print(arr[i], " ", sep='', end='')
