@@ -73,9 +73,7 @@ class DeclarationConverter:
         """
         if typeSpecifier.node_type != "typeSpecifier":
             raise TypeError("type specifier node must be of type typeSpecifier!")
-        if declarator.node_type != "declarator":
-            raise TypeError("declarator node must of type declaractor!")
-
+        
         scope = None
         cpp_type = None
         py_type = None
@@ -119,7 +117,10 @@ class DeclarationConverter:
         # is it is a list, then it needs to be initialized to its desired length
         if is_list:
             # Update the type in current_vars to indicate it's a list
-            current_vars[var_name] = f"list[{py_type}]"
+            if cpp_type == "char":
+                current_vars[var_name] = f"{py_type}"
+            else:
+                current_vars[var_name] = f"list[{py_type}]"
             
             # handle special case of a list of char, which is just a string of certain length
             if cpp_type == "char":
@@ -130,10 +131,9 @@ class DeclarationConverter:
                 final_expr += "[" + DEFAULT_LIST_VALUE[py_type] + "]"
             final_expr += " * " + list_len
         # if it is not a list, we still need to declare AND initialize it
-            # Check if it's a custom class type
-        elif py_type in custom_classes:
+        elif py_type in custom_classes:  # Check if it's a custom class type
             current_vars[var_name] = py_type
-            final_expr += " = " + py_type + "()"
+            final_expr += f" = {py_type}()"  # Initialize with constructor
         else: 
             current_vars[var_name] = py_type
             final_expr += " = None"
@@ -157,20 +157,46 @@ class DeclarationConverter:
     def convert_decl_assign(self, decl_assign_node:Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]) -> list[str]:
         if decl_assign_node.node_type != "decl_assign":
             raise TypeError("decl_assign node must be of type decl_assign!")
+        
         py_statements = []
         type_specifier_node = decl_assign_node.children[0]
 
-        # decl_assign node is of the form typeSpecifier declarator ASSIGN assignmentExpression (COMMA declarator ASSIGN assignmentExpression)*
-        # so every third child starting from the second one is a declarator
-        for i in range(1, len(decl_assign_node.children), 3):
+        # Process each declaration-assignment pair
+        i = 1
+        while i < len(decl_assign_node.children):
+            # Get declarator node
             declarator_node = decl_assign_node.children[i]
-            expression_node = decl_assign_node.children[i+2]
+            
+            # Skip if we hit a comma or other non-declarator node
+            if not declarator_node or declarator_node.node_type == "COMMA":
+                i += 1
+                continue
+            
+            # Get the assignment expression (should be 2 positions after declarator)
+            if i + 2 >= len(decl_assign_node.children):
+                break
+            
+            expression_node = decl_assign_node.children[i + 2]
+            
+            # Convert declaration and assignment
             declaration_expr = self.convert_single_decl(type_specifier_node, declarator_node, current_vars, custom_classes, current_functions)
-            var_name = declarator_node.children[0].value
+            
+            # Get variable name
+            var_name = declarator_node.children[0].value if declarator_node.children else None
+            if not var_name:
+                raise SyntaxError(f"Cannot get variable name from declarator node at position {i}")
+            
+            # Generate assignment
             assignment_expr = var_name + " = " + self.expressionConverter.convert_expression_oneline(expression_node, current_vars, custom_classes, current_functions)
+            
+            # Add statements
             if not current_vars[var_name] in custom_classes:
                 py_statements.append(declaration_expr)
             py_statements.append(assignment_expr)
+            
+            # Move to next declaration-assignment pair
+            i += 3
+        
         return py_statements
     
 
