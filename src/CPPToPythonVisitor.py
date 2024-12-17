@@ -68,17 +68,6 @@ class CPPToPythonVisitor(CPPParserVisitor):
                     if result.node_type == "declaration":
                         print("DEBUG: Found declaration")
                         if self.declaration_converter:
-                            # Process declaration and update symbol table
-                            decl_node = result.children[0]  # Get decl_ node
-                            if decl_node.node_type == "decl_":
-                                type_node = decl_node.children[0]  # typeSpecifier
-                                declarator_node = decl_node.children[1]  # declarator
-                                var_name = declarator_node.children[0].value
-                                var_type = type_node.children[0].value
-                                # Add to symbol table
-                                self.symbol_table[var_name] = var_type
-                                print(f"DEBUG: Added variable {var_name} of type {var_type} to symbol table")
-                            
                             declarations = self.declaration_converter.convert_declaration(
                                 result,
                                 self.symbol_table,
@@ -128,17 +117,10 @@ class CPPToPythonVisitor(CPPParserVisitor):
                     
                     elif result.node_type == "statement":
                         print("DEBUG: Found statement")
-                        print(f"DEBUG: Current symbol table before statement: {self.symbol_table}")
-                        if self.statement_converter:
-                            statements = self.statement_converter.convert_statement(
-                                result,
-                                self.symbol_table,
-                                self.custom_classes,
-                                self.current_functions
-                            )
-                            if statements:
-                                self.output_lines.extend(statements)
-                                print(f"DEBUG: Added statements: {statements}")
+                        # Let visitStatement handle the statement conversion
+                        # The conversion is already done in visitStatement, 
+                        # so we don't need to do anything here
+                        pass
                     
                     elif result.node_type == "expression":
                         print("DEBUG: Found expression")
@@ -304,5 +286,38 @@ class CPPToPythonVisitor(CPPParserVisitor):
 
     def indent(self) -> str:
         return "    " * self.indent_level
+
+    def visitStatement(self, ctx):
+        """Visit a statement node"""
+        node = Node("statement")
+        
+        if self.statement_converter:
+            # Determine statement type
+            if ctx.getText().startswith("cin"):
+                statements = self.statement_converter.convert_cin_statement(
+                    ctx,
+                    self.symbol_table,
+                    self.custom_classes,
+                    self.current_functions
+                )
+            elif ctx.getText().startswith("cout"):
+                statements = self.statement_converter.convert_cout_statement(
+                    ctx,
+                    self.symbol_table,
+                    self.custom_classes,
+                    self.current_functions
+                )
+            else:
+                statements = self.statement_converter.convert_statement(
+                    ctx,
+                    self.symbol_table,
+                    self.custom_classes,
+                    self.current_functions
+                )
+                
+            if statements:
+                self.output_lines.extend(statements)
+        
+        return node
 
     # ... (keep other utility methods)

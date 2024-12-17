@@ -249,6 +249,80 @@ class StatementConverter:
         
         raise TypeError(f"Unsupported jump statement type: {node.children[0].node_type}")
         
+    def convert_cin_statement(self, node: Node, current_vars: dict[str, str], custom_classes: list[str], current_functions: list[str]) -> list[str]:
+        """Convert C++ cin statements to Python input"""
+        input_vars = self._extract_input_variables(node, current_vars, custom_classes, current_functions)
+        result = []
+        
+        for var in input_vars:
+            if '[' in var:  # Array element
+                result.append(f"{var} = int(input())")
+            else:  # Regular variable
+                var_type = current_vars.get(var, 'str')
+                if var_type in ['int', 'float']:
+                    result.append(f"{var} = {var_type}(input())")
+                else:
+                    result.append(f"{var} = input()")
+        
+        return result
+
+    def _extract_input_variables(self, node: Node, current_vars: dict[str, str], custom_classes: list[str], current_functions: list[str]) -> list[str]:
+        """Extract variables being read from input"""
+        vars_to_read = []
+        
+        for child in node.children:
+            if child.node_type == "variable":
+                var_access = self.expressionConverter.convert_variable_access(
+                    child,
+                    current_vars,
+                    custom_classes,
+                    current_functions
+                )
+                vars_to_read.append(var_access)
+        
+        return vars_to_read
+
+    def convert_cout_statement(self, node: Node, current_vars: dict[str, str], custom_classes: list[str], current_functions: list[str]) -> list[str]:
+        """Convert C++ cout statements to Python print"""
+        output_exprs = []
+        current = node
+        
+        while current:
+            if hasattr(current, 'children'):
+                for child in current.children:
+                    if child.node_type in ["STRING_LITERAL", "variable", "expression"]:
+                        expr = self.expressionConverter.convert_expression_oneline(
+                            child,
+                            current_vars,
+                            custom_classes,
+                            current_functions
+                        )
+                        output_exprs.append(expr)
+            current = current.children[-1] if hasattr(current, 'children') and current.children else None
+        
+        if output_exprs:
+            return [f"print({', '.join(output_exprs)}, end='')"]
+        return ["print()"]
+
+    def convert_for_statement(self, node: Node, current_vars: dict[str, str], custom_classes: list[str], current_functions: list[str]) -> list[str]:
+        """Convert C++ for loops, handling array iterations"""
+        # Extract loop components
+        init = self.expressionConverter.convert_expression_oneline(node.children[2], current_vars, custom_classes, current_functions)
+        cond = self.expressionConverter.convert_expression_oneline(node.children[4], current_vars, custom_classes, current_functions)
+        incr = self.expressionConverter.convert_expression_oneline(node.children[6], current_vars, custom_classes, current_functions)
+        
+        # Convert to Python range-based for loop
+        if 'i < ' in cond:  # Common array iteration pattern
+            limit = cond.split(' < ')[1]
+            return [f"for {init.split(' = ')[0]} in range({limit}):"]
+        
+        # Generic for loop conversion
+        return [
+            f"# Initialize: {init}",
+            f"while {cond}:",
+            f"    # Update: {incr}"
+        ]
+
 # Testing code
 if __name__ == "__main__":
     from antlr4 import InputStream, CommonTokenStream

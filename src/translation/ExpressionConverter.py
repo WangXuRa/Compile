@@ -194,16 +194,33 @@ class ExpressionConverter:
             # check that the shiftOperator is the correct operator
             if not self.is_input_op(shift_node.children[i-1]):
                 raise SyntaxError("cannot use << with std::cin!")
-            var_name = self.convert_expression_oneline(shift_node.children[i], current_vars, custom_classes, current_functions)
-            if not (var_name in current_vars.keys()):
-                raise SyntaxError(f"variable {var_name} used in input statement referenced before declaration!")
-            curr_type = current_vars[var_name]
+            
+            # Get the variable expression
+            var_expr = self.convert_expression_oneline(shift_node.children[i], current_vars, custom_classes, current_functions)
+            
+            # Handle array access
+            if '[' in var_expr:
+                var_name = var_expr.split('[')[0]
+                if not var_name in current_vars:
+                    raise SyntaxError(f"variable {var_name} used in input statement referenced before declaration!")
+                curr_type = current_vars[var_name]
+                # Check if it's an array type (list[type])
+                if curr_type.startswith('list['):
+                    curr_type = curr_type[5:-1]  # Extract the element type from list[type]
+                else:
+                    raise SyntaxError(f"variable {var_name} is not an array!")
+            else:
+                # Regular variable
+                if not var_expr in current_vars:
+                    raise SyntaxError(f"variable {var_expr} used in input statement referenced before declaration!")
+                curr_type = current_vars[var_expr]
+            
             if curr_type not in BASIC_TYPES:
                 raise SyntaxError(f"variables used in std::cin should be of a basic type (not {curr_type})!")
             if (var_type is not None) and (var_type != curr_type):
                 raise SyntaxError("all variables used in a single std::cin statement must be of the same type")
             var_type = curr_type
-            py_statement += var_name + ", "
+            py_statement += var_expr + ", "
             num_vars += 1
 
         py_statement = py_statement[:-2] # get rid of the last `, `
@@ -335,6 +352,42 @@ class ExpressionConverter:
                 return left + " " + py_op + " " + right
             else:
                 raise SyntaxError(f"c++ operator {cpp_op} not supported by this translator!")
+
+    def convert_variable_access(self, variable_node: Node, current_vars: dict[str, str], custom_classes: list[str], current_functions: list[str]) -> str:
+        """Handle variable access, including array access"""
+        if len(variable_node.children) == 0:
+            return ""
+        
+        # Get base variable name
+        var_name = variable_node.children[0].value
+        
+        # Check if this is an array access
+        if len(variable_node.children) > 1 and variable_node.children[1].node_type == "LBRACK":
+            # Get the index expression
+            index_expr = self.convert_expression_oneline(
+                variable_node.children[2], 
+                current_vars, 
+                custom_classes, 
+                current_functions
+            )
+            # Verify variable exists and is an array
+            if var_name not in current_vars:
+                raise SyntaxError(f"Array '{var_name}' not declared!")
+            if not current_vars[var_name].startswith("list"):
+                raise SyntaxError(f"Variable '{var_name}' is not an array!")
+            
+            return f"{var_name}[{index_expr}]"
+        
+        # Regular variable access
+        if var_name not in current_vars:
+            raise SyntaxError(f"Variable '{var_name}' not declared!")
+        return var_name
+
+    def convert_array_assignment(self, target_node: Node, value_node: Node, current_vars: dict[str, str], custom_classes: list[str], current_functions: list[str]) -> str:
+        """Handle array assignment expressions"""
+        target = self.convert_variable_access(target_node, current_vars, custom_classes, current_functions)
+        value = self.convert_expression_oneline(value_node, current_vars, custom_classes, current_functions)
+        return f"{target} = {value}"
 
 # testing/demonstration code
 if __name__ == "__main__":

@@ -85,22 +85,18 @@ class DeclarationConverter:
                 if type_node.value in custom_classes:
                     py_type = type_node.value
                 else:
-                    raise SyntaxError(f"invalid syntax, variable type {type_node.value} has not been declared or is not supported!")
+                    raise SyntaxError(f"type {type_node.value} had not been declared!")
             else:
                 cpp_type = type_node.value
-        # is of the form ID SCOPE ID
+                py_type = self.convert_type(scope, cpp_type)
+        # is a scoped type
         elif len(typeSpecifier.children) == 3:
-            scope_node = typeSpecifier.children[0]
-            type_node = typeSpecifier.children[2]
-            scope = scope_node.value
-            cpp_type = type_node.value
-        else:
-            raise SyntaxError("invalid typeSpecifier node!")
-
-        if py_type is None:
-            # this may throw errors during conversion
+            scope = typeSpecifier.children[0].value
+            cpp_type = typeSpecifier.children[2].value
             py_type = self.convert_type(scope, cpp_type)
-        
+        else:
+            raise SyntaxError("invalid type specifier!")
+
         var_name = ""
         is_list = False
         list_len = None
@@ -119,24 +115,24 @@ class DeclarationConverter:
             except Exception as e:
                 raise SyntaxError(f"invalid length '{list_len}' for array!")
         
-        final_expr = var_name + " : "
+        final_expr = var_name
         # is it is a list, then it needs to be initialized to its desired length
         if is_list:
+            # Update the type in current_vars to indicate it's a list
+            current_vars[var_name] = f"list[{py_type}]"
+            
             # handle special case of a list of char, which is just a string of certain length
             if cpp_type == "char":
-                final_expr += "str = "
-                final_expr += DEFAULT_LIST_VALUE['char']
+                final_expr += " = " + DEFAULT_LIST_VALUE['char']
             # other normal cases
             else:
-                final_expr += "list[" + py_type + "]" + " = "
+                final_expr += " = "
                 final_expr += "[" + DEFAULT_LIST_VALUE[py_type] + "]"
             final_expr += " * " + list_len
         # if it is not a list, we still need to declare AND initialize it
-        # because Python does not allow for declaration of a variable without initialization
         else:
-            final_expr += py_type + " = None"
-        
-        current_vars[var_name] = py_type
+            current_vars[var_name] = py_type
+            final_expr += " = None"
         
         return final_expr
 
