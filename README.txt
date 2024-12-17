@@ -38,6 +38,9 @@
    ```bash
    python main.py path/to/your/cpp/file.cpp
    ```
+   ```
+   python main.py test_bubbleSort.cpp
+   ```
 
 2. 使用默认示例代码：
    ```bash

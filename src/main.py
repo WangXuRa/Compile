@@ -1,13 +1,9 @@
 from antlr4 import *
-# from CPPLexer import CPPLexer 
-# from CPPParser import CPPParser 
-# from CPPParserListener import CPPParserListener 
-# from CPPParserVisitor_dev import CPPParserVisitor
-
 from CPPLexer import CPPLexer 
 from CPPParser import CPPParser 
 from CPPParserListener import CPPParserListener 
 from CPPParserVisitor import CPPParserVisitor
+from cpp_to_python_transpiler import CppToPythonTranspiler
 import sys
 
 def read_input_from_file(filename):
@@ -23,18 +19,10 @@ def main():
     # Get input from a file or string
     if len(sys.argv) > 1:
         input_stream = read_input_from_file(sys.argv[1])
+        cpp_code = input_stream.strdata
     else:
         # Example C++ code for testing
-        # sample_code = """
-        # int main() {
-        #     int x = 42;
-        #     if (x > 0) {
-        #         return x;
-        #     }
-        #     return 0;
-        # }
-        # """
-        sample_code = """
+        cpp_code = """
         #include <iosteam>
         #include <stdio.h>
         int main() {
@@ -50,44 +38,27 @@ def main():
             return 0;
         }
         """
+
+    # Create transpiler instance
+    transpiler = CppToPythonTranspiler()
+    
+    # try:
+        # Transpile the code
+    python_code = transpiler.transpile(cpp_code)
+    
+    # Save the transpiled code to a file
+    with open("output.py", "w", encoding="utf-8") as file:
+        file.write(python_code)
+    
+    print("Successfully transpiled C++ to Python!")
+    print("Output saved to 'output.py'")
+    print("\nTranspiled Python code:")
+    print("-" * 40)
+    print(python_code)
         
-        input_stream = InputStream(sample_code)
-
-    print("# Lexer #")
-
-    # Create lexer
-    lexer = CPPLexer(input_stream)
-    
-    # Get all tokens
-    tokens = lexer.getAllTokens()
-    
-    # Print tokens
-    for token in tokens:
-        token_type = lexer.symbolicNames[token.type]
-        token_text = token.text
-        print(f"Token: {token_type:20} Text: {token_text}")
-
-    lexer.reset()
-    
-    token_stream = CommonTokenStream(lexer)
-    
-    print("\n\n# Parser #")
-    parser = CPPParser(token_stream)
-
-    tree = parser.program()
-    if parser.getNumberOfSyntaxErrors() > 0:
-        print("syntax errors")
-
-    else:
-        visitor = CPPParserVisitor(parser)
-        astTree = visitor.visit(tree)
-
-        with open("ast_output.xml", "w", encoding="utf-8") as file:
-            file.write("<AST>\n")
-            file.write(str(astTree)) 
-            file.write("\n</AST>")
-        
-        print("AST has been saved to 'ast_output.xml'")
+    # except Exception as e:
+    #     print(f"Transpilation error: {str(e)}")
+    #     sys.exit(1)
 
 if __name__ == '__main__':
     main()
