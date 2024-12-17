@@ -1,6 +1,10 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import unittest
 from pathlib import Path
-from translation.cpp_to_python_transpiler import CppToPythonTranspiler, TranspilerError
+from cpp_to_python_transpiler import CppToPythonTranspiler, TranspilerError
 
 class TestCppToPythonTranspiler(unittest.TestCase):
     def setUp(self):
@@ -9,7 +13,7 @@ class TestCppToPythonTranspiler(unittest.TestCase):
     # Basic Tests
     def test_empty_file(self):
         """Test transpiling an empty file"""
-        result = self.transpiler.transpile_string("")
+        result = self.transpiler.transpile("")
         self.assertEqual(result.strip(), "")
     
     # Include Tests
@@ -24,7 +28,7 @@ class TestCppToPythonTranspiler(unittest.TestCase):
             return 0;
         }
         """
-        result = self.transpiler.transpile_string(cpp_code)
+        result = self.transpiler.transpile(cpp_code)
         self.assertIn("from sys import stdout", result)
         self.assertIn("from typing import List", result)
     
@@ -42,7 +46,7 @@ class TestCppToPythonTranspiler(unittest.TestCase):
             void speak() override { cout << "Woof"; }
         };
         """
-        result = self.transpiler.transpile_string(cpp_code)
+        result = self.transpiler.transpile(cpp_code)
         self.assertIn("class Animal:", result)
         self.assertIn("class Dog(Animal):", result)
     
@@ -57,7 +61,7 @@ class TestCppToPythonTranspiler(unittest.TestCase):
             void setValue(T v) { value = v; }
         };
         """
-        result = self.transpiler.transpile_string(cpp_code)
+        result = self.transpiler.transpile(cpp_code)
         self.assertIn("from typing import TypeVar, Generic", result)
         self.assertIn("T = TypeVar('T')", result)
         self.assertIn("class Container(Generic[T]):", result)
@@ -69,7 +73,7 @@ class TestCppToPythonTranspiler(unittest.TestCase):
         vector<int> numbers;
         numbers.push_back(1);
         """
-        result = self.transpiler.transpile_string(cpp_code)
+        result = self.transpiler.transpile(cpp_code)
         self.assertIn("numbers: List[int] = []", result)
         self.assertIn("numbers.append(1)", result)
     
@@ -77,7 +81,7 @@ class TestCppToPythonTranspiler(unittest.TestCase):
     def test_syntax_error(self):
         """Test handling of syntax errors"""
         with self.assertRaises(TranspilerError) as context:
-            self.transpiler.transpile_string("class {")
+            self.transpiler.transpile("class {")
         self.assertIn("Syntax error", str(context.exception))
     
     def test_undefined_type(self):
@@ -86,7 +90,7 @@ class TestCppToPythonTranspiler(unittest.TestCase):
         UndefinedType var;
         """
         with self.assertRaises(TranspilerError):
-            self.transpiler.transpile_string(cpp_code)
+            self.transpiler.transpile(cpp_code)
     
     # Edge Cases
     def test_nested_templates(self):
@@ -94,7 +98,7 @@ class TestCppToPythonTranspiler(unittest.TestCase):
         cpp_code = """
         vector<vector<int>> matrix;
         """
-        result = self.transpiler.transpile_string(cpp_code)
+        result = self.transpiler.transpile(cpp_code)
         self.assertIn("List[List[int]]", result)
     
     def test_multiple_inheritance(self):
@@ -104,7 +108,7 @@ class TestCppToPythonTranspiler(unittest.TestCase):
         class B {};
         class C : public A, public B {};
         """
-        result = self.transpiler.transpile_string(cpp_code)
+        result = self.transpiler.transpile(cpp_code)
         self.assertIn("class C(A, B):", result)
     
     def test_namespace_handling(self):
@@ -116,7 +120,7 @@ class TestCppToPythonTranspiler(unittest.TestCase):
             }
         }
         """
-        result = self.transpiler.transpile_string(cpp_code)
+        result = self.transpiler.transpile(cpp_code)
         self.assertIn("class outer_inner_MyClass:", result)
 
 if __name__ == '__main__':

@@ -45,6 +45,12 @@ STD_VARS = {
 
 BASIC_TYPES = ['int', 'float', 'str', 'bool']
 
+CPP_TO_PYTHON_LITERALS = {
+    'true': 'True',
+    'false': 'False',
+    'null': 'None'
+}
+
 class ExpressionConverter:
     """
     offers method for converting `expression` node, returns list[str]
@@ -87,32 +93,41 @@ class ExpressionConverter:
 
     def convert_variable(self, variable_node:Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]):
         """
-        converts a variable node, which could, under the current parser rules, be `std::cin` and `std::cout`, which are translated into input and print
+        converts a variable node, which could be:
+        - std::cin and std::cout
+        - literals (true, false, null)
+        - regular variables
         """
         if variable_node.node_type != "variable":
             raise TypeError("variable node must by of a type variable!")
 
-        py_var = ""
+        # variable_
+        if len(variable_node.children) == 1:
+            variable_ = variable_node.children[0]
+            root_var = variable_.children[0].value
+            
+            # Check if it's a literal
+            if root_var.lower() in CPP_TO_PYTHON_LITERALS:
+                return CPP_TO_PYTHON_LITERALS[root_var.lower()]
+            
+            # Check if it's a regular variable
+            if root_var in current_vars:
+                return self.convert_variable_(variable_, current_vars, custom_classes, current_functions)
+            else:
+                raise SyntaxError(f"variable {root_var} referenced before declaration! Current vars: {current_vars}")
+        
         # ID SCOPE variable_
-        if len(variable_node.children) == 3:
+        elif len(variable_node.children) == 3:
             scope = variable_node.children[0].value
             if scope != 'std':
                 raise SyntaxError(f"scope {scope} not supported by this translator!")
             if len(variable_node.children[2].children) != 1:
                 raise SyntaxError(f"indexing or referencing of attributes for variables in std scope not supported by this translator!")
             cpp_var = variable_node.children[2].children[0].value
-            if cpp_var not in STD_VARS.keys():
+            if cpp_var not in STD_VARS:
                 raise SyntaxError(f"{scope}::{cpp_var} not supported by this translator!")
             return STD_VARS[cpp_var]
-        # variable_
-        elif len(variable_node.children) == 1:
-            # check if the variable is contained in variable list
-            variable_ = variable_node.children[0]
-            root_var = variable_.children[0].value
-            if root_var in current_vars:
-                return self.convert_variable_(variable_, current_vars, custom_classes, current_functions)
-            else:
-                raise SyntaxError(f"variable {root_var} referenced before declaration!")
+        
         else:
             raise SyntaxError("invalid variable node!")
 

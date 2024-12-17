@@ -6,29 +6,31 @@ from CPPParser import CPPParser
 from CPPToPythonVisitor import CPPToPythonVisitor
 from translation.ExpressionConverter import ExpressionConverter
 from translation.DeclarationConverter import DeclarationConverter
+from translation.StatementConverter import StatementConverter
+from translation.ClassConverter import ClassConverter
+from translation.FunctionConverter import FunctionConverter
+from translation.IncludeConverter import IncludeConverter
 
 class CppToPythonTranspiler:
     def __init__(self):
-        # Initialize converters
+        """Initialize the transpiler with all necessary converters"""
         self.expression_converter = ExpressionConverter()
         self.declaration_converter = DeclarationConverter()
-        
-        # Initialize other attributes
+        self.statement_converter = StatementConverter()
+        self.class_converter = ClassConverter()
+        self.function_converter = FunctionConverter()
+        self.include_converter = IncludeConverter()
         self.visitor = None
-        self.output: str = ""
-        self.includes: Set[str] = set()
-        self.namespaces: Dict[str, Dict] = {}
-        self.source_map: Dict[int, int] = {}
-        
-        # Standard library mappings
-        self.STL_MAPPINGS = {
-            "vector": "list",
-            "string": "str",
-            "map": "dict",
-            "set": "set",
-            "cout": "print",
-            "endl": "\'\\n\'",
-        }
+        self.output = ""
+
+    def configure_visitor(self, visitor):
+        """Configure the visitor with all converters"""
+        visitor.expression_converter = self.expression_converter
+        visitor.declaration_converter = self.declaration_converter
+        visitor.statement_converter = self.statement_converter
+        visitor.class_converter = self.class_converter
+        visitor.function_converter = self.function_converter
+        visitor.include_converter = self.include_converter
 
     def transpile(self, input_code: str) -> str:
         """Transpile C++ code to Python code"""
@@ -42,77 +44,35 @@ class CppToPythonTranspiler:
             parser.removeErrorListeners()
             parser.addErrorListener(TranspilerErrorListener())
             
-            print("DEBUG: Created lexer and parser")
+            # Reset include converter state
+            self.include_converter.reset()
             
-            # Create visitor and pass the converters
+            # Create and configure visitor
             self.visitor = CPPToPythonVisitor(lexer)
-            self.visitor.expression_converter = self.expression_converter
-            self.visitor.declaration_converter = self.declaration_converter
+            self.configure_visitor(self.visitor)
             
-            print("DEBUG: Created and configured visitor")
-            
-            # Parse program and visit the parse tree
+            # Parse and visit
             tree = parser.program()
-            print("DEBUG: Parsed program")
-            
-            # Explicitly call visitProgram
-            print("DEBUG: Calling visitProgram")
             self.visitor.visitProgram(tree)
             
-            # Get the output
-            self.output = self.visitor.get_output()
+            # Generate output with imports
+            output_lines = []
             
-            print(f"DEBUG: Generated output: {self.output}")
-            return self.output
+            # Add imports first
+            imports = self.include_converter.get_all_imports()
+            if imports:
+                output_lines.extend(imports)
+                output_lines.append("")  # Empty line after imports
+            
+            # Add transpiled code
+            if self.visitor.get_output():
+                output_lines.append(self.visitor.get_output())
+            
+            return "\n".join(output_lines)
 
         except Exception as e:
             print(f"ERROR: Transpilation failed: {str(e)}")
             raise
-
-    def _process_includes(self, tree) -> None:
-        """Process include directives and map them to Python imports"""
-        python_imports = []
-        
-        # Map C++ includes to Python imports
-        include_map = {
-            "iostream": ["from sys import stdout", "print = stdout.write"],
-            "vector": "from typing import List",
-            "string": "from typing import String",
-            "map": "from typing import Dict",
-            "memory": "from typing import Optional",
-        }
-        
-        for include in self.visitor.get_includes(tree):
-            if include in include_map:
-                if isinstance(include_map[include], list):
-                    python_imports.extend(include_map[include])
-                else:
-                    python_imports.append(include_map[include])
-        
-        self.includes = set(python_imports)
-    
-    def _process_namespaces(self, tree) -> None:
-        """Process namespace declarations"""
-        current_namespace = ""
-        
-        for namespace in self.visitor.get_namespaces(tree):
-            current_namespace = namespace
-            self.namespaces[namespace] = {}
-    
-    def _generate_output(self) -> str:
-        """Generate the final Python code with imports and namespace handling"""
-        output_lines = []
-        
-        # Add imports
-        if self.includes:
-            output_lines.extend(sorted(self.includes))
-            output_lines.append("")
-        
-        # Add transpiled code from visitor
-        if self.visitor and self.visitor.get_output():
-            output_lines.append(self.visitor.get_output())
-        
-        return "\n".join(output_lines)
 
 class TranspilerError(Exception):
     """Custom exception for transpiler errors"""
@@ -127,16 +87,46 @@ class TranspilerErrorListener(ErrorListener):
 if __name__ == "__main__":
     transpiler = CppToPythonTranspiler()
     print(transpiler.transpile("""
-            int x;
-    bool y, z;
-    char a[10];
-    std::string b[10];
-    int a = 3 * 4;
-    x = a++ - 10;
-    std::string c;
-    c = b[--x] + "hello";
-    std::cin >> x;
-    std::cout << x;
-    std::cin >> x >> a;
-    std::cout << a << " " << x << std::endl;
+    class MyClass {
+    private:
+        int x;
+        double y;
+    public:
+        MyClass(int a, double b) {
+            x = a;
+        }
+        
+        int getX() {
+        }
+    };
+    """))
+    print(transpiler.transpile("""
+    int x = 0;
+    int y = 1;                                                      
+    if (x > 0) {
+        y = x + 1;
+        int z = 10;
+        if(x > 2) {
+            y = x + 1;
+        } 
+    } 
+    else if(x<0){
+        continue;
+    }
+    """))
+    print(transpiler.transpile("""
+    #include <iosteam>
+    #include <stdio.h>
+    int main() {
+        std::cout << "43";
+        int x = 42;
+        x++;
+        ++x;
+        int y = --x;
+        bool z = false;
+        if (x > 0) {
+            return x;
+        }
+        return 0;
+    }
     """))
