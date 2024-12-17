@@ -230,7 +230,7 @@ class ExpressionConverter:
                 # function LPAREN expression? RPAREN
                 func = self.convert_function(first_child.children[0], current_vars, custom_classes, current_functions)
                 if first_child.children[2].node_type == 'expression':
-                    return func + '(' + self.convert_expression_oneline(first_child.children[0]) + ')'
+                    return func + '(' + self.convert_expression_oneline(first_child.children[2], current_vars, custom_classes, current_functions) + ')'
                 else:
                     return func + '()'
                 
@@ -359,6 +359,8 @@ if __name__ == "__main__":
     std::cout << x;
     std::cin >> x >> a;
     std::cout << a << " " << x << std::endl;
+    x = std::strlen(b[3]);
+    y = x < 3;
     """
         
     input_stream = InputStream(sample_code)
