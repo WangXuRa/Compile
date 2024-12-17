@@ -130,7 +130,11 @@ class DeclarationConverter:
                 final_expr += "[" + DEFAULT_LIST_VALUE[py_type] + "]"
             final_expr += " * " + list_len
         # if it is not a list, we still need to declare AND initialize it
-        else:
+            # Check if it's a custom class type
+        elif py_type in custom_classes:
+            current_vars[var_name] = py_type
+            final_expr += " = " + py_type + "()"
+        else: 
             current_vars[var_name] = py_type
             final_expr += " = None"
         
@@ -164,7 +168,8 @@ class DeclarationConverter:
             declaration_expr = self.convert_single_decl(type_specifier_node, declarator_node, current_vars, custom_classes, current_functions)
             var_name = declarator_node.children[0].value
             assignment_expr = var_name + " = " + self.expressionConverter.convert_expression_oneline(expression_node, current_vars, custom_classes, current_functions)
-            py_statements.append(declaration_expr)
+            if not current_vars[var_name] in custom_classes:
+                py_statements.append(declaration_expr)
             py_statements.append(assignment_expr)
         return py_statements
     

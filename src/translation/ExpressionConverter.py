@@ -200,7 +200,10 @@ class ExpressionConverter:
             # Handle string/character methods
             if func in ['isdigit', 'isalpha', 'isalnum', 'islower', 'isupper', 'isspace']:
                 return f"{obj}.{func}()"
-            return obj + '.' + func
+            # Changed: Remove self from object method calls
+            if func.startswith('self.'):
+                func = func[5:]  # Remove 'self.' prefix
+            return f"{obj}.{func}"
         else:
             raise SyntaxError("invalid function_ node!")
 
