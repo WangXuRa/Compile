@@ -42,23 +42,23 @@ def main():
     # Create transpiler instance
     transpiler = CppToPythonTranspiler()
     
-    try:
+    # try:
         # Transpile the code
-        python_code = transpiler.transpile(cpp_code)
+    python_code = transpiler.transpile(cpp_code)
+    
+    # Save the transpiled code to a file
+    with open("output.py", "w", encoding="utf-8") as file:
+        file.write(python_code)
+    
+    print("Successfully transpiled C++ to Python!")
+    print("Output saved to 'output.py'")
+    print("\nTranspiled Python code:")
+    print("-" * 40)
+    print(python_code)
         
-        # Save the transpiled code to a file
-        with open("output.py", "w", encoding="utf-8") as file:
-            file.write(python_code)
-        
-        print("Successfully transpiled C++ to Python!")
-        print("Output saved to 'output.py'")
-        print("\nTranspiled Python code:")
-        print("-" * 40)
-        print(python_code)
-        
-    except Exception as e:
-        print(f"Transpilation error: {str(e)}")
-        sys.exit(1)
+    # except Exception as e:
+    #     print(f"Transpilation error: {str(e)}")
+    #     sys.exit(1)
 
 if __name__ == '__main__':
     main()

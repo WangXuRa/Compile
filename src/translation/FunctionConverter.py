@@ -70,3 +70,62 @@ class FunctionConverter:
             current_functions
         )
         return f"return {expression}" 
+
+    def convert_function_definition(self, node: Node, current_vars: dict[str, str], 
+                                  custom_classes: list[str], current_functions: list[str]) -> list[str]:
+        """Convert C++ function definition to Python"""
+        if node.node_type != "functionDefinition":
+            raise TypeError("Node must be a functionDefinition")
+
+        # Get function name and add to current_functions
+        func_name = node.children[1].value
+        if func_name not in current_functions:
+            current_functions.append(func_name)
+
+        # Convert function signature
+        signature = self.convert_function_signature(node, current_vars)
+        
+        # Convert function body
+        body = self.convert_function_body(node.children[-1], current_vars, custom_classes, current_functions)
+        
+        # Combine signature and body
+        result = [signature]
+        result.extend(['    ' + line for line in body])
+        
+        return result
+
+    def convert_function_signature(self, node: Node, current_vars: dict[str, str]) -> str:
+        """Convert function signature including parameters"""
+        func_name = node.children[1].value
+        
+        # Handle parameters
+        params = []
+        if len(node.children) > 3:  # Has parameters
+            param_list = node.children[3]
+            for param in param_list.children:
+                if param.node_type == "parameter":
+                    param_name = param.children[-1].value
+                    params.append(param_name)
+        
+        # For class methods, add 'self' as first parameter
+        if '.' in func_name:  # Class method
+            params.insert(0, 'self')
+        
+        return f"def {func_name}({', '.join(params)}):"
+
+    def convert_function_body(self, node: Node, current_vars: dict[str, str], 
+                            custom_classes: list[str], current_functions: list[str]) -> list[str]:
+        """Convert function body"""
+        result = []
+        
+        if node.node_type == "compoundStatement":
+            for child in node.children:
+                if child.node_type in ["statement", "declaration"]:
+                    # Convert each statement/declaration
+                    # Add appropriate conversion logic here
+                    result.append("pass")  # Placeholder
+        
+        if not result:
+            result = ["pass"]
+            
+        return result

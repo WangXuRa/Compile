@@ -52,16 +52,19 @@ class DeclarationConverter:
         return [self.convert_single_decl(type_specifier_node, declarator_node, current_vars, custom_classes, current_functions)]
 
 
-    def convert_type(self, scope: str|None, type: str) -> str:
+    def convert_type(self, scope: str|None, type: str, custom_classes: list[str]) -> str:
+        """Convert C++ type to Python type"""
         if scope is not None:
             if scope in CPP_TO_PYTHON_SCOPES.keys() and type in CPP_TO_PYTHON_SCOPES[scope].keys():
                 return CPP_TO_PYTHON_SCOPES[scope][type]
             else:
-                raise SyntaxError(f"type {type} of scope {scope} had not been declared or is not supported!")
+                raise SyntaxError(f"convert_type: type {type} of scope {scope} had not been declared or is not supported!")
         elif type in CPP_TO_PYTHON_TYPES.keys():
             return CPP_TO_PYTHON_TYPES[type]
+        elif type in custom_classes:  # Check if it's a custom class
+            return type  # Custom class names remain the same in Python
         
-        raise SyntaxError(f"type {type} is not supported!")
+        raise SyntaxError(f"convert_type: type {type}, scope {scope} is not supported!")
 
     def convert_single_decl(self, typeSpecifier: Node, declarator: Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]) -> str:
         """
@@ -81,19 +84,16 @@ class DeclarationConverter:
             type_node = typeSpecifier.children[0]
             # is a custom type
             if type_node.node_type == "ID":
-                # this is a valid custom type, no need to convert
-                if type_node.value in custom_classes:
-                    py_type = type_node.value
-                else:
-                    raise SyntaxError(f"type {type_node.value} had not been declared!")
+                cpp_type = type_node.value
+                py_type = self.convert_type(None, cpp_type, custom_classes)
             else:
                 cpp_type = type_node.value
-                py_type = self.convert_type(scope, cpp_type)
+                py_type = self.convert_type(None, cpp_type, custom_classes)
         # is a scoped type
         elif len(typeSpecifier.children) == 3:
             scope = typeSpecifier.children[0].value
             cpp_type = typeSpecifier.children[2].value
-            py_type = self.convert_type(scope, cpp_type)
+            py_type = self.convert_type(scope, cpp_type, custom_classes)
         else:
             raise SyntaxError("invalid type specifier!")
 

@@ -25,15 +25,44 @@ CPP_TO_PYTHON_EXPRESSIONS = {
     '+' : '+',
     '-' : '-',
     '*' : '*',
-    '/' : '/'
+    '/' : '/',
+    ',' : ','  # Add support for comma operator
 }
 
 CPP_TO_PYTHON_FUNCTIONS = {
-    'default' : {},
-    'std' : {
-        'strlen' : 'len',
-        'cout' : 'print',
-        'cin' : 'input'
+    'default': {
+        'cout': 'print',
+        'endl': 'end=\'\\n\'',
+        'cin': 'input',
+        'length': 'len',
+        # Character classification functions
+        'isdigit': 'isdigit',
+        'isalpha': 'isalpha',
+        'isalnum': 'isalnum',
+        'islower': 'islower',
+        'isupper': 'isupper',
+        'isspace': 'isspace',
+        # String manipulation
+        'substr': 'slice',
+        'append': 'append',
+        'push_back': 'append',
+        'pop_back': 'pop',
+        'clear': 'clear',
+        'size': 'len',
+    },
+    'std': {
+        'strlen': 'len',
+        'cout': 'print',
+        'endl': 'end=\'\\n\'',
+        'cin': 'input',
+    },
+    'cctype': {  # Add cctype namespace functions
+        'isdigit': 'isdigit',
+        'isalpha': 'isalpha',
+        'isalnum': 'isalnum',
+        'islower': 'islower',
+        'isupper': 'isupper',
+        'isspace': 'isspace',
     }
 }
 
@@ -97,6 +126,7 @@ class ExpressionConverter:
         - std::cin and std::cout
         - literals (true, false, null)
         - regular variables
+        - class member variables (with self.)
         """
         if variable_node.node_type != "variable":
             raise TypeError("variable node must by of a type variable!")
@@ -113,8 +143,13 @@ class ExpressionConverter:
             # Check if it's a regular variable
             if root_var in current_vars:
                 return self.convert_variable_(variable_, current_vars, custom_classes, current_functions)
+            # Check if it's a class member variable (with self.)
+            elif f"self.{root_var}" in current_vars:
+                # Replace the variable name with self.variable_name
+                variable_.children[0].value = f"self.{root_var}"
+                return self.convert_variable_(variable_, current_vars, custom_classes, current_functions)
             else:
-                raise SyntaxError(f"variable {root_var} referenced before declaration! Current vars: {current_vars}")
+                raise SyntaxError(f"Convert_variable: variable {root_var} referenced before declaration! Current vars: {current_vars}")
         
         # ID SCOPE variable_
         elif len(variable_node.children) == 3:
@@ -132,37 +167,55 @@ class ExpressionConverter:
             raise SyntaxError("invalid variable node!")
 
     def convert_function_(self, function_node:Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]) -> str:
-        if function_node.node_type != ("function_"):
-            raise TypeError("function_ node must by of a type function_!")
+        """Convert function_ nodes (function name parts)"""
+        if function_node.node_type != "function_":
+            raise TypeError(f"function_ node must by of a type function_!, got type {function_node.node_type}")
 
         # ID
         if len(function_node.children) == 1:
-            func = function_node.children[0].value
+            func = function_node.children[0].value 
+            # Check for regular function
             if func in current_functions:
                 return func
-            elif func in CPP_TO_PYTHON_FUNCTIONS['default'].keys():
+            # Check for class method
+            for class_method in current_functions:
+                if '.' in class_method and class_method.split('.')[1] == func:
+                    return f"self.{func}"
+            # Check for built-in functions and string methods
+            if func in CPP_TO_PYTHON_FUNCTIONS['default'].keys():
+                # Special handling for length() -> len()
+                if func == 'length':
+                    return 'len'
                 return CPP_TO_PYTHON_FUNCTIONS['default'][func]
-            else:
-                return TypeError(f"function {func} referenced before declaration")
-        # ID DOT function
+            
+            raise TypeError(f"function {func} referenced before declaration, current functions: {current_functions}")
+        
+        # ID DOT function_
         elif len(function_node.children) == 3:
-            return function_node.children[0].value + '.' + self.convert_function_(function_node.children[2], current_vars, custom_classes, current_functions)
+            obj = function_node.children[0].value
+            func = self.convert_function_(function_node.children[2], current_vars, custom_classes, current_functions)
+            # Special handling for string length and other methods
+            if func == 'len':
+                return f"len({obj})"
+            # Handle string/character methods
+            if func in ['isdigit', 'isalpha', 'isalnum', 'islower', 'isupper', 'isspace']:
+                return f"{obj}.{func}()"
+            return obj + '.' + func
         else:
             raise SyntaxError("invalid function_ node!")
-        
 
     def convert_function(self, function_node:Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]) -> str:
-        if function_node.node_type != ("function"):
-            raise TypeError("function node must by of a type function!")
+        """Convert function nodes (complete function references)"""
+        if function_node.node_type != "function":
+            raise TypeError(f"function node must by of a type function!, got type {function_node.node_type}")
         
-        py_func = ""
         # ID SCOPE function_
         if len(function_node.children) == 3:
             scope = function_node.children[0].value
             if scope != 'std':
                 raise SyntaxError(f"scope {scope} not supported by this translator!")
             if len(function_node.children[2].children) != 1:
-                raise SyntaxError(f"indexing or referencing of attributes for variables in std scope not supported by this translator!")
+                raise SyntaxError(f"indexing or referencing of attributes for functions in std scope not supported by this translator!")
             cpp_function = function_node.children[2].children[0].value
             if cpp_function in CPP_TO_PYTHON_FUNCTIONS['std'].keys():
                 return CPP_TO_PYTHON_FUNCTIONS['std'][cpp_function]
@@ -170,7 +223,9 @@ class ExpressionConverter:
                 raise SyntaxError(f"{scope}::{cpp_function} not supported by this translator!")
         # function_
         elif len(function_node.children) == 1:
-            return self.convert_function_(function_node, current_vars, custom_classes, current_functions)
+            return self.convert_function_(function_node.children[0], current_vars, custom_classes, current_functions)
+        else:
+            raise SyntaxError("invalid function node!")
 
     def is_input_op(self, shift_operator_node:Node):
         if shift_operator_node.children[0].value == '>':
@@ -202,7 +257,7 @@ class ExpressionConverter:
             if '[' in var_expr:
                 var_name = var_expr.split('[')[0]
                 if not var_name in current_vars:
-                    raise SyntaxError(f"variable {var_name} used in input statement referenced before declaration!")
+                    raise SyntaxError(f"process_input: variable {var_name} used in input statement referenced before declaration!")
                 curr_type = current_vars[var_name]
                 # Check if it's an array type (list[type])
                 if curr_type.startswith('list['):
@@ -212,7 +267,7 @@ class ExpressionConverter:
             else:
                 # Regular variable
                 if not var_expr in current_vars:
-                    raise SyntaxError(f"variable {var_expr} used in input statement referenced before declaration!")
+                    raise SyntaxError(f"process_input: variable {var_expr} used in input statement referenced before declaration!")
                 curr_type = current_vars[var_expr]
             
             if curr_type not in BASIC_TYPES:
@@ -235,14 +290,28 @@ class ExpressionConverter:
 
     def convert_expression_oneline(self, expression_node:Node, current_vars:dict[str, str], custom_classes:list[str], current_functions : list[str]) -> str:
         """
-        converts any `expression` type node or node type ending in `Expression` into their python string
-        returns a string
+        converts an expression node to a single line of python code
         """
+        if expression_node.node_type == "SEMICOLON":
+            return ""
         if not (expression_node.node_type.endswith("Expression") or expression_node.node_type == 'expression'):
-            raise TypeError("expression node for processing must by of a type that ends in Expression!")
-        
+            raise TypeError(f"expression node for processing must by of a type that ends in Expression!, got node type: {expression_node.node_type}")
+        if expression_node.node_type == "variable":
+            return self.convert_variable(expression_node, current_vars, custom_classes, current_functions)
+        elif expression_node.node_type == "function":
+            return self.convert_function(expression_node, current_vars, custom_classes, current_functions)
+        elif expression_node.node_type == "literal":
+            return expression_node.children[0].value
+        elif expression_node.node_type == "argumentList":
+            # Handle function arguments
+            args = []
+            # Process each argument (every odd child is a comma)
+            for i in range(0, len(expression_node.children), 2):
+                arg = self.convert_expression_oneline(expression_node.children[i], current_vars, custom_classes, current_functions)
+                args.append(arg)
+            return ", ".join(args)
         # special case of primaryExpression (which can have 1~6 children)
-        if expression_node.node_type == "primaryExpression":
+        elif expression_node.node_type == "primaryExpression":
             first_child = expression_node.children[0]
             # CHAR_LITERAL, STRING_LITERAL, and BOOL_LITERAL
             if first_child.value is not None and first_child.node_type!='LPAREN':
@@ -268,7 +337,7 @@ class ExpressionConverter:
                 
             # LPAREN expression RPAREN
             if first_child.node_type == 'LPAREN':
-                return '(' + self.convert_expression_oneline(expression_node.children[1]) + ')'
+                return '(' + self.convert_expression_oneline(expression_node.children[1], current_vars, custom_classes, current_functions) + ')'
 
         # if it only has one child, just process that
         if len(expression_node.children) == 1:
@@ -349,9 +418,12 @@ class ExpressionConverter:
             cpp_op = expression_node.children[1].value
             if cpp_op in CPP_TO_PYTHON_EXPRESSIONS.keys():
                 py_op = CPP_TO_PYTHON_EXPRESSIONS[cpp_op]
+                # Special handling for comma operator in function arguments
+                if py_op == ',':
+                    return left + ", " + right
                 return left + " " + py_op + " " + right
             else:
-                raise SyntaxError(f"c++ operator {cpp_op} not supported by this translator!")
+                raise SyntaxError(f"c++ operator {cpp_op} not supported by this translator!, node type: {expression_node.node_type}")
 
     def convert_variable_access(self, variable_node: Node, current_vars: dict[str, str], custom_classes: list[str], current_functions: list[str]) -> str:
         """Handle variable access, including array access"""

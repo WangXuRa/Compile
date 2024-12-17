@@ -57,7 +57,7 @@ class ClassConverter:
                     
                     cpp_type = type_node.children[0].value
                     var_name = declarator_node.children[0].value
-                    py_type = self.declarationConverter.convert_type(None, cpp_type)
+                    py_type = self.declarationConverter.convert_type(None, cpp_type, custom_classes)
                     
                     # Add to class_vars with self prefix (no underscore)
                     class_var_name = f"self.{var_name}"
@@ -65,6 +65,11 @@ class ClassConverter:
                     
                     # Add to current_vars
                     current_vars[var_name] = py_type  # Original name
+            elif child.node_type == "functionDefinition":
+                # Register class methods in current_functions
+                method_name = child.children[1].value
+                scoped_method_name = f"{class_name}.{method_name}"
+                current_functions.append(scoped_method_name)
         
         # Second pass: Generate Python code
         current_access = "public"  # Reset access level for second pass
@@ -77,6 +82,10 @@ class ClassConverter:
                 constructor_found = True
                 constructor_lines = self.convert_constructor(child, class_vars, current_vars, custom_classes, current_functions)
                 py_lines.extend(["    " + line for line in constructor_lines])
+            elif child.node_type == "functionDefinition":
+                # Convert method definition
+                method_lines = self.convert_method(child, class_vars, custom_classes, current_functions)
+                py_lines.extend(["    " + line for line in method_lines])
         
         # If no constructor was defined, add a default one
         if not constructor_found:
@@ -95,7 +104,7 @@ class ClassConverter:
         # Start with constructor definition
         params = []
         if len(constructor_node.children) > 2 and constructor_node.children[2].node_type == "parameterList":
-            params = self.convert_parameter_list(constructor_node.children[2])
+            params = self.convert_parameter_list(constructor_node.children[2], custom_classes)
         
         # Add self parameter
         param_str = "self" + (", " + ", ".join(params) if params else "")
@@ -143,20 +152,29 @@ class ClassConverter:
         
         return py_lines
 
-    def convert_parameter_list(self, param_list_node: Node) -> list[str]:
-        """
-        Converts a parameter list node to a list of Python parameter strings with type hints
-        """
+    def convert_parameter_list(self, param_list_node: Node, custom_classes: list[str]) -> list[str]:
+        """Convert parameter list to Python parameters with type hints"""
         params = []
-        for i in range(0, len(param_list_node.children), 2):  # Skip commas
-            param_node = param_list_node.children[i]
-            # Get parameter type from first child (typeSpecifier)
-            cpp_type = param_node.children[0].children[0].value
-            py_type = self.declarationConverter.convert_type(None, cpp_type)
-            # Get parameter name from last child (ID)
-            param_name = param_node.children[-1].value
-            # Create parameter with type hint
-            params.append(f"{param_name}: {py_type}")
+        for param in param_list_node.children:
+            if param.node_type == "parameter":
+                # Handle type specifier
+                type_spec = param.children[0]
+                param_type = None
+                
+                # Handle scoped types (like std::string)
+                if len(type_spec.children) == 3:  # ID SCOPE ID pattern
+                    scope = type_spec.children[0].value
+                    type_name = type_spec.children[2].value
+                    param_type = self.declarationConverter.convert_type(scope, type_name, custom_classes)
+                # Handle basic types
+                else:
+                    cpp_type = type_spec.children[0].value
+                    param_type = self.declarationConverter.convert_type(None, cpp_type, custom_classes)
+                
+                # Get parameter name
+                param_name = param.children[-1].value
+                params.append(f"{param_name}: {param_type}")
+        
         return params
 
     def convert_member_declaration(self, member_node: Node, class_vars: dict[str, str], 
@@ -187,29 +205,71 @@ class ClassConverter:
         py_lines = []
         
         # Get method name and return type
-        return_type = self.declarationConverter.convert_type(None, method_node.children[0].children[0].value)
+        return_type = self.declarationConverter.convert_type(None, method_node.children[0].children[0].value, custom_classes)
         method_name = method_node.children[1].value
         
-        # Convert parameters
-        params = ["self"]
+        # Create a new scope with class variables
+        method_vars = {}
+        
+        # Add class variables to method scope (only with self. prefix)
+        for var_name, var_type in class_vars.items():
+            if var_name.startswith('self.'):
+                method_vars[var_name] = var_type
+        
+        # Convert parameters and add them to method_vars
+        params = ["self"]  # Always include self as first parameter
         if len(method_node.children) > 3 and method_node.children[3].node_type == "parameterList":
-            params.extend(self.convert_parameter_list(method_node.children[3]))
+            param_list = self.convert_parameter_list(method_node.children[3], custom_classes)
+            for param in param_list:
+                param_name, param_type = param.split(': ')
+                params.append(param)
+                method_vars[param_name] = param_type  # Add parameter to method scope
         
         # Add method definition with return type hint
         py_lines.append(f"def {method_name}({', '.join(params)}) -> {return_type}:")
-        
-        # Create a new scope with class variables
-        method_vars = class_vars.copy()
         
         # Convert method body using StatementConverter
         compound_statement = method_node.children[-1]
         body_lines = self.statementConverter.convert_compoundStatement(
             compound_statement,
-            method_vars,  # Use the new scope with class variables
+            method_vars,  # Use method scope with class vars and parameters
             custom_classes,
             current_functions
         )
-        py_lines.extend(["    " + line for line in body_lines])
+        
+        # Process body lines to add self. prefix and remove duplicates
+        processed_lines = []
+        seen_lines = set()  # Track unique lines
+        
+        for line in body_lines:
+            # Skip empty lines
+            if not line.strip():
+                continue
+            
+            # Skip duplicate lines
+            if line in seen_lines:
+                continue
+            
+            seen_lines.add(line)
+            
+            # Skip lines that already have self.
+            if 'self.' in line:
+                processed_lines.append(line)
+                continue
+            
+            # Check if we need to add self. to any variables
+            words = line.split()
+            for var_name in class_vars:
+                if var_name.startswith('self.'):
+                    base_name = var_name.replace('self.', '')
+                    # Add self. to variable accesses that are class members
+                    # but don't add it to parameters or local variables
+                    if base_name in words and base_name not in method_vars:
+                        line = line.replace(base_name, var_name)
+            processed_lines.append(line)
+        
+        # Add proper indentation and filter out duplicates
+        py_lines.extend(["    " + line for line in processed_lines])
         
         return py_lines
 
