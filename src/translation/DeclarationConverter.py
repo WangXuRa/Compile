@@ -52,7 +52,7 @@ class DeclarationConverter:
         return [self.convert_single_decl(type_specifier_node, declarator_node, current_vars, custom_classes, current_functions)]
 
 
-    def convert_type(self, scope: str|None, type: str, custom_classes: list[str]) -> str:
+    def convert_type(self, scope, type: str, custom_classes: list[str]) -> str:
         """Convert C++ type to Python type"""
         if scope is not None:
             if scope in CPP_TO_PYTHON_SCOPES.keys() and type in CPP_TO_PYTHON_SCOPES[scope].keys():
