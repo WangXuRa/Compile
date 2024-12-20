@@ -27,14 +27,14 @@ class Calculator:
         nums = Stack()
         ops = Stack()
         len = None
-        len = len(s)()
+        len = len(s)
         for i in range(0, len):
             if s[i] == ' ':
                 continue
-            if isdigit(s[i]):
+            if s[i].isdigit():
                 num = None
                 num = 0
-                while i < len and isdigit(s[i]):
+                while i < len and s[i].isdigit():
                     num = num * 10 + (s[i] - '0')
                     ((i:=i+1)-1)
                 ((i:=i-1)+1)
@@ -43,7 +43,7 @@ class Calculator:
                 if s[i] == '-' and (i == 0 or s[i - 1] == '(' or s[i - 1] == '+' or s[i - 1] == '-' or s[i - 1] == '*' or s[i - 1] == '/'):
                     num = None
                     num = 0
-                    while i < len and isdigit(s[i]):
+                    while i < len and s[i].isdigit():
                         num = num * 10 + (s[i] - '0')
                         ((i:=i+1)-1)
                     ((i:=i-1)+1)
