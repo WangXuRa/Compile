@@ -60,11 +60,13 @@ public:
             // 处理数字
             if (isdigit(s[i])) {
                 int num = 0;
+                std::string n = "";
                 while (i < len && isdigit(s[i])) {
-                    num = num * 10 + (s[i] - '0');
+                    n = n + s[i];
                     i++;
                 }
                 i--;
+                num = std::stoi(n);
                 nums.push(num);
             }
             // 处理负数
@@ -72,11 +74,13 @@ public:
                      s[i-1] == '-' || s[i-1] == '*' || s[i-1] == '/')) {
                 int num = 0;
                 i++;
+                std::string n = "";
                 while (i < len && isdigit(s[i])) {
-                    num = num * 10 + (s[i] - '0');
+                    n = n + s[i];
                     i++;
                 }
                 i--;
+                num = std::stoi(n);
                 int temp = -1 * num;
                 nums.push(temp);
             }

@@ -55,6 +55,7 @@ CPP_TO_PYTHON_FUNCTIONS = {
         'cout': 'print',
         'endl': 'end=\'\\n\'',
         'cin': 'input',
+        'stoi': 'int',
     },
     'cctype': {  # Add cctype namespace functions
         'isdigit': 'isdigit',
