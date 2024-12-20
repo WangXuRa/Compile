@@ -24,10 +24,8 @@
    ```
 
 使用方法
-您可以通过两种方式运行词法分析器和解析器：
-1. 使用C++文件作为输入：
+使用C++文件作为输入：
    ```bash
    python3 main.py path/to/your/cpp/file.cpp
    ```
-
 程序将生成python代码

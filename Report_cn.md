@@ -19,8 +19,6 @@
 
 **3、文件结构**：
 
-项目结构如下：
-
 - `src/tests`-所有的测试用例，及生成的`Python`代码
 
 - `src/translation`-从`AST`树翻译成`Python`的逻辑实现
@@ -41,19 +39,97 @@
 
 **4、难点与创新点**
 
-- 维护变量的作用域
+- 符号表的实现：通过使用字典存储符号信息，并采用作用域复制机制支持嵌套作用域，同时在不同转换器间共享符号表，实现了变量的声明、查找和类型检查，以及基本的符号检查和错误处理功能。
   
-  - 实现方法：通过定义外部作用域传递参数，并在函数内使用局部变量维护变量的作用域。
+  - ###### 符号表的基本结构：
     
-    - 举例：
-      
-      ```python
-      def convert_function(self, function_node: Node, current_vars: dict[str, str], 
-                              custom_classes: list[str], current_functions: list[str]) -> list[str]:
-              """Convert a function definition to Python code"""
-              if function_node.node_type != "functionDefinition":
-                  raise TypeError("Expected functionDefinition node!")
-      ```
+    在代码中，符号表主要通过字典(dictionary)实现，具体体现在以下几个关键变量：
+    
+    ```python
+    current_vars: Dict[str, str]  # 变量名到类型的映射
+    custom_classes: List[str]     # 自定义类名列表
+    current_functions: List[str]  # 当前作用域内的函数名列表
+    ```
+  
+  - ###### 作用域管理:
+    
+    - 局部作用域:
+    
+    ```python
+    def convert_compoundStatement(self, node: Node, current_vars: dict[str, str], 
+                                custom_classes: list[str], current_functions: list[str]) -> list[str]:
+        # 创建新的作用域
+        scope_vars = current_vars.copy()
+        # 处理作用域内的声明和语句
+        ...
+        # 更新父作用域中已存在的变量
+        for var, type_ in scope_vars.items():
+            if var in current_vars:
+                current_vars[var] = type_
+    ```
+    
+    - 控制流作用域: 对于控制流语句（如 `if-else`），每个分支会创建独立的作用域。
+    
+    ```python
+    def convert_selectionStatement(self, node: Node, current_vars: dict[str, str], 
+                                 custom_classes: list[str], current_functions: list[str]) -> list[str]:
+        # if块的作用域
+        if_vars = current_vars.copy()
+        # else块的作用域
+        else_vars = current_vars.copy()
+    ```
+  
+  - ###### 符号表维护机制:
+    
+    - 变量声明时的符号表更新: 
+    
+    ```python
+    current_vars[var_name] = var_type
+    loop_vars[var_name] = var_type
+    ```
+    
+    - 作用域链处理:
+    
+    ```python
+    scope_vars = current_vars.copy()  # 复制当前作用域的符号表
+    ```
+    
+    ```python
+    # 将修改过的变量更新回父作用域
+    for var, type_ in scope_vars.items():
+        if var in current_vars:
+            current_vars[var] = type_
+    ```
+  
+  - ###### 符号表的使用:
+    
+    - 变量查找: 在ExpressionConverter中进行变量引用检查
+    
+    ```python
+    def convert_variable(self, root_var: str, current_vars: dict[str, str]):
+        if root_var not in current_vars:
+            raise SyntaxError(f"variable {root_var} referenced before declaration!")
+    ```
+    
+    - 类型检查: 通过符号表进行类型检查和转换
+    
+    ```python
+    var_type = current_vars.get(var, 'str')
+    if var_type in ['int', 'float']:
+        result.append(f"{var} = {var_type}(input())")
+    ```
+  
+  - ###### 错误处理:
+    
+    实现了基本的符号检查和错误处理，能在语法错误时快速定位问题
+    
+    通过自定义错误监听器，能够捕获并抛出详细的错误信息，从而提升调试效率。
+    
+    ```python
+    class TranspilerErrorListener(ErrorListener):
+        def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+            raise TranspilerError(f"Syntax error at line {line}, column {column}: {msg}")
+    ```
 
 - `C++`中的`++`与`--`可以在`Python`中正确翻译
   
@@ -68,33 +144,60 @@
     
     3. 输出：返回更新后的 `py_statement`，它包含了相应的 Python 表达式部分。
        
-       - 举例：
-         
-         ```python
-         # ++/-- unaryExpression
-         if expression_node.children[0].node_type == 'INCREMENT':
-             py_statement += '+1)'
-             return py_statement
-         elif expression_node.children[0].node_type == 'DECREMENT':
-             py_statement += '-1)'
-             return py_statement
-         else:
-             raise SyntaxError("invalid unaryExpression node!")
-         ```
+       ```python
+       # ++/-- unaryExpression
+       if expression_node.children[0].node_type == 'INCREMENT':
+           py_statement += '+1)'
+           return py_statement
+       elif expression_node.children[0].node_type == 'DECREMENT':
+           py_statement += '-1)'
+           return py_statement
+       else:
+           raise SyntaxError("invalid unaryExpression node!")
+       ```
 
 - `C++`中的`vector`在`Python`中没有直接等价的部分
   
   - 实现方法：使用`Python`的类型模块的通用类型转换
     
-    - 举例：
+    ```python
+    CPP_TO_PYTHON_SCOPES = {
+      'std' : {
+          'vector' : 'list',
+          'string' : 'str'
+          }
+      }
+    ```
+
+- 错误处理：在词法错误，语法错误，逻辑错误时均进行报错，并给出具体原因
+  
+  - 实现方法：在词法发生错误时，Lexer进行报错；在有具体的语法错误时，由Parser进行报错；在实现有语义错误时，如预先使用未定义变量，会由翻译器进行报错。
+    
+    - 例`1`：`int b` 不在结尾加分号会报错
+    
+    - ![](C:\Users\Wangxuran\AppData\Roaming\marktext\images\2024-12-20-11-08-06-image.png)
+    
+    - 例`2`:使用未定义变量时报错
       
-      ```python
-      CPP_TO_PYTHON_SCOPES = {
-        'std' : {
-            'vector' : 'list',
-            'string' : 'str'
-            }
-        }
+      ![](C:\Users\Wangxuran\AppData\Roaming\marktext\images\2024-12-20-11-07-29-image.png)
+      
+      ```cpp
+      int main() {
+          std::cout << a;
+      }
+      ```
+    
+    - 例`3`：`for`循环时出现语法错误
+      
+      ![](C:\Users\Wangxuran\AppData\Roaming\marktext\images\2024-12-20-11-06-37-image.png)
+      
+      ```cpp
+      #include <iostream>
+      int main() {
+          for(int i = 0; i<10) {
+              std::cout<< i ;
+          }
+      }
       ```
 
 **5.特性支持**
@@ -119,72 +222,8 @@
 
 详情请见`readme.txt`
 
-#### 五、输出展示
+#### 五、参考资料
 
-举例：`test_quickSort`
-
-`quickSort.cpp`
-
-```cpp
-#include <iostream>
-
-class QuickSort {
-public:
-    void sort(int* arr, int low, int high) {
-        if (low < high) {
-            int pi = partition(arr, low, high);
-            ...
-        }
-    }
-
-private:
-    int partition(int* arr, int low, int high) {
-        int pivot = arr[high]; 
-        ...
-        return i + 1;
-    }
-};
-
-int main() {
-    int arr[8];
-    int size = 8;
-    ...
-    std::cout << std::endl;
-
-    return 0;
-}
-```
-
-`quickSort.py`
-
-```py
-prom typing import List
-
-class QuickSort:
-    def sort(self, arr: int, low: int, high: int) -> None:
-        if low < high:
-            ...
-    def partition(self, arr: int, low: int, high: int) -> int:
-        pivot = None
-        pivot = arr[high]
-        ...
-        return i + 1
-    def __init__(self):
-        pass
-def main():
-    arr = [0] * 8
-    size = None
-    ...
-    return 0
-
-if __name__ == '__main__':
-    main()
-```
-
-#### 六、参考资料
-
-- [ANTLR4文档](https://www.antlr.org/documentation.html)
-- [Python文档](https://docs.python.org/3/)
-- [C++文档](https://en.cppreference.com/w/)
+- [ANTLR4文档](https://www.antlr.org/documentation.html)[Python文档](https://docs.python.org/3/)[C++文档](https://en.cppreference.com/w/)
 
 ##### 附:关于AST和语法解析器等问题详见第一次提交报告
