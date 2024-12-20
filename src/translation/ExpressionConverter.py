@@ -170,10 +170,9 @@ class ExpressionConverter:
         """Convert function_ nodes (function name parts)"""
         if function_node.node_type != "function_":
             raise TypeError(f"function_ node must by of a type function_!, got type {function_node.node_type}")
-
         # ID
         if len(function_node.children) == 1:
-            func = function_node.children[0].value 
+            func = function_node.children[0].value
             # Check for regular function
             if func in current_functions:
                 return func
@@ -226,7 +225,8 @@ class ExpressionConverter:
                 raise SyntaxError(f"{scope}::{cpp_function} not supported by this translator!")
         # function_
         elif len(function_node.children) == 1:
-            return self.convert_function_(function_node.children[0], current_vars, custom_classes, current_functions)
+            res = self.convert_function_(function_node.children[0], current_vars, custom_classes, current_functions)
+            return res
         else:
             raise SyntaxError("invalid function node!")
 
@@ -334,8 +334,12 @@ class ExpressionConverter:
                 # function LPAREN expression? RPAREN
                 func = self.convert_function(first_child.children[0], current_vars, custom_classes, current_functions)
                 if first_child.children[2].node_type == 'expression':
+                    if func in ['isdigit', 'isalpha', 'isalnum', 'islower', 'isupper', 'isspace']:
+                        return self.convert_expression_oneline(first_child.children[2], current_vars, custom_classes, current_functions) + '.' + func + '()'
                     return func + '(' + self.convert_expression_oneline(first_child.children[2], current_vars, custom_classes, current_functions) + ')'
                 else:
+                    if func.startswith('len'):
+                        return func
                     return func + '()'
                 
             # LPAREN expression RPAREN
