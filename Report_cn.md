@@ -135,43 +135,34 @@
   
   - 实现方法：
     
-    1. 假设传入的是一个表示自增或自减运算符的 `expression_node`，其子节点的 `node_type` 可能是 `'INCREMENT'` 或 `'DECREMENT'`。
+    1. **解析右侧表达式**：首先，解析 `++` 或 `--` 操作符后面的表达式。
     
-    2. 处理：根据子节点的类型，生成对应的 Python 表达式代码：
+    2. **生成基本表达式**：创建一个基本的 Python 表达式，如 `right := right`。
+    
+    3. **处理自增 `++`**：如果是 `++`，将表达式改为 `right := right + 1`。
+    
+    4. **处理自减 `--`**：如果是 `--`，将表达式改为 `right := right - 1`。
        
-       - 如果是 `'INCREMENT'`（`++`），则在 `py_statement` 上附加 `+1)`。
-       - 如果是 `'DECREMENT'`（`--`），则在 `py_statement` 上附加 `-1)`。
-    
-    3. 输出：返回更新后的 `py_statement`，它包含了相应的 Python 表达式部分。
-       
-       ```python
-       # ++/-- unaryExpression
-       if expression_node.children[0].node_type == 'INCREMENT':
-           py_statement += '+1)'
-           return py_statement
-       elif expression_node.children[0].node_type == 'DECREMENT':
-           py_statement += '-1)'
-           return py_statement
-       else:
-           raise SyntaxError("invalid unaryExpression node!")
-       ```
-
-- `C++`中的`vector`在`Python`中没有直接等价的部分
-  
-  - 实现方法：使用`Python`的类型模块的通用类型转换
-    
-    ```python
-    CPP_TO_PYTHON_SCOPES = {
-      'std' : {
-          'vector' : 'list',
-          'string' : 'str'
-          }
-      }
-    ```
+       - ```py
+            if expression_node.node_type == "unaryExpression":
+             if expression_node.children[0].node_type == 'referenceOp':
+                 raise SyntaxError("pointer-related operations not supported in expressions!")
+             right = self.convert_expression_oneline(expression_node.children[1], current_vars, custom_classes, current_functions)
+             if expression_node.children[0].node_type == 'NOT':
+                 return ' not ' + right
+             py_statement = '(' + right + ':=' + right
+             # ++/-- unaryExpression
+             if expression_node.children[0].node_type == 'INCREMENT':
+                 py_statement += '+1)'
+                 return py_statement
+             elif expression_node.children[0].node_type == 'DECREMENT':
+                 py_statement += '-1)'
+                 return py_statement
+         ```
 
 - 错误处理：在词法错误，语法错误，逻辑错误时均进行报错，并给出具体原因
   
-  - 实现方法：在词法发生错误时，Lexer进行报错；在有具体的语法错误时，由Parser进行报错；在实现有语义错误时，如预先使用未定义变量，会由翻译器进行报错。
+  - 实现方法：在词法发生错误时，`Lexer`进行报错；在有具体的语法错误时，由`Parser`进行报错；在实现有语义错误时，如预先使用未定义变量，会由翻译器进行报错。
     
     - 例`1`：`int b` 不在结尾加分号会报错
     
@@ -200,6 +191,22 @@
       }
       ```
 
+- 实现了四则运算计算支持
+  
+  - 实现方法：通过支持栈结构，实现四则运算计算。
+    
+    ![](C:\Users\Wangxuran\AppData\Roaming\marktext\images\2024-12-20-14-50-18-image.png)
+
+- 实现了最主流的排序算法支持
+  
+  ![](C:\Users\Wangxuran\AppData\Roaming\marktext\images\2024-12-20-11-33-10-image.png)
+  
+  ![](C:\Users\Wangxuran\AppData\Roaming\marktext\images\2024-12-20-11-33-40-image.png)
+  
+  ![](C:\Users\Wangxuran\AppData\Roaming\marktext\images\2024-12-20-11-34-04-image.png)
+  
+  ![](C:\Users\Wangxuran\AppData\Roaming\marktext\images\2024-12-20-11-34-39-image.png)
+
 **5.特性支持**
 
 - 基本`C++`语言语法
@@ -210,7 +217,7 @@
 
 - **KMP字符串匹配算法** (`test_KMP.cpp`): 实现了经典的KMP字符串匹配算法，包含部分匹配表(next数组)的计算、字符串匹配过程、多重匹配支持和错误处理。
 
-- **多种排序算法** (`test_bubbleSort.cpp` 等): 实现了基础的排序算法，支持动态数组输入、整数排序和结果可视化输出。
+- **多种排序算法** (`test_bubbleSort.cpp` 等): 实现了主流的排序算法，支持动态数组输入、整数排序和结果可视化输出。
 
 - **回文检测算法** (`test_palindrome.cpp`): 实现了回文检测的算法，支持动态字符串输入、忽略大小写和非字母数字字符，并且在遇到不匹配时提前终止检测，结果可视化输出。
 

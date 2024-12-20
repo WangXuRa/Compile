@@ -2,7 +2,13 @@ from typing import List
 
 class Stack:
     def __init__(self):
+        self.data = [0] * 1000
         self.top = -1
+        i = None
+        i = 0
+        while i < 1000:
+            self.data[i] = 0
+            ((i:=i+1)-1)
     def push(self, value: int) -> None:
         if self.top < 1000 - 1:
             self.top = self.top + 1
@@ -26,27 +32,36 @@ class Calculator:
     def calculate(self, s: str) -> int:
         nums = Stack()
         ops = Stack()
-        len = None
-        len = len(s)
-        for i in range(0, len):
+        _len = None
+        _len = len(s)
+        i = None
+        i = 0
+        while i < _len:
             if s[i] == ' ':
                 continue
             if s[i].isdigit():
                 num = None
                 num = 0
-                while i < len and s[i].isdigit():
-                    num = num * 10 + (s[i] - '0')
+                n = None
+                n = ""
+                while i < _len and s[i].isdigit():
+                    n = n + s[i]
                     ((i:=i+1)-1)
                 ((i:=i-1)+1)
+                num = int(n)
                 nums.push(num)
             else:
                 if s[i] == '-' and (i == 0 or s[i - 1] == '(' or s[i - 1] == '+' or s[i - 1] == '-' or s[i - 1] == '*' or s[i - 1] == '/'):
                     num = None
                     num = 0
-                    while i < len and s[i].isdigit():
-                        num = num * 10 + (s[i] - '0')
+                    n = None
+                    n = ""
+                    (i:=i+1)
+                    while i < _len and s[i].isdigit():
+                        n = n + s[i]
                         ((i:=i+1)-1)
                     ((i:=i-1)+1)
+                    num = int(n)
                     temp = None
                     temp = -1 * num
                     nums.push(temp)
@@ -64,6 +79,7 @@ class Calculator:
                                 while  not ops.empty() and ops.peek() != '(' and self.precedence(ops.peek()) >= self.precedence(s[i]):
                                     self.calculateTop(nums, ops)
                                 ops.push(s[i])
+            ((i:=i+1)-1)
         while  not ops.empty():
             self.calculateTop(nums, ops)
         if nums.empty():
@@ -101,7 +117,7 @@ class Calculator:
                         result = a // b
         nums.push(result)
     def __init__(self):
-        pass
+            pass
 def main():
     calc = Calculator()
     expr = None

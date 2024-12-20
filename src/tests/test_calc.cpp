@@ -13,6 +13,11 @@ public:
     // 构造函数
     Stack() {
         top = -1;
+        int i = 0;
+        while (i<1000){
+            data[i] = 0;
+            i++;
+        }
     }
     
     void push(int value) {
@@ -52,16 +57,17 @@ public:
     int calculate(std::string s) {
         Stack nums;    // 数字栈
         Stack ops;     // 运算符栈
-        int len = s.length();
+        int _len = s.length();
         
-        for (int i = 0; i < len; i++) {
+        int i = 0;
+        while (i < _len) {
             if (s[i] == ' ') continue;
             
             // 处理数字
             if (isdigit(s[i])) {
                 int num = 0;
                 std::string n = "";
-                while (i < len && isdigit(s[i])) {
+                while (i < _len && isdigit(s[i])) {
                     n = n + s[i];
                     i++;
                 }
@@ -72,10 +78,11 @@ public:
             // 处理负数
             else if (s[i] == '-' && (i == 0 || s[i-1] == '(' || s[i-1] == '+' || 
                      s[i-1] == '-' || s[i-1] == '*' || s[i-1] == '/')) {
+                
                 int num = 0;
-                i++;
                 std::string n = "";
-                while (i < len && isdigit(s[i])) {
+                ++i;
+                while (i < _len && isdigit(s[i])) {
                     n = n + s[i];
                     i++;
                 }
@@ -105,6 +112,7 @@ public:
                 }
                 ops.push(s[i]);
             }
+            i++;
         }
         
         while (!ops.empty()) {

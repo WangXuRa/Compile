@@ -40,6 +40,7 @@ class ClassConverter:
         
         # Process class members
         class_vars = {}  # Track class member variables with self. prefix
+        array_vars = {}  # Track array variables and their sizes
         constructor_found = False
         
         # First pass: Process all member declarations
@@ -59,12 +60,21 @@ class ClassConverter:
                     var_name = declarator_node.children[0].value
                     py_type = self.declarationConverter.convert_type(None, cpp_type, custom_classes)
                     
-                    # Add to class_vars with self prefix (no underscore)
+                    # Handle private variables
+                    if current_access == "private":
+                        # Check if it's an array declaration (ID LBRACK NUMBER RBRACK)
+                        if len(declarator_node.children) > 1 and declarator_node.children[1].value == "[":
+                            array_size = declarator_node.children[2].value  # NUMBER is after LBRACK
+                            array_vars[var_name] = int(array_size)
+                        var_name = f"{var_name}"
+                    
+                    # Add to class_vars with self prefix
                     class_var_name = f"self.{var_name}"
                     class_vars[class_var_name] = py_type
                     
                     # Add to current_vars
                     current_vars[var_name] = py_type  # Original name
+                    
             elif child.node_type == "functionDefinition":
                 # Register class methods in current_functions
                 method_name = child.children[1].value
@@ -80,25 +90,28 @@ class ClassConverter:
                 if constructor_found:
                     raise SyntaxError("Multiple constructors are not supported!")
                 constructor_found = True
-                constructor_lines = self.convert_constructor(child, class_vars, current_vars, custom_classes, current_functions)
+                constructor_lines = self.convert_constructor(child, class_vars, current_vars, custom_classes, current_functions, array_vars)
                 py_lines.extend(["    " + line for line in constructor_lines])
             elif child.node_type == "functionDefinition":
                 # Convert method definition
                 method_lines = self.convert_method(child, class_vars, custom_classes, current_functions)
                 py_lines.extend(["    " + line for line in method_lines])
         
-        # If no constructor was defined, add a default one
+        # If no constructor was defined, add a default one with array initialization
         if not constructor_found:
-            py_lines.extend(["    def __init__(self):", "        pass"])
+            default_constructor = ["def __init__(self):"]
+            # Initialize arrays if any
+            for var_name, size in array_vars.items():
+                default_constructor.append(f"        self.{var_name} = [0] * {size}")
+            if len(default_constructor) == 1:
+                default_constructor.append("        pass")
+            py_lines.extend(["    " + line for line in default_constructor])
         
         return py_lines
 
     def convert_constructor(self, constructor_node: Node, class_vars: dict[str, str], 
                            current_vars: dict[str, str], custom_classes: list[str], 
-                           current_functions: list[str]) -> list[str]:
-        """
-        Converts a constructor node to Python __init__ method
-        """
+                           current_functions: list[str], array_vars: dict[str, int]) -> list[str]:
         py_lines = []
         
         # Start with constructor definition
@@ -110,27 +123,27 @@ class ClassConverter:
         param_str = "self" + (", " + ", ".join(params) if params else "")
         py_lines.append(f"def __init__({param_str}):")
         
-        # Create a new scope with both class variables and current variables
+        # Initialize arrays before other constructor code
+        for var_name, size in array_vars.items():
+            array_init = f"    self.{var_name} = [0] * {size}"
+            py_lines.append(array_init)
+        
+        # Rest of constructor conversion...
         method_vars = {}
         
         # Add class variables to method scope
         for var_name, var_type in class_vars.items():
-            # Get the variable name without self. prefix
             base_name = var_name.replace('self.', '')
-            # Add both versions to method_vars
-            method_vars[var_name] = var_type  # Add with self. prefix
-            method_vars[base_name] = var_type  # Add without self. prefix
+            method_vars[var_name] = var_type
+            method_vars[base_name] = var_type
         
-        # Add current variables
         method_vars.update(current_vars)
         
-        # Add parameter variables to method scope
         if params:
             for param in params:
                 name, type_hint = param.split(': ')
                 method_vars[name] = type_hint
         
-        # Convert constructor body
         compound_statement = constructor_node.children[-1]
         body_lines = self.statementConverter.convert_compoundStatement(
             compound_statement,
@@ -139,13 +152,14 @@ class ClassConverter:
             current_functions
         )
         
-        # Add self. prefix to class member assignments if needed
         processed_lines = []
         for line in body_lines:
             if '=' in line:
                 var_name = line.split('=')[0].strip()
-                if var_name in method_vars and f"self.{var_name}" in class_vars:
-                    line = f"self.{var_name}" + line[len(var_name):]
+                base_var_name = var_name.split('[')[0].strip()
+                
+                if base_var_name in method_vars and f"self.{base_var_name}" in class_vars:
+                    line = line.replace(base_var_name, f"self.{base_var_name}", 1)
             processed_lines.append(line)
         
         py_lines.extend(["    " + line for line in processed_lines])
