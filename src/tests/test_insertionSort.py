@@ -12,17 +12,16 @@ class InsertionSort:
                 (j:=j-1)
             arr[j + 1] = key
     def __init__(self):
-        pass
+            pass
 def main():
-    arr = [0] * 6
+    arr = [0] * 100
     size = None
-    size = 6
-    arr[0] = 12
-    arr[1] = 11
-    arr[2] = 13
-    arr[3] = 5
-    arr[4] = 6
-    arr[5] = 7
+    size = 0
+    print("Input the array length: ", sep='', end='')
+    size = int(input())
+    print("Input integers: ", sep='', end='')
+    for i in range(0, size):
+        arr[i] = int(input())
     print("Original array: ", sep='', end='')
     for i in range(0, size):
         print(arr[i], " ", sep='', end='')

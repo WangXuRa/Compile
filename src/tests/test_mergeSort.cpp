@@ -45,16 +45,18 @@ public:
 };
 
 int main() {
-    int arr[8];
+    int arr[100];
     int size = 7;
 
-    arr[0] = 38;
-    arr[1] = 27;
-    arr[2] = 43;
-    arr[3] = 3;
-    arr[4] = 9;
-    arr[5] = 82;
-    arr[6] = 10;
+    // 输入数组长度
+    std::cout << "Input the array length: ";
+    std::cin >> size;
+
+    // 输入整数
+    std::cout << "Input integers: ";
+    for (int i = 0; i < size; i++) {
+        std::cin >> arr[i];
+    }
 
     std::cout << "Original array: ";
     for (int i = 0; i < size; ++i) {

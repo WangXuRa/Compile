@@ -121,7 +121,9 @@ class Calculator:
 def main():
     calc = Calculator()
     expr = None
-    expr = "1+(-5-22)*4/(2+1)"
+    expr = ""
+    print("请输入字符串：", sep='', end='')
+    expr = str(input())
     result = None
     result = calc.calculate(expr)
     print("Result: ", result, "\n", sep='', end='')

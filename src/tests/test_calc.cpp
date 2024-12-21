@@ -164,7 +164,9 @@ private:
 
 int main() {
     Calculator calc;
-    std::string expr = "1+(-5-22)*4/(2+1)";
+    std::string expr = "";
+    std::cout << "请输入字符串：";
+    std::cin  >> expr;
     int result = calc.calculate(expr);
     std::cout << "Result: " << result << std::endl;
     return 0;

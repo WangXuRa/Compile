@@ -17,15 +17,18 @@ public:
 };
 
 int main() {
-    int arr[6];
-    int size = 6;
+    int arr[100];
+    int size = 0;
 
-    arr[0] = 12;
-    arr[1] = 11;
-    arr[2] = 13;
-    arr[3] = 5;
-    arr[4] = 6;
-    arr[5] = 7;
+    // 输入数组长度
+    std::cout << "Input the array length: ";
+    std::cin >> size;
+
+    // 输入整数
+    std::cout << "Input integers: ";
+    for (int i = 0; i < size; i++) {
+        std::cin >> arr[i];
+    }
 
     std::cout << "Original array: ";
     for (int i = 0; i < size; ++i) {

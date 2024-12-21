@@ -25,19 +25,16 @@ class QuickSort:
         arr[high] = temp
         return i + 1
     def __init__(self):
-        pass
+            pass
 def main():
-    arr = [0] * 8
+    arr = [0] * 100
     size = None
     size = 8
-    arr[0] = 38
-    arr[1] = 27
-    arr[2] = 43
-    arr[3] = 3
-    arr[4] = 9
-    arr[5] = 82
-    arr[6] = 10
-    arr[7] = 19
+    print("Input the array length: ", sep='', end='')
+    size = int(input())
+    print("Input integers: ", sep='', end='')
+    for i in range(0, size):
+        arr[i] = int(input())
     print("Original array: ", sep='', end='')
     for i in range(0, size):
         print(arr[i], " ", sep='', end='')
